@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "603475378308",
+    "project_id": "flutter-d70dc",
+    "storage_bucket": "flutter-d70dc.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:603475378308:android:492fea26129c7fe4ac02d1",
+        "android_client_info": {
+          "package_name": "com.example.tekhub"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAJnk_P7q2xxa5YDqnKNorvgkzInsC-MQs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
