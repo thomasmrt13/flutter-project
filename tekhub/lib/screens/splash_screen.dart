@@ -7,6 +7,7 @@ class Splash extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).primaryColor,
+      extendBody: true,
       body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
