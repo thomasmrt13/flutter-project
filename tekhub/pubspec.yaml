@@ -16,5 +16,17 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
 
+fonts:
+  - family: Raleway
+    fonts:
+      - asset: assets/fonts/Raleway-Regular.ttf
+        weight: 400
+      - asset: assets/fonts/Raleway-Bold.ttf
+        weight: 700
+      - asset: assets/fonts/Raleway-ExtraBold.ttf
+        weight: 800
+      - asset: assets/fonts/Raleway-SemiBold.ttf
+        weight: 600
+
 flutter:
   uses-material-design: true
