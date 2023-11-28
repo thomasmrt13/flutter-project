@@ -5,7 +5,6 @@ import 'package:tekhub/widgets/headline.dart';
 
 class Login extends StatelessWidget {
   const Login({super.key});
-  //final _formKey=GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -15,10 +14,7 @@ class Login extends StatelessWidget {
       body: Column(
         children: <Widget>[
           SizedBox(height: MediaQuery.of(context).size.height * 0.10),
-          const Padding(
-            padding: EdgeInsets.fromLTRB(50, 0, 0, 0),
-            child: Headline(title: 'Welcome back !'),
-          ),
+          const Headline(title: 'Welcome back !'),
           SizedBox(height: MediaQuery.of(context).size.height * 0.01),
           Form(
             child: Container(
@@ -28,6 +24,7 @@ class Login extends StatelessWidget {
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(50, 36, 50, 0),
                 child: SingleChildScrollView(
+                  padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: <Widget>[
@@ -47,7 +44,9 @@ class Login extends StatelessWidget {
                         bottom: 0,
                         icon: Icons.email_outlined,
                       ),
-                      const CustomPassword(),
+                      const CustomPassword(
+                        title: 'Password',
+                      ),
                       const TextButton(onPressed: null, child: Text('Forgot Password?', style: TextStyle(color: Color.fromARGB(255, 126, 217, 87)))),
                       ElevatedButton(
                         onPressed: () {},

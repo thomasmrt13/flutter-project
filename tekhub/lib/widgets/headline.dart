@@ -6,6 +6,6 @@ class Headline extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text(title, style: const TextStyle(fontFamily: 'Raleway', color: Colors.white, fontSize: 65, fontWeight: FontWeight.bold), textAlign: TextAlign.start);
+    return Text(title, style: const TextStyle(fontFamily: 'Raleway', color: Colors.white, fontSize: 65, fontWeight: FontWeight.bold), textAlign: TextAlign.center);
   }
 }

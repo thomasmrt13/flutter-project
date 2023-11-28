@@ -1,27 +1,32 @@
 import 'package:flutter/material.dart';
 
 class CustomPassword extends StatelessWidget {
-  const CustomPassword({super.key});
+  const CustomPassword({
+    required this.title,
+    super.key,
+  });
+
+  final String title;
 
   @override
   Widget build(BuildContext context) {
-    return const Padding(
-      padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
       child: Column(
         children: <Widget>[
           Row(
             children: <Widget>[
-              Icon(Icons.lock_outline, size: 24, color: Colors.grey, semanticLabel: 'Email icon'),
+              const Icon(Icons.lock_outline, size: 24, color: Colors.grey, semanticLabel: 'Email icon'),
               Padding(
-                padding: EdgeInsets.only(left: 10),
+                padding: const EdgeInsets.only(left: 10),
                 child: Text(
-                  'Passcode',
-                  style: TextStyle(color: Color(0xff868686), fontSize: 16),
+                  title,
+                  style: const TextStyle(color: Color(0xff868686), fontSize: 16),
                 ),
               ),
             ],
           ),
-          TextField(
+          const TextField(
             decoration: InputDecoration(
               enabledBorder: UnderlineInputBorder(
                 borderSide: BorderSide(color: Colors.grey),

@@ -37,6 +37,8 @@ flutter:
   assets:
     - assets/images/
     - assets/images/logo.png
+    - assets/images/circulomoradorelleno.png
+    - assets/images/EllipseMorado.png
 
   fonts:
     - family: Raleway
