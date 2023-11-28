@@ -1,0 +1,6 @@
+
+*.xcconfig
+
+tekhub/ios/Podfile
+
+tekhub/macos/Podfile
