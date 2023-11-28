@@ -14,20 +14,18 @@ class Register extends StatelessWidget {
       backgroundColor: const Color.fromARGB(255, 39, 39, 39),
       body: Column(
         children: <Widget>[
-          SizedBox(height: MediaQuery.of(context).size.height * 0.10),
-          const Padding(
-            padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
-            child: Headline(title: 'Welcome on TekHub!'),
-          ),
+          SizedBox(height: MediaQuery.of(context).size.height * 0.05),
+          const Headline(title: 'Welcome on TekHub!'),
           SizedBox(height: MediaQuery.of(context).size.height * 0.01),
           Form(
             child: Container(
               decoration: const BoxDecoration(color: Colors.white, borderRadius: BorderRadius.all(Radius.circular(20))),
-              height: MediaQuery.of(context).size.height * 0.65,
+              height: MediaQuery.of(context).size.height * 0.70,
               width: MediaQuery.of(context).size.width,
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(50, 36, 50, 0),
                 child: SingleChildScrollView(
+                  padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: <Widget>[
@@ -55,7 +53,12 @@ class Register extends StatelessWidget {
                         bottom: 0,
                         icon: Icons.person_outline,
                       ),
-                      const CustomPassword(),
+                      const CustomPassword(
+                        title: 'Password',
+                      ),
+                      const CustomPassword(
+                        title: 'Confirm Password',
+                      ),
                       const SizedBox(height: 20),
                       ElevatedButton(
                         onPressed: () {},
