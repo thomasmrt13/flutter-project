@@ -45,11 +45,10 @@ class ForgetPassword extends StatelessWidget {
                           fontWeight: FontWeight.w200,
                           fontFamily: 'Raleway',
                           fontSize: 15,
-                          fontStyle: FontStyle
-                              .italic, // Add this line to make the text italic
+                          fontStyle: FontStyle.italic, // Add this line to make the text italic
                         ),
                       ),
-                      const CustomInput(
+                      CustomInput(
                         title: 'Email',
                         left: 0,
                         top: 45,
@@ -63,8 +62,7 @@ class ForgetPassword extends StatelessWidget {
                       ElevatedButton(
                         onPressed: () {},
                         style: ElevatedButton.styleFrom(
-                          backgroundColor:
-                              const Color.fromARGB(255, 126, 217, 87),
+                          backgroundColor: const Color.fromARGB(255, 126, 217, 87),
                           fixedSize: const Size(314, 70),
                           foregroundColor: Colors.white,
                           shape: RoundedRectangleBorder(

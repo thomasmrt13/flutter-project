@@ -4,8 +4,30 @@ import 'package:tekhub/widgets/custom_password.dart';
 import 'package:tekhub/widgets/headline.dart';
 
 class Register extends StatelessWidget {
-  const Register({super.key});
-  //final _formKey=GlobalKey<FormState>();
+  Register({super.key});
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final CustomInput _emailInput = CustomInput(
+    title: 'Email',
+    left: 0,
+    top: 45,
+    right: 0,
+    bottom: 0,
+    icon: Icons.email_outlined,
+  );
+  final CustomInput _usernameInput = CustomInput(
+    title: 'username',
+    left: 0,
+    top: 45,
+    right: 0,
+    bottom: 0,
+    icon: Icons.person_outline,
+  );
+  final CustomPassword _passwordInput = CustomPassword(
+    title: 'Password',
+  );
+  final CustomPassword _confirmPasswordInput = CustomPassword(
+    title: 'Confirm Password',
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -18,6 +40,7 @@ class Register extends StatelessWidget {
           const Headline(title: 'Welcome on TekHub!'),
           SizedBox(height: MediaQuery.of(context).size.height * 0.01),
           Form(
+            key: _formKey,
             child: Container(
               decoration: const BoxDecoration(color: Colors.white, borderRadius: BorderRadius.all(Radius.circular(20))),
               height: MediaQuery.of(context).size.height * 0.70,
@@ -37,31 +60,31 @@ class Register extends StatelessWidget {
                           fontSize: 18,
                         ),
                       ),
-                      const CustomInput(
-                        title: 'Email',
-                        left: 0,
-                        top: 20,
-                        right: 0,
-                        bottom: 0,
-                        icon: Icons.email_outlined,
-                      ),
-                      const CustomInput(
-                        title: 'Username',
-                        left: 0,
-                        top: 20,
-                        right: 0,
-                        bottom: 0,
-                        icon: Icons.person_outline,
-                      ),
-                      const CustomPassword(
-                        title: 'Password',
-                      ),
-                      const CustomPassword(
-                        title: 'Confirm Password',
-                      ),
+                      _emailInput,
+                      _usernameInput,
+                      _passwordInput,
+                      _confirmPasswordInput,
                       const SizedBox(height: 20),
                       ElevatedButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          if (_formKey.currentState!.validate()) {
+                            final String? passwordError = _passwordInput.validateMatch(
+                              _passwordInput.getInputText(),
+                              _confirmPasswordInput.getInputText(),
+                            );
+
+                            if (passwordError != null) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(passwordError),
+                                ),
+                              );
+                              return;
+                            }
+
+                            // If form is valid:
+                          }
+                        },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color.fromARGB(255, 126, 217, 87),
                           fixedSize: const Size(314, 70),
