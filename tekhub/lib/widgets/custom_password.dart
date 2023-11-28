@@ -16,12 +16,18 @@ class CustomPassword extends StatelessWidget {
         children: <Widget>[
           Row(
             children: <Widget>[
-              const Icon(Icons.lock_outline, size: 24, color: Colors.grey, semanticLabel: 'Email icon'),
+              const Icon(
+                Icons.lock_outline,
+                size: 24,
+                color: Colors.grey,
+                semanticLabel: 'Email icon',
+              ),
               Padding(
                 padding: const EdgeInsets.only(left: 10),
                 child: Text(
                   title,
-                  style: const TextStyle(color: Color(0xff868686), fontSize: 16),
+                  style:
+                      const TextStyle(color: Color(0xff868686), fontSize: 16),
                 ),
               ),
             ],

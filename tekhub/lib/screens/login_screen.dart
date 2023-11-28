@@ -27,7 +27,9 @@ class Login extends StatelessWidget {
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(50, 36, 50, 0),
                 child: SingleChildScrollView(
-                  padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+                  padding: EdgeInsets.only(
+                    bottom: MediaQuery.of(context).viewInsets.bottom,
+                  ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: <Widget>[
@@ -47,7 +49,7 @@ class Login extends StatelessWidget {
                         bottom: 0,
                         icon: Icons.email_outlined,
                       ),
-                      const CustomPassword(),
+                      const CustomPassword(title: 'Password'),
                       TextButton(
                         onPressed: () async {
                           await Navigator.pushNamed(context, 'forget-password');
