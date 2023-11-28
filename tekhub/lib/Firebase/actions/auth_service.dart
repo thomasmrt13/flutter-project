@@ -1,11 +1,8 @@
+// ignore_for_file: always_specify_types
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-
-class UserResult {
-  UserResult(this.user, this.error);
-  final User? user;
-  final String? error;
-}
+import 'package:tekhub/firebase/actions/result.dart';
 
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -32,11 +29,19 @@ class AuthService {
   }
 
   // Register with email and password
-  Future<UserResult> registerWithEmailAndPassword(
-      String email, String password, String username,) async {
+  Future<Result> registerWithEmailAndPassword(
+    String email,
+    String password,
+    String confirmPassword,
+    String username,
+  ) async {
     if (!_isPasswordValid(password)) {
-      return UserResult(null, 'The password is too weak. It must contain at least 8 characters, '
+      return Result(false, 'The password is too weak. It must contain at least 8 characters, '
           'including 1 uppercase letter, 1 number, and 1 special character.');
+    }
+
+    if (password != confirmPassword) {
+      return Result(false, 'The passwords do not match.');
     }
 
     try {
@@ -59,13 +64,13 @@ class AuthService {
       // Retrieve additional user information if needed
       // For example, you might fetch user data from Firestore
 
-      return UserResult(user, null); // Return a UserResult instance with user information
+      return Result(true, user); // Return a UserResult instance with user information
     } catch (e) {
-      return UserResult(null, _handleRegistrationError(e));
+      return Result(false, _handleRegistrationError(e));
     }
   }
 
-    String _handleLoginError(FirebaseAuthException error) {
+  String _handleLoginError(FirebaseAuthException error) {
     String errorMessage = 'An error occurred during login.';
 
     switch (error.code) {
@@ -89,27 +94,47 @@ class AuthService {
   }
 
   // Sign in with email and password
-  Future<UserResult> signInWithEmailAndPassword(
-      String email, String password,) async {
+  Future<Result> signInWithEmailAndPassword(
+    String email,
+    String password,
+  ) async {
     try {
-       final UserCredential authResult = await _auth.signInWithEmailAndPassword(
+      final UserCredential authResult = await _auth.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
-       final User? user = authResult.user;
+      final User? user = authResult.user;
       // Retrieve additional user information if needed
       // For example, you might fetch user data from Firestore
 
-      return UserResult(user, null); // Return a UserResult instance with user information
+      return Result(true, user); // Return a UserResult instance with user information
     } on FirebaseAuthException catch (e) {
-      return UserResult(null, _handleLoginError(e));
+      return Result(false, _handleLoginError(e));
     } catch (e) {
-      return UserResult(null, 'An unexpected error occurred during login.');
+      return Result(false, 'An unexpected error occurred during login.');
     }
   }
 
   // Sign out
   Future<void> signOut() async {
     await _auth.signOut();
+  }
+
+  Future<Result> sendPasswordResetEmail(String email) async {
+    try {
+      await _auth.sendPasswordResetEmail(email: email);
+      return Result(true, 'Password reset email sent. Check your inbox.');
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'user-not-found') {
+        // Handle case where the email doesn't exist
+        return Result(false, 'Email address not found.');
+      } else {
+        // Handle other FirebaseAuthException cases
+        return Result(false, 'An unexpected error occurred during reset password.');
+      }
+    } catch (e) {
+      // Handle non-FirebaseAuthException errors
+      return Result(false, 'An unexpected error occurred during reset password.');
+    }
   }
 }
