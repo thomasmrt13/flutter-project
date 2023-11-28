@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:tekhub/widgets/custom_input.dart';
-import 'package:tekhub/widgets/custom_password.dart';
 import 'package:tekhub/widgets/headline.dart';
 
-class Login extends StatelessWidget {
-  const Login({super.key});
+class ForgetPassword extends StatelessWidget {
+  const ForgetPassword({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +13,9 @@ class Login extends StatelessWidget {
       body: Column(
         children: <Widget>[
           SizedBox(height: MediaQuery.of(context).size.height * 0.10),
-          const Headline(title: 'Welcome back !'),
+          const Center(
+            child: Headline(title: 'Forget Password'),
+          ),
           SizedBox(height: MediaQuery.of(context).size.height * 0.01),
           Form(
             child: Container(
@@ -27,16 +28,25 @@ class Login extends StatelessWidget {
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(50, 36, 50, 0),
                 child: SingleChildScrollView(
-                  padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: <Widget>[
                       const Text(
-                        'Login',
+                        'Enter your email address',
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontFamily: 'Raleway',
                           fontSize: 18,
+                        ),
+                      ),
+                      const Text(
+                        'you will receive a link to reset your password',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w200,
+                          fontFamily: 'Raleway',
+                          fontSize: 15,
+                          fontStyle: FontStyle
+                              .italic, // Add this line to make the text italic
                         ),
                       ),
                       const CustomInput(
@@ -47,17 +57,8 @@ class Login extends StatelessWidget {
                         bottom: 0,
                         icon: Icons.email_outlined,
                       ),
-                      const CustomPassword(),
-                      TextButton(
-                        onPressed: () async {
-                          await Navigator.pushNamed(context, 'forget-password');
-                        },
-                        child: const Text(
-                          'Forgot Password?',
-                          style: TextStyle(
-                            color: Color.fromARGB(255, 126, 217, 87),
-                          ),
-                        ),
+                      SizedBox(
+                        height: MediaQuery.of(context).size.height * 0.10,
                       ),
                       ElevatedButton(
                         onPressed: () {},
@@ -75,21 +76,7 @@ class Login extends StatelessWidget {
                             fontWeight: FontWeight.w700,
                           ),
                         ),
-                        child: const Text('Log In'),
-                      ),
-                      Center(
-                        child: TextButton(
-                          onPressed: () async {
-                            await Navigator.pushNamed(context, 'register');
-                          },
-                          child: const Text(
-                            'Create account',
-                            style: TextStyle(
-                              color: Color.fromARGB(255, 126, 217, 87),
-                              fontSize: 17,
-                            ),
-                          ),
-                        ),
+                        child: const Text('Send'),
                       ),
                     ],
                   ),
