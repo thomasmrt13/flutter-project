@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class CustomInput extends StatelessWidget {
-  const CustomInput({
+  CustomInput({
     required this.title,
     required this.left,
     required this.top,
@@ -17,6 +17,17 @@ class CustomInput extends StatelessWidget {
   final double right;
   final double bottom;
   final IconData icon;
+
+  final TextEditingController _controller = TextEditingController();
+
+  String getInputText() => _controller.text;
+
+  String? validateInput(String? value) {
+    if (value == null || value.isEmpty) {
+      return '$title cannot be empty';
+    }
+    return null;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,8 +47,10 @@ class CustomInput extends StatelessWidget {
               ),
             ],
           ),
-          const TextField(
-            decoration: InputDecoration(
+          TextFormField(
+            controller: _controller,
+            validator: validateInput,
+            decoration: const InputDecoration(
               enabledBorder: UnderlineInputBorder(
                 borderSide: BorderSide(color: Colors.grey),
               ),

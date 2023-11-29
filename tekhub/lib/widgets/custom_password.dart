@@ -1,12 +1,29 @@
 import 'package:flutter/material.dart';
 
 class CustomPassword extends StatelessWidget {
-  const CustomPassword({
+  CustomPassword({
     required this.title,
     super.key,
   });
 
   final String title;
+  final TextEditingController _controller = TextEditingController();
+
+  String getInputText() => _controller.text;
+
+  String? validateInput(String? value) {
+    if (value == null || value.isEmpty) {
+      return '$title cannot be empty';
+    }
+    return null;
+  }
+
+  String? validateMatch(String? value, String? confirmPassword) {
+    if (value != confirmPassword) {
+      return 'Passwords do not match';
+    }
+    return null;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,14 +43,15 @@ class CustomPassword extends StatelessWidget {
                 padding: const EdgeInsets.only(left: 10),
                 child: Text(
                   title,
-                  style:
-                      const TextStyle(color: Color(0xff868686), fontSize: 16),
+                  style: const TextStyle(color: Color(0xff868686), fontSize: 16),
                 ),
               ),
             ],
           ),
-          const TextField(
-            decoration: InputDecoration(
+          TextFormField(
+            controller: _controller,
+            validator: validateInput,
+            decoration: const InputDecoration(
               enabledBorder: UnderlineInputBorder(
                 borderSide: BorderSide(color: Colors.grey),
               ),

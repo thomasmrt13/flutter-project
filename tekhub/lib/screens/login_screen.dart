@@ -4,7 +4,20 @@ import 'package:tekhub/widgets/custom_password.dart';
 import 'package:tekhub/widgets/headline.dart';
 
 class Login extends StatelessWidget {
-  const Login({super.key});
+  Login({super.key});
+
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final CustomInput _emailInput = CustomInput(
+    title: 'Email',
+    left: 0,
+    top: 45,
+    right: 0,
+    bottom: 0,
+    icon: Icons.email_outlined,
+  );
+  final CustomPassword _passwordInput = CustomPassword(
+    title: 'Password',
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -17,6 +30,7 @@ class Login extends StatelessWidget {
           const Headline(title: 'Welcome back !'),
           SizedBox(height: MediaQuery.of(context).size.height * 0.01),
           Form(
+            key: _formKey,
             child: Container(
               decoration: const BoxDecoration(
                 color: Colors.white,
@@ -41,15 +55,8 @@ class Login extends StatelessWidget {
                           fontSize: 18,
                         ),
                       ),
-                      const CustomInput(
-                        title: 'Email',
-                        left: 0,
-                        top: 45,
-                        right: 0,
-                        bottom: 0,
-                        icon: Icons.email_outlined,
-                      ),
-                      const CustomPassword(title: 'Password'),
+                      _emailInput,
+                      _passwordInput,
                       TextButton(
                         onPressed: () async {
                           await Navigator.pushNamed(context, 'forget-password');
@@ -62,10 +69,13 @@ class Login extends StatelessWidget {
                         ),
                       ),
                       ElevatedButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          if (_formKey.currentState!.validate()) {
+                            //If form is valid:
+                          }
+                        },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor:
-                              const Color.fromARGB(255, 126, 217, 87),
+                          backgroundColor: const Color.fromARGB(255, 126, 217, 87),
                           fixedSize: const Size(314, 70),
                           foregroundColor: Colors.white,
                           shape: RoundedRectangleBorder(

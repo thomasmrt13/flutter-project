@@ -7,8 +7,8 @@ import 'package:tekhub/screens/splash_screen.dart';
 Map<String, WidgetBuilder> getApplicationRoutes() {
   return <String, WidgetBuilder>{
     'splash': (BuildContext contex) => const Splash(),
-    'login': (BuildContext contex) => const Login(),
-    'register': (BuildContext contex) => const Register(),
+    'login': (BuildContext contex) => Login(),
+    'register': (BuildContext contex) => Register(),
     'forget-password': (BuildContext contex) => const ForgetPassword(),
   };
 }
