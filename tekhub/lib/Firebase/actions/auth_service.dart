@@ -15,6 +15,13 @@ class AuthService {
     return passwordRegex.hasMatch(password);
   }
 
+  bool _isEmailValid(String email) {
+    final RegExp emailRegex = RegExp(
+      r'^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$',
+    );
+    return emailRegex.hasMatch(email);
+  }
+
   String _handleRegistrationError(dynamic error) {
     String errorMessage = 'An error occurred during registration.';
 
@@ -22,6 +29,8 @@ class AuthService {
     if (error is FirebaseAuthException) {
       if (error.code == 'email-already-in-use') {
         errorMessage = 'The email address is already in use.';
+      } else if (error.code == 'username-already-in-use') {
+        errorMessage = 'The username is already in use.';
       }
     }
 
@@ -35,8 +44,14 @@ class AuthService {
     String confirmPassword,
     String username,
   ) async {
+    if (!_isEmailValid(email)) {
+      return Result(false, 'Invalid email format.');
+    }
+
     if (!_isPasswordValid(password)) {
-      return Result(false, 'The password is too weak. It must contain at least 8 characters, '
+      return Result(
+          false,
+          'The password is too weak. It must contain at least 8 characters, '
           'including 1 uppercase letter, 1 number, and 1 special character.');
     }
 
@@ -45,6 +60,17 @@ class AuthService {
     }
 
     try {
+      final QuerySnapshot<Map<String, dynamic>> usernameCheck =
+          await FirebaseFirestore.instance
+              .collection('users')
+              .where('username', isEqualTo: username)
+              .get();
+
+      if (usernameCheck.docs.isNotEmpty) {
+        // Username is already in use
+        return Result(false, 'The username is already in use.');
+      }
+
       final UserCredential authResult =
           await _auth.createUserWithEmailAndPassword(
         email: email,
@@ -64,7 +90,8 @@ class AuthService {
       // Retrieve additional user information if needed
       // For example, you might fetch user data from Firestore
 
-      return Result(true, user); // Return a UserResult instance with user information
+      return Result(
+          true, user); // Return a UserResult instance with user information
     } catch (e) {
       return Result(false, _handleRegistrationError(e));
     }
@@ -107,7 +134,8 @@ class AuthService {
       // Retrieve additional user information if needed
       // For example, you might fetch user data from Firestore
 
-      return Result(true, user); // Return a UserResult instance with user information
+      return Result(
+          true, user); // Return a UserResult instance with user information
     } on FirebaseAuthException catch (e) {
       return Result(false, _handleLoginError(e));
     } catch (e) {
@@ -130,11 +158,13 @@ class AuthService {
         return Result(false, 'Email address not found.');
       } else {
         // Handle other FirebaseAuthException cases
-        return Result(false, 'An unexpected error occurred during reset password.');
+        return Result(
+            false, 'An unexpected error occurred during reset password.');
       }
     } catch (e) {
       // Handle non-FirebaseAuthException errors
-      return Result(false, 'An unexpected error occurred during reset password.');
+      return Result(
+          false, 'An unexpected error occurred during reset password.');
     }
   }
 }
