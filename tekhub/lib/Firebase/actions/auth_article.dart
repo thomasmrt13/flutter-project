@@ -72,4 +72,43 @@ class ArticleService {
           'Error getting article'); // Return failure result with error message
     }
   }
+
+  Future<Result> searchArticles(String query) async {
+    try {
+      // Convert the query to lowercase for case-insensitive comparison
+      String lowercaseQuery = query.toLowerCase();
+
+      // Create an array of substrings from the query
+      List<String> querySubstrings = [];
+      for (int i = 1; i <= lowercaseQuery.length; i++) {
+        querySubstrings.add(lowercaseQuery.substring(0, i));
+      }
+
+      // Use array-contains-any to match any substring
+      QuerySnapshot<Map<String, dynamic>> articlesSnapshot =
+          await FirebaseFirestore.instance
+              .collection('articles')
+              .where('searchKeywords', arrayContainsAny: querySubstrings)
+              .get();
+
+      List<Article> articles = articlesSnapshot.docs.map((doc) {
+        Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+        return Article(
+          id: doc.id,
+          name: data['name'] ?? '',
+          price: (data['price'] ?? 0.0).toDouble(),
+          description: data['description'] ?? '',
+          type: _parseArticleType(data['type']),
+          imageUrl: data['imageUrl'] ?? '',
+        );
+      }).toList();
+
+      return Result(true,
+          articles); // Return successful result with the matching articles
+    } catch (e) {
+      print('Error searching articles: $e');
+      return Result(false,
+          'Error searching articles'); // Return failure result with error message
+    }
+  }
 }
