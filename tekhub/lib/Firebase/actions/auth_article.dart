@@ -151,4 +151,39 @@ class ArticleService {
           'Error getting articles by filter'); // Return failure result with error message
     }
   }
+
+  Future<Result> addArticle(Article article) async {
+    try {
+      if (article.name.isEmpty) {
+        return Result(false, 'Invalid article data. Name is required.');
+      }
+
+      if (article.price <= 0) {
+        return Result(false, 'Invalid article data. Price is required.');
+      }
+
+      if (article.type == null) {
+        return Result(
+            false, 'Invalid article data. Type is required.');
+      }
+      // Convert the ArticleType enum to its corresponding string value
+      String typeString = _mapArticleTypeToString(article.type);
+
+      // Add the article information to Firestore
+      await FirebaseFirestore.instance.collection('articles').add({
+        'name': article.name,
+        'price': article.price,
+        'description': article.description,
+        'type': typeString,
+        'imageUrl': article.imageUrl,
+      });
+
+      return Result(true,
+          "Article added succesfully"); // Return a successful result with no message
+    } catch (e) {
+      print('Error adding article: $e');
+      return Result(false,
+          'Error adding article: $e'); // Return a failure result with an error message
+    }
+  }
 }
