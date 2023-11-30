@@ -62,7 +62,9 @@ class Login extends StatelessWidget {
                         ),
                       ),
                       ElevatedButton(
-                        onPressed: () {},
+                        onPressed: () async {
+                          await Navigator.pushNamed(context, 'search-screen');
+                        },
                         style: ElevatedButton.styleFrom(
                           backgroundColor:
                               const Color.fromARGB(255, 126, 217, 87),

@@ -61,7 +61,9 @@ class ForgetPassword extends StatelessWidget {
                         height: MediaQuery.of(context).size.height * 0.10,
                       ),
                       ElevatedButton(
-                        onPressed: () {},
+                        onPressed: () async {
+                          await Navigator.pushNamed(context, 'search-screen');
+                        },
                         style: ElevatedButton.styleFrom(
                           backgroundColor:
                               const Color.fromARGB(255, 126, 217, 87),
