@@ -1,53 +1,196 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:tekhub/firebase/actions/result.dart';
+import 'package:tekhub/firebase/actions/image_service.dart';
+import 'package:tekhub/firebase/models/articles.dart';
 import 'dart:io';
-import 'dart:typed_data';
-import 'dart:convert';
-import 'package:image_picker/image_picker.dart';
-import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 
-class ImageService {
-  final firebase_storage.FirebaseStorage _storage =
-      firebase_storage.FirebaseStorage.instance;
-
-  Future<String?> addImageToStorage(File imageFile) async {
+class ArticleService {
+  Future<Result> getAllArticles() async {
     try {
-      Uint8List bytes = await imageFile.readAsBytes();
-      return await _uploadImageToStorage(bytes);
+      QuerySnapshot<Map<String, dynamic>> articlesSnapshot =
+          await FirebaseFirestore.instance.collection('articles').get();
+
+      List<Article> articles = articlesSnapshot.docs.map((doc) {
+        Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+        return Article(
+          id: doc.id,
+          name: data['name'] ?? '',
+          price: (data['price'] ?? 0.0).toDouble(),
+          description: data['description'] ?? '',
+          type: _parseArticleType(data['type']),
+          imageUrl: data['imageUrl'] ?? '',
+        );
+      }).toList();
+
+      return Result(true, articles); // Return successful result with articles
     } catch (e) {
-      print('Error adding image to storage: $e');
-      return null; // Return null if image adding fails
+      print('Error getting articles: $e');
+      return Result(false,
+          'Error getting articles'); // Return failure result with error message
     }
   }
 
-  Future<String?> _uploadImageToStorage(Uint8List imageData) async {
-    try {
-      String fileName = DateTime.now().millisecondsSinceEpoch.toString();
-      final firebase_storage.Reference reference =
-          _storage.ref().child('images/$fileName.jpg');
-
-      await reference.putData(imageData);
-
-      String imageUrl = await reference.getDownloadURL();
-      return imageUrl;
-    } catch (e) {
-      print('Error uploading image to storage: $e');
-      return null; // Return null if image uploading fails
+  ArticleType _parseArticleType(String type) {
+    switch (type) {
+      case 'phone':
+        return ArticleType.phone;
+      case 'computer':
+        return ArticleType.computer;
+      case 'tablet':
+        return ArticleType.tablet;
+      default:
+        return ArticleType.phone; // Default to phone if type is not recognized
     }
   }
 
-  Future<String?> getImageFromStorage(String imageUrl) async {
-    try {
-      firebase_storage.Reference reference = _storage.refFromURL(imageUrl);
-      final Uint8List? data = await reference.getData();
+  String _mapArticleTypeToString(ArticleType type) {
+    switch (type) {
+      case ArticleType.phone:
+        return 'phone';
+      case ArticleType.computer:
+        return 'computer';
+      case ArticleType.tablet:
+        return 'tablet';
+    }
+  }
 
-      if (data != null) {
-        List<int> imageData = data.cast<int>();
-        return 'data:image/jpeg;base64,${base64.encode(imageData)}';
-      } else {
-        return null; // Return null if image data is null
+  Future<Result> getArticleById(String articleId) async {
+    try {
+      DocumentSnapshot<Map<String, dynamic>> articleSnapshot =
+          await FirebaseFirestore.instance
+              .collection('articles')
+              .doc(articleId)
+              .get();
+
+      if (!articleSnapshot.exists) {
+        return Result(false,
+            'Article not found'); // Return failure result with error message
       }
+
+      Map<String, dynamic> data =
+          articleSnapshot.data() as Map<String, dynamic>;
+      Article article = Article(
+        id: articleSnapshot.id,
+        name: data['name'] ?? '',
+        price: (data['price'] ?? 0.0).toDouble(),
+        description: data['description'] ?? '',
+        type: _parseArticleType(data['type']),
+        imageUrl: data['imageUrl'] ?? '',
+      );
+
+      return Result(true, article); // Return successful result with the article
     } catch (e) {
-      print('Error getting image from storage: $e');
-      return null; // Return null if image retrieval fails
+      print('Error getting article: $e');
+      return Result(false,
+          'Error getting article'); // Return failure result with error message
+    }
+  }
+
+  Future<Result> searchArticles(String query) async {
+    try {
+      // Convert the query to lowercase for case-insensitive comparison
+      String lowercaseQuery = query.toLowerCase();
+
+      // Create an array of substrings from the query
+      List<String> querySubstrings = [];
+      for (int i = 1; i <= lowercaseQuery.length; i++) {
+        querySubstrings.add(lowercaseQuery.substring(0, i));
+      }
+
+      // Use array-contains-any to match any substring
+      QuerySnapshot<Map<String, dynamic>> articlesSnapshot =
+          await FirebaseFirestore.instance
+              .collection('articles')
+              .where('searchKeywords', arrayContainsAny: querySubstrings)
+              .get();
+
+      List<Article> articles = articlesSnapshot.docs.map((doc) {
+        Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+        return Article(
+          id: doc.id,
+          name: data['name'] ?? '',
+          price: (data['price'] ?? 0.0).toDouble(),
+          description: data['description'] ?? '',
+          type: _parseArticleType(data['type']),
+          imageUrl: data['imageUrl'] ?? '',
+        );
+      }).toList();
+
+      return Result(true,
+          articles); // Return successful result with the matching articles
+    } catch (e) {
+      print('Error searching articles: $e');
+      return Result(false,
+          'Error searching articles'); // Return failure result with error message
+    }
+  }
+
+  Future<Result> getArticlesByFilter(ArticleType filterType) async {
+    try {
+      QuerySnapshot<Map<String, dynamic>> articlesSnapshot =
+          await FirebaseFirestore.instance
+              .collection('articles')
+              .where('type', isEqualTo: _mapArticleTypeToString(filterType))
+              .get();
+
+      List<Article> articles = articlesSnapshot.docs.map((doc) {
+        Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+        return Article(
+          id: doc.id,
+          name: data['name'] ?? '',
+          price: (data['price'] ?? 0.0).toDouble(),
+          description: data['description'] ?? '',
+          type: _parseArticleType(data['type']),
+          imageUrl: data['imageUrl'] ?? '',
+        );
+      }).toList();
+
+      return Result(true,
+          articles); // Return successful result with the matching articles
+    } catch (e) {
+      print('Error getting articles by filter: $e');
+      return Result(false,
+          'Error getting articles by filter'); // Return failure result with error message
+    }
+  }
+
+  Future<Result> addArticle(Article article, File imageFile) async {
+    try {
+      if (article.name.isEmpty) {
+        return Result(false, 'Invalid article data. Name is required.');
+      }
+
+      if (article.price <= 0) {
+        return Result(false, 'Invalid article data. Price is required.');
+      }
+
+      if (article.type == null) {
+        return Result(false, 'Invalid article data. Type is required.');
+      }
+
+      // Convert the ArticleType enum to its corresponding string value
+      String typeString = _mapArticleTypeToString(article.type);
+
+      // Upload image to Firebase Storage and get the image URL
+      String? imageUrl = await ImageService().addImageToStorage(imageFile);
+
+      if (imageUrl == null) {
+        return Result(false, 'Error uploading image.');
+      }
+
+      // Add the article information to Firestore with the image URL
+      await FirebaseFirestore.instance.collection('articles').add({
+        'name': article.name,
+        'price': article.price,
+        'description': article.description,
+        'type': typeString,
+        'imageUrl': imageUrl,
+      });
+
+      return Result(true, 'Article added successfully');
+    } catch (e) {
+      print('Error adding article: $e');
+      return Result(false, 'Error adding article: $e');
     }
   }
 }
