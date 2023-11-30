@@ -41,6 +41,17 @@ class ArticleService {
     }
   }
 
+  String _mapArticleTypeToString(ArticleType type) {
+    switch (type) {
+      case ArticleType.phone:
+        return 'phone';
+      case ArticleType.computer:
+        return 'computer';
+      case ArticleType.tablet:
+        return 'tablet';
+    }
+  }
+
   Future<Result> getArticleById(String articleId) async {
     try {
       DocumentSnapshot<Map<String, dynamic>> articleSnapshot =
@@ -109,6 +120,35 @@ class ArticleService {
       print('Error searching articles: $e');
       return Result(false,
           'Error searching articles'); // Return failure result with error message
+    }
+  }
+
+  Future<Result> getArticlesByFilter(ArticleType filterType) async {
+    try {
+      QuerySnapshot<Map<String, dynamic>> articlesSnapshot =
+          await FirebaseFirestore.instance
+              .collection('articles')
+              .where('type', isEqualTo: _mapArticleTypeToString(filterType))
+              .get();
+
+      List<Article> articles = articlesSnapshot.docs.map((doc) {
+        Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+        return Article(
+          id: doc.id,
+          name: data['name'] ?? '',
+          price: (data['price'] ?? 0.0).toDouble(),
+          description: data['description'] ?? '',
+          type: _parseArticleType(data['type']),
+          imageUrl: data['imageUrl'] ?? '',
+        );
+      }).toList();
+
+      return Result(true,
+          articles); // Return successful result with the matching articles
+    } catch (e) {
+      print('Error getting articles by filter: $e');
+      return Result(false,
+          'Error getting articles by filter'); // Return failure result with error message
     }
   }
 }
