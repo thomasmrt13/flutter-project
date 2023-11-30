@@ -9,6 +9,6 @@ Map<String, WidgetBuilder> getApplicationRoutes() {
     'splash': (BuildContext contex) => const Splash(),
     'login': (BuildContext contex) => Login(),
     'register': (BuildContext contex) => Register(),
-    'forget-password': (BuildContext contex) => const ForgetPassword(),
+    'forget-password': (BuildContext contex) => ForgetPassword(),
   };
 }

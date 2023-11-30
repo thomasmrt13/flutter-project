@@ -1,12 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:tekhub/widgets/custom_input.dart';
 import 'package:tekhub/widgets/headline.dart';
+import 'package:tekhub/firebase/actions/result.dart';
+import 'package:tekhub/firebase/actions/auth_service.dart';
 
 class ForgetPassword extends StatelessWidget {
-  const ForgetPassword({super.key});
+  ForgetPassword({super.key});
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final CustomInput _emailInput = CustomInput(
+    title: 'Email',
+    left: 0,
+    top: 45,
+    right: 0,
+    bottom: 0,
+    icon: Icons.email_outlined,
+  );
 
   @override
   Widget build(BuildContext context) {
+      final AuthService authService = AuthService();
     return Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: const Color.fromARGB(255, 39, 39, 39),
@@ -18,6 +30,7 @@ class ForgetPassword extends StatelessWidget {
           ),
           SizedBox(height: MediaQuery.of(context).size.height * 0.01),
           Form(
+            key: _formKey,
             child: Container(
               decoration: const BoxDecoration(
                 color: Colors.white,
@@ -45,24 +58,41 @@ class ForgetPassword extends StatelessWidget {
                           fontWeight: FontWeight.w200,
                           fontFamily: 'Raleway',
                           fontSize: 15,
-                          fontStyle: FontStyle.italic, // Add this line to make the text italic
+                          fontStyle: FontStyle
+                              .italic, // Add this line to make the text italic
                         ),
                       ),
-                      CustomInput(
-                        title: 'Email',
-                        left: 0,
-                        top: 45,
-                        right: 0,
-                        bottom: 0,
-                        icon: Icons.email_outlined,
-                      ),
+                      _emailInput,
                       SizedBox(
                         height: MediaQuery.of(context).size.height * 0.10,
                       ),
                       ElevatedButton(
-                        onPressed: () {},
+                        onPressed: () async {
+                          print(_emailInput.getInputText());
+                          if (_formKey.currentState!.validate()) {
+                            final Result result = await authService.sendPasswordResetEmail(_emailInput.getInputText());
+
+                             if (result.success) {
+                              // Registration successful, navigate to another screen or perform actions accordingly
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(result.message.toString()),
+                                ),
+                              );
+                            } else {
+                              // Registration failed, show error message
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(result.message.toString() ??
+                                      'An unknown error occurred during registration.'),
+                                ),
+                              );
+                            }
+                          }
+                        },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color.fromARGB(255, 126, 217, 87),
+                          backgroundColor:
+                              const Color.fromARGB(255, 126, 217, 87),
                           fixedSize: const Size(314, 70),
                           foregroundColor: Colors.white,
                           shape: RoundedRectangleBorder(
