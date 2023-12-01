@@ -91,7 +91,9 @@ class AuthService {
       // For example, you might fetch user data from Firestore
 
       return Result(
-          true, user,); // Return a UserResult instance with user information
+        true,
+        user,
+      ); // Return a UserResult instance with user information
     } catch (e) {
       return Result(false, _handleRegistrationError(e));
     }
@@ -100,12 +102,10 @@ class AuthService {
   String _handleLoginError(FirebaseAuthException error) {
     String errorMessage = 'An error occurred during login.';
 
+    print(error.code);
     switch (error.code) {
-      case 'user-not-found':
-        errorMessage = 'No user found with this email address.';
-        break;
-      case 'wrong-password':
-        errorMessage = 'Incorrect password.';
+      case 'invalid-credential':
+        errorMessage = 'Invalid credentials.';
         break;
       case 'user-disabled':
         errorMessage = 'This user account has been disabled.';
@@ -135,7 +135,9 @@ class AuthService {
       // For example, you might fetch user data from Firestore
 
       return Result(
-          true, user,); // Return a UserResult instance with user information
+        true,
+        user,
+      ); // Return a UserResult instance with user information
     } on FirebaseAuthException catch (e) {
       return Result(false, _handleLoginError(e));
     } catch (e) {
@@ -163,12 +165,16 @@ class AuthService {
       } else {
         // Handle other FirebaseAuthException cases
         return Result(
-            false, 'An unexpected error occurred during reset password.',);
+          false,
+          'An unexpected error occurred during reset password.',
+        );
       }
     } catch (e) {
       // Handle non-FirebaseAuthException errors
       return Result(
-          false, 'An unexpected error occurred during reset password.',);
+        false,
+        'An unexpected error occurred during reset password.',
+      );
     }
   }
 }
