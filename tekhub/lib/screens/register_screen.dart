@@ -109,8 +109,7 @@ class Register extends StatelessWidget {
                               // Registration failed, show error message
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
-                                  content: Text(result.message.toString() ??
-                                      'An unknown error occurred during registration.'),
+                                  content: Text(result.message.toString()),
                                 ),
                               );
                             }

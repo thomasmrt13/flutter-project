@@ -91,7 +91,7 @@ class AuthService {
       // For example, you might fetch user data from Firestore
 
       return Result(
-          true, user); // Return a UserResult instance with user information
+          true, user,); // Return a UserResult instance with user information
     } catch (e) {
       return Result(false, _handleRegistrationError(e));
     }
@@ -135,7 +135,7 @@ class AuthService {
       // For example, you might fetch user data from Firestore
 
       return Result(
-          true, user); // Return a UserResult instance with user information
+          true, user,); // Return a UserResult instance with user information
     } on FirebaseAuthException catch (e) {
       return Result(false, _handleLoginError(e));
     } catch (e) {
@@ -163,12 +163,12 @@ class AuthService {
       } else {
         // Handle other FirebaseAuthException cases
         return Result(
-            false, 'An unexpected error occurred during reset password.');
+            false, 'An unexpected error occurred during reset password.',);
       }
     } catch (e) {
       // Handle non-FirebaseAuthException errors
       return Result(
-          false, 'An unexpected error occurred during reset password.');
+          false, 'An unexpected error occurred during reset password.',);
     }
   }
 }
