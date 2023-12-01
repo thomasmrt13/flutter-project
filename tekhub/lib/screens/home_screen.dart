@@ -5,8 +5,8 @@ import 'package:ecommerce_app/screens/profile.dart';
 import 'package:ecommerce_app/widgets/empty_state.dart'; */
 import 'package:flutter/material.dart';
 import 'package:sidebarx/sidebarx.dart';
-import 'package:tekhub/widgets/home_widget.dart';
 import 'package:tekhub/screens/cart_screen.dart';
+import 'package:tekhub/widgets/home_widget.dart';
 import 'package:tekhub/widgets/side_bar.dart';
 
 class Home extends StatefulWidget {
@@ -27,13 +27,7 @@ class HomeState extends State<Home> {
         builder: (BuildContext context) {
           final bool isSmallScreen = MediaQuery.of(context).size.width < 600;
           return Scaffold(
-            appBar: MediaQuery.of(context).size.width < 600
-                ? AppBar(
-                    title: const Text('TekHub'),
-                    backgroundColor: Colors.transparent,
-                    elevation: 0,
-                  )
-                : null,
+            key: _key,
             backgroundColor: Colors.white,
             drawer: MediaQuery.of(context).size.width < 600 ? SideBar(_controller) : null,
             body: isSmallScreen ? buildSmallScreenBody(context) : DesktopHomeLayout(_controller),
@@ -53,20 +47,17 @@ class HomeState extends State<Home> {
               builder: (BuildContext context, Widget? child) {
                 switch (_controller.selectedIndex) {
                   case 0:
-                    _key.currentState?.closeDrawer();
-                    return const Center(
-                      child: Text(
-                        'Home',
-                        style: TextStyle(color: Colors.black, fontSize: 40),
-                      ),
+                    //_key.currentState?.closeDrawer();
+                    return HomeWidget(
+                      scaffoldKey: _key,
                     );
                   case 1:
-                    _key.currentState?.closeDrawer();
+                    //_key.currentState?.closeDrawer();
                     return const Center(
                       child: Cart(),
                     );
                   case 2:
-                    _key.currentState?.closeDrawer();
+                    //_key.currentState?.closeDrawer();
                     return const Center(
                       child: Text(
                         'Orders',
@@ -74,7 +65,7 @@ class HomeState extends State<Home> {
                       ),
                     );
                   case 3:
-                    _key.currentState?.closeDrawer();
+                    //_key.currentState?.closeDrawer();
                     return const Center(
                       child: Text(
                         'Settings',
