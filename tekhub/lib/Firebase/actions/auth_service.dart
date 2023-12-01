@@ -150,6 +150,10 @@ class AuthService {
 
   Future<Result> sendPasswordResetEmail(String email) async {
     try {
+      if (!_isEmailValid(email)) {
+        return Result(false, 'Invalid email format.');
+      }
+
       await _auth.sendPasswordResetEmail(email: email);
       return Result(true, 'Password reset email sent. Check your inbox.');
     } on FirebaseAuthException catch (e) {
