@@ -6,7 +6,9 @@ import 'package:tekhub/widgets/search/search_bar.dart';
 import 'package:tekhub/widgets/search_result.dart';
 
 class HomeWidget extends StatefulWidget {
-  const HomeWidget({super.key});
+  const HomeWidget({required this.scaffoldKey, super.key});
+
+  final GlobalKey<ScaffoldState> scaffoldKey;
 
   @override
   HomeWidgetState createState() => HomeWidgetState();
@@ -48,8 +50,7 @@ class HomeWidgetState extends State<HomeWidget> {
         imageUrl: 'assets/images/logo.png',
       ),
     ];
-    Provider.of<ProviderListener>(context, listen: false)
-        .updateArticles(articles);
+    Provider.of<ProviderListener>(context, listen: false).updateArticles(articles);
   }
 
   @override
@@ -64,14 +65,35 @@ class HomeWidgetState extends State<HomeWidget> {
         return Scaffold(
           body: Column(
             children: <Widget>[
-              const Padding(
-                padding: EdgeInsets.only(top: 62),
+              Padding(
+                padding: const EdgeInsets.only(top: 20),
                 child: Center(
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: <Widget>[
-                      SearchBarComponent(),
+                      IconButton(
+                        icon: const Icon(Icons.menu),
+                        onPressed: () {
+                          widget.scaffoldKey.currentState?.openDrawer();
+                        },
+                      ),
+                      const SearchBarComponent(),
                     ],
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: MediaQuery.of(context).size.height * 0.10,
+                width: MediaQuery.of(context).size.width,
+                child: const Padding(
+                  padding: EdgeInsets.all(10),
+                  child: Text(
+                    'Products',
+                    style: TextStyle(
+                      fontFamily: 'Raleway',
+                      fontSize: 50,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
               ),

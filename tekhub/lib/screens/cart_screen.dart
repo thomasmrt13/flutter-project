@@ -12,9 +12,24 @@ class Cart extends StatefulWidget {
 class _CartState extends State<Cart> {
   @override
   Widget build(BuildContext context) {
-    return const Center(
-      child: Text('Cart Screen'),
-    );
+    return Scaffold(
+        appBar: AppBar(
+          title: const Text('TekHub'),
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+        ),
+        body: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            const Text(
+              'Cart',
+              style: TextStyle(
+                fontSize: 30,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
+        ));
   }
 }
 

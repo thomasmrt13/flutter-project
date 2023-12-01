@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sidebarx/sidebarx.dart';
-import 'package:tekhub/screens/cart.screen.dart';
+import 'package:tekhub/screens/cart_screen.dart';
 import 'package:tekhub/widgets/home_widget.dart';
 import 'package:tekhub/widgets/side_bar.dart';
 
@@ -12,8 +12,7 @@ class HomeAdmin extends StatefulWidget {
 }
 
 class HomeAdminState extends State<HomeAdmin> {
-  final SidebarXController _controller =
-      SidebarXController(selectedIndex: 0, extended: false);
+  final SidebarXController _controller = SidebarXController(selectedIndex: 0, extended: false);
   final GlobalKey<ScaffoldState> _key = GlobalKey<ScaffoldState>();
 
   @override
@@ -31,12 +30,8 @@ class HomeAdminState extends State<HomeAdmin> {
                   )
                 : null,
             backgroundColor: Colors.white,
-            drawer: MediaQuery.of(context).size.width < 600
-                ? SideBar(_controller)
-                : null,
-            body: isSmallScreen
-                ? buildSmallScreenBody(context)
-                : DesktopHomeLayout(_controller),
+            drawer: MediaQuery.of(context).size.width < 600 ? SideBar(_controller) : null,
+            body: isSmallScreen ? buildSmallScreenBody(context) : DesktopHomeLayout(_controller),
           );
         },
       ),

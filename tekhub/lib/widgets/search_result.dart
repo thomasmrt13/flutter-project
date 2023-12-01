@@ -31,9 +31,7 @@ class SearchResultState extends State<SearchResult> {
         if (providerListener.searchtext.isNotEmpty) {
           filteredArticles = widget.articles
               .where(
-                (Article article) => article.name
-                    .toLowerCase()
-                    .contains(providerListener.searchtext.toLowerCase()),
+                (Article article) => article.name.toLowerCase().contains(providerListener.searchtext.toLowerCase()),
               )
               .toList();
           return Expanded(
@@ -49,8 +47,7 @@ class SearchResultState extends State<SearchResult> {
                 Expanded(
                   child: SingleChildScrollView(
                     child: Padding(
-                      padding:
-                          const EdgeInsets.only(left: 32, right: 34, top: 20),
+                      padding: const EdgeInsets.only(left: 32, right: 34, top: 20),
                       child: StaggeredGrid.count(
                         crossAxisCount: 4,
                         mainAxisSpacing: 4,
@@ -60,8 +57,7 @@ class SearchResultState extends State<SearchResult> {
                           (int index) => StaggeredGridTile.count(
                             crossAxisCellCount: 2,
                             mainAxisCellCount: 4,
-                            child:
-                                SingleArticle(article: filteredArticles[index]),
+                            child: SingleArticle(article: filteredArticles[index]),
                           ),
                         ),
                       ),
@@ -74,9 +70,7 @@ class SearchResultState extends State<SearchResult> {
         } else {
           filteredBarArticles = widget.articles
               .where(
-                (Article article) => article.type
-                    .toString()
-                    .contains(providerListener.activeType),
+                (Article article) => article.type.toString().contains(providerListener.activeType),
               )
               .toList();
           return Expanded(
@@ -84,39 +78,23 @@ class SearchResultState extends State<SearchResult> {
               children: <Widget>[
                 const Padding(
                   padding: EdgeInsets.only(top: 10),
-                  child: Text(
-                    'Find your product',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontFamily: 'Raleway',
-                      fontSize: 20,
-                    ),
-                  ),
-                ),
-                const Padding(
-                  padding: EdgeInsets.only(top: 10),
                   child: FilterBar(),
                 ),
                 Expanded(
                   child: SingleChildScrollView(
                     child: Padding(
-                      padding:
-                          const EdgeInsets.only(left: 32, right: 34, top: 20),
+                      padding: const EdgeInsets.only(left: 32, right: 34, top: 20),
                       child: StaggeredGrid.count(
                         crossAxisCount: 4,
                         mainAxisSpacing: 4,
                         crossAxisSpacing: 4,
                         children: List.generate(
-                          providerListener.activeType == 'all'
-                              ? widget.articles.length
-                              : filteredBarArticles.length,
+                          providerListener.activeType == 'all' ? widget.articles.length : filteredBarArticles.length,
                           (int index) => StaggeredGridTile.count(
                             crossAxisCellCount: 2,
                             mainAxisCellCount: 4,
                             child: SingleArticle(
-                              article: providerListener.activeType == 'all'
-                                  ? widget.articles[index]
-                                  : filteredBarArticles[index],
+                              article: providerListener.activeType == 'all' ? widget.articles[index] : filteredBarArticles[index],
                             ),
                           ),
                         ),

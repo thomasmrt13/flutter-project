@@ -69,10 +69,11 @@ class Login extends StatelessWidget {
                         ),
                       ),
                       ElevatedButton(
-                        onPressed: () {
-                          if (_formKey.currentState!.validate()) {
+                        onPressed: () async {
+                          /* if (_formKey.currentState!.validate()) {
                             //If form is valid:
-                          }
+                          } */
+                          await Navigator.pushNamed(context, '/');
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color.fromARGB(255, 126, 217, 87),
