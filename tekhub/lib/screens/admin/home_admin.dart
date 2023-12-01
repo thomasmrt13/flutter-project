@@ -1,22 +1,17 @@
-/* import 'package:ecommerce_app/screens/cart.dart';
-import 'package:ecommerce_app/screens/iniciopage.dart';
-import 'package:ecommerce_app/screens/no_favorites.dart';
-import 'package:ecommerce_app/screens/profile.dart';
-import 'package:ecommerce_app/widgets/empty_state.dart'; */
 import 'package:flutter/material.dart';
 import 'package:sidebarx/sidebarx.dart';
 import 'package:tekhub/screens/cart.screen.dart';
 import 'package:tekhub/widgets/home_widget.dart';
 import 'package:tekhub/widgets/side_bar.dart';
 
-class Home extends StatefulWidget {
-  const Home({super.key});
+class HomeAdmin extends StatefulWidget {
+  const HomeAdmin({super.key});
 
   @override
-  HomeState createState() => HomeState();
+  HomeAdminState createState() => HomeAdminState();
 }
 
-class HomeState extends State<Home> {
+class HomeAdminState extends State<HomeAdmin> {
   final SidebarXController _controller =
       SidebarXController(selectedIndex: 0, extended: false);
   final GlobalKey<ScaffoldState> _key = GlobalKey<ScaffoldState>();
