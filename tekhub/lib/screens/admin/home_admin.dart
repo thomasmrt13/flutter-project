@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sidebarx/sidebarx.dart';
-import 'package:tekhub/screens/cart.screen.dart';
+import 'package:tekhub/screens/cart_screen.dart';
 import 'package:tekhub/widgets/home_widget.dart';
 import 'package:tekhub/widgets/side_bar.dart';
 

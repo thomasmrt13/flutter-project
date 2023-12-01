@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:tekhub/firebase/actions/auth_service.dart';
 import 'package:tekhub/widgets/custom_input.dart';
 import 'package:tekhub/widgets/custom_password.dart';
 import 'package:tekhub/widgets/headline.dart';
+import 'package:tekhub/firebase/actions/result.dart';
 
 class Login extends StatelessWidget {
   Login({super.key});
@@ -21,6 +23,7 @@ class Login extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final AuthService authService = AuthService();
     return Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: const Color.fromARGB(255, 39, 39, 39),
@@ -69,13 +72,36 @@ class Login extends StatelessWidget {
                         ),
                       ),
                       ElevatedButton(
-                        onPressed: () {
+                        onPressed: () async {
                           if (_formKey.currentState!.validate()) {
-                            //If form is valid:
+                            print(_emailInput.getInputText());
+                            // ignore: always_specify_types
+                            final Result result =
+                                await authService.signInWithEmailAndPassword(
+                                    _emailInput.getInputText(),
+                                    _passwordInput.getInputText(),);
+
+                            if (result.success) {
+                              // Registration successful, navigate to another screen or perform actions accordingly
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text('Connection successful!'),
+                                ),
+                              );
+                              await Navigator.pushNamed(context, '/');
+                            } else {
+                              // Registration failed, show error message
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(result.message.toString()),
+                                ),
+                              );
+                            }
                           }
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color.fromARGB(255, 126, 217, 87),
+                          backgroundColor:
+                              const Color.fromARGB(255, 126, 217, 87),
                           fixedSize: const Size(314, 70),
                           foregroundColor: Colors.white,
                           shape: RoundedRectangleBorder(
