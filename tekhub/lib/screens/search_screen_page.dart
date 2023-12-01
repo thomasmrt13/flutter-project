@@ -3,17 +3,17 @@ import 'package:provider/provider.dart';
 import 'package:tekhub/Firebase/models/articles.dart';
 import 'package:tekhub/provider/provider_listener.dart';
 import 'package:tekhub/widgets/search/search_bar.dart';
-import 'package:tekhub/widgets/search/search_result.dart';
+import 'package:tekhub/widgets/search_result.dart';
 
-class SearchScreen extends StatefulWidget {
-  const SearchScreen({super.key});
+class HomeWidget extends StatefulWidget {
+  const HomeWidget({super.key});
 
   @override
-  SearchScreenState createState() => SearchScreenState();
+  HomeWidgetState createState() => HomeWidgetState();
 }
 
-class SearchScreenState extends State<SearchScreen> {
-  void getArticles() async {
+class HomeWidgetState extends State<HomeWidget> {
+  Future<void> getArticles() async {
     final List<Article> articles = <Article>[
       Article(
         id: '1',
@@ -56,7 +56,11 @@ class SearchScreenState extends State<SearchScreen> {
   Widget build(BuildContext context) {
     getArticles();
     return Consumer<ProviderListener>(
-      builder: (context, providerListener, child) {
+      builder: (
+        BuildContext context,
+        ProviderListener providerListener,
+        Widget? child,
+      ) {
         return Scaffold(
           body: Column(
             children: <Widget>[

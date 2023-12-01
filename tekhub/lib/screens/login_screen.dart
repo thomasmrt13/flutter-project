@@ -59,7 +59,8 @@ class Login extends StatelessWidget {
                       _passwordInput,
                       TextButton(
                         onPressed: () async {
-                          await Navigator.pushNamed(context, 'forget-password');
+                          //await Navigator.pushNamed(context, 'forget-password');
+                          await Navigator.pushNamed(context, '/');
                         },
                         child: const Text(
                           'Forgot Password?',
@@ -75,7 +76,8 @@ class Login extends StatelessWidget {
                           }
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color.fromARGB(255, 126, 217, 87),
+                          backgroundColor:
+                              const Color.fromARGB(255, 126, 217, 87),
                           fixedSize: const Size(314, 70),
                           foregroundColor: Colors.white,
                           shape: RoundedRectangleBorder(
