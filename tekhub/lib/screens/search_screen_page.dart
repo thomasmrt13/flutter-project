@@ -1,14 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:tekhub/Firebase/models/articles.dart';
+import 'package:tekhub/provider/provider_listener.dart';
 import 'package:tekhub/widgets/search/search_bar.dart';
 import 'package:tekhub/widgets/search/search_result.dart';
 
-class SearchScreen extends StatelessWidget {
+class SearchScreen extends StatefulWidget {
   const SearchScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final ValueNotifier<String> searchtext = ValueNotifier<String>('');
+  SearchScreenState createState() => SearchScreenState();
+}
+
+class SearchScreenState extends State<SearchScreen> {
+  void getArticles() async {
     final List<Article> articles = <Article>[
       Article(
         id: '1',
@@ -39,39 +44,41 @@ class SearchScreen extends StatelessWidget {
         name: 'Macbook Pro',
         price: 359,
         description: 'Macbook Pro 2022',
-        type: ArticleType.computer,
+        type: ArticleType.laptop,
         imageUrl: 'assets/images/logo.png',
       ),
     ];
+    Provider.of<ProviderListener>(context, listen: false)
+        .updateArticles(articles);
+  }
 
-    return Scaffold(
-      body: Column(
-        children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.only(left: 29, top: 62),
-            child: Row(
-              children: <Widget>[
-                IconButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  icon: const Icon(Icons.arrow_back),
+  @override
+  Widget build(BuildContext context) {
+    getArticles();
+    return Consumer<ProviderListener>(
+      builder: (context, providerListener, child) {
+        return Scaffold(
+          body: Column(
+            children: <Widget>[
+              const Padding(
+                padding: EdgeInsets.only(top: 62),
+                child: Center(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      SearchBarComponent(),
+                    ],
+                  ),
                 ),
-                SearchBarComponent(
-                  onTextChanged: (String text) {
-                    // Handle the text change here
-                    searchtext.value = text;
-                  },
-                ),
-              ],
-            ),
+              ),
+              SearchResult(
+                searchtext: providerListener.searchtext,
+                articles: providerListener.articles,
+              ),
+            ],
           ),
-          SearchResult(
-            searchtext: searchtext,
-            articles: articles,
-          ),
-        ],
-      ),
+        );
+      },
     );
   }
 }

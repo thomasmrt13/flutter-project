@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:tekhub/provider/provider_listener.dart';
 
 class SearchBarComponent extends StatefulWidget {
-  const SearchBarComponent({required this.onTextChanged, super.key});
-  final Function(String) onTextChanged;
+  const SearchBarComponent({super.key});
 
   @override
   SearchBarComponentState createState() => SearchBarComponentState();
@@ -53,7 +54,8 @@ class SearchBarComponentState extends State<SearchBarComponent> {
     _searchController.addListener(() {
       setState(() {
         _searchText = _searchController.text;
-        widget.onTextChanged(_searchController.text);
+        Provider.of<ProviderListener>(context, listen: false)
+            .updateSearchText(_searchController.text);
       });
     });
   }

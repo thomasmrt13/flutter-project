@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:tekhub/Firebase/models/articles.dart';
 
-class SearchItem extends StatelessWidget {
-  const SearchItem({required this.article, super.key});
+class SingleArticle extends StatelessWidget {
+  const SingleArticle({required this.article, super.key});
   final Article article;
 
   @override
