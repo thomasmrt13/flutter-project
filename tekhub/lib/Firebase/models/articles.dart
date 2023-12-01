@@ -7,7 +7,7 @@ class Article {
     required this.type,
     required this.imageUrl,
   });
-  
+
   final String id;
   final String name;
   final double price;
@@ -16,4 +16,4 @@ class Article {
   final String imageUrl;
 }
 
-enum ArticleType { phone, computer, tablet }
+enum ArticleType { phone, laptop, tablet }

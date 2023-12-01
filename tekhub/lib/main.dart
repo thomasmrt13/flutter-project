@@ -1,6 +1,8 @@
 import 'package:firebase_core/firebase_core.dart'; // Import Firebase Core
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:tekhub/firebase_options.dart';
+import 'package:tekhub/provider/provider_listener.dart';
 import 'package:tekhub/routes/routes.dart';
 
 void main() async {
@@ -8,7 +10,12 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   ); // Initialize Firebase
-  runApp(const MyApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (BuildContext context) => ProviderListener(),
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
