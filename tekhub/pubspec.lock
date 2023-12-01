@@ -89,6 +89,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.18.0"
+  cupertino_icons:
+    dependency: "direct main"
+    description:
+      name: cupertino_icons
+      sha256: d57953e10f9f8327ce64a508a355f0b1ec902193f66288e8cb5070e7c47eeb2d
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.6"
   cross_file:
     dependency: transitive
     description:
@@ -200,6 +208,7 @@ packages:
       sha256: "10159d9ee42c79f4548971d92f3f0fcd5791f6738cda3583a4e3b2c8b244c018"
       url: "https://pub.dev"
     source: hosted
+    version: "2.9.0"
     version: "2.9.0"
   firebase_storage:
     dependency: "direct main"
@@ -416,6 +425,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.7"
+  sidebarx:
+    dependency: "direct main"
+    description:
+      name: sidebarx
+      sha256: "7042d64844b8e64ca5c17e70d89b49df35b54a26c015b90000da9741eab70bc0"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.16.3"
   provider:
     dependency: "direct main"
     description:

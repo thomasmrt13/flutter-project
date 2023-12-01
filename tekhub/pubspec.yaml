@@ -9,12 +9,14 @@ environment:
 dependencies:
   buttons_tabbar: ^1.3.8
   cloud_firestore: ^4.13.2
+  cupertino_icons: ^1.0.0
   file_picker: ^6.1.1
   firebase_auth: ^4.14.1
   firebase_core: ^2.23.0
   firebase_storage: ^11.5.3
   flutter:
     sdk: flutter
+  sidebarx: ^0.16.3
   image_picker: ^1.0.4
   flutter_staggered_grid_view: ^0.7.0
   provider: ^5.0.0
