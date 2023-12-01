@@ -36,8 +36,8 @@ class ArticleService {
     switch (type) {
       case 'phone':
         return ArticleType.phone;
-      case 'computer':
-        return ArticleType.computer;
+      case 'laptop':
+        return ArticleType.laptop;
       case 'tablet':
         return ArticleType.tablet;
       default:
@@ -49,8 +49,8 @@ class ArticleService {
     switch (type) {
       case ArticleType.phone:
         return 'phone';
-      case ArticleType.computer:
-        return 'computer';
+      case ArticleType.laptop:
+        return 'laptop';
       case ArticleType.tablet:
         return 'tablet';
     }
