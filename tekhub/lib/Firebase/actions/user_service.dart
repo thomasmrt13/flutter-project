@@ -69,9 +69,55 @@ class UserService {
       case ArticleType.phone:
         return 'phone';
       case ArticleType.laptop:
-        return 'computer';
+        return 'laptop';
       case ArticleType.tablet:
         return 'tablet';
+    }
+  }
+
+  Future<Result> getCartProducts(String userId) async {
+    try {
+      // Retrieve the user's current cart
+      final DocumentSnapshot<Map<String, dynamic>> userSnapshot =
+          await _firestore.collection('users').doc(userId).get();
+
+      if (userSnapshot.exists) {
+        // Convert the user's cart data to a List<Map<String, dynamic>>
+        final List<Map<String, dynamic>> cartData =
+            List<Map<String, dynamic>>.from(userSnapshot.data()!['cart']);
+
+        // Convert cartData to a List of Article objects
+        final List<Article> cartProducts = cartData.map((item) {
+          return Article(
+            id: item['id'],
+            name: item['name'],
+            price: item['price'],
+            description: item['description'],
+            type: _mapStringToArticleType(item['type']),
+            imageUrl: item['imageUrl'],
+          );
+        }).toList();
+
+        return Result(true, cartProducts);
+      } else {
+        return Result(true, []);
+      }
+    } catch (e) {
+      return Result(false, 'Error getting cart products');
+    }
+  }
+
+  // Utility function to map String to ArticleType enum
+  ArticleType _mapStringToArticleType(String typeString) {
+    switch (typeString) {
+      case 'phone':
+        return ArticleType.phone;
+      case 'laptop':
+        return ArticleType.laptop;
+      case 'tablet':
+        return ArticleType.tablet;
+      default:
+        return ArticleType.phone; // Default to phone if unknown type
     }
   }
 }
