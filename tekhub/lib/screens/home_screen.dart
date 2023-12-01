@@ -5,8 +5,8 @@ import 'package:ecommerce_app/screens/profile.dart';
 import 'package:ecommerce_app/widgets/empty_state.dart'; */
 import 'package:flutter/material.dart';
 import 'package:sidebarx/sidebarx.dart';
-import 'package:tekhub/screens/cart.screen.dart';
 import 'package:tekhub/widgets/home_widget.dart';
+import 'package:tekhub/screens/cart_screen.dart';
 import 'package:tekhub/widgets/side_bar.dart';
 
 class Home extends StatefulWidget {
@@ -17,8 +17,7 @@ class Home extends StatefulWidget {
 }
 
 class HomeState extends State<Home> {
-  final SidebarXController _controller =
-      SidebarXController(selectedIndex: 0, extended: false);
+  final SidebarXController _controller = SidebarXController(selectedIndex: 0, extended: false);
   final GlobalKey<ScaffoldState> _key = GlobalKey<ScaffoldState>();
 
   @override
@@ -36,12 +35,8 @@ class HomeState extends State<Home> {
                   )
                 : null,
             backgroundColor: Colors.white,
-            drawer: MediaQuery.of(context).size.width < 600
-                ? SideBar(_controller)
-                : null,
-            body: isSmallScreen
-                ? buildSmallScreenBody(context)
-                : DesktopHomeLayout(_controller),
+            drawer: MediaQuery.of(context).size.width < 600 ? SideBar(_controller) : null,
+            body: isSmallScreen ? buildSmallScreenBody(context) : DesktopHomeLayout(_controller),
           );
         },
       ),
@@ -59,7 +54,12 @@ class HomeState extends State<Home> {
                 switch (_controller.selectedIndex) {
                   case 0:
                     _key.currentState?.closeDrawer();
-                    return const HomeWidget();
+                    return const Center(
+                      child: Text(
+                        'Home',
+                        style: TextStyle(color: Colors.black, fontSize: 40),
+                      ),
+                    );
                   case 1:
                     _key.currentState?.closeDrawer();
                     return const Center(
