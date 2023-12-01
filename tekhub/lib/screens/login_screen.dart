@@ -49,7 +49,9 @@ class Login extends StatelessWidget {
                       ),
                       const TextButton(onPressed: null, child: Text('Forgot Password?', style: TextStyle(color: Color.fromARGB(255, 126, 217, 87)))),
                       ElevatedButton(
-                        onPressed: () {},
+                        onPressed: () async {
+                          await Navigator.pushNamed(context, '/');
+                        },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color.fromARGB(255, 126, 217, 87),
                           fixedSize: const Size(314, 70),

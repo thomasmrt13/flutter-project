@@ -8,10 +8,12 @@ environment:
 
 dependencies:
   cloud_firestore: ^4.13.2
+  cupertino_icons: ^1.0.0
   firebase_auth: ^4.14.1
   firebase_core: ^2.23.0
   flutter:
     sdk: flutter
+  sidebarx: ^0.16.3
 
 dev_dependencies:
   blackfoot_flutter_lint: ^1.1.0
