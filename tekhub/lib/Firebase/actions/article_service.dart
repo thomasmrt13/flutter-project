@@ -27,8 +27,10 @@ class ArticleService {
 
       return Result(true, articles); // Return successful result with articles
     } catch (e) {
-      return Result(false,
-          'Error getting articles',); // Return failure result with error message
+      return Result(
+        false,
+        'Error getting articles',
+      ); // Return failure result with error message
     }
   }
 
@@ -36,8 +38,8 @@ class ArticleService {
     switch (type) {
       case 'phone':
         return ArticleType.phone;
-      case 'computer':
-        return ArticleType.computer;
+      case 'laptop':
+        return ArticleType.laptop;
       case 'tablet':
         return ArticleType.tablet;
       default:
@@ -49,8 +51,8 @@ class ArticleService {
     switch (type) {
       case ArticleType.phone:
         return 'phone';
-      case ArticleType.computer:
-        return 'computer';
+      case ArticleType.laptop:
+        return 'laptop';
       case ArticleType.tablet:
         return 'tablet';
     }
@@ -65,12 +67,13 @@ class ArticleService {
               .get();
 
       if (!articleSnapshot.exists) {
-        return Result(false,
-            'Article not found',); // Return failure result with error message
+        return Result(
+          false,
+          'Article not found',
+        ); // Return failure result with error message
       }
 
-      final Map<String, dynamic> data =
-          articleSnapshot.data()!;
+      final Map<String, dynamic> data = articleSnapshot.data()!;
       final Article article = Article(
         id: articleSnapshot.id,
         name: data['name'] ?? '',
@@ -82,8 +85,10 @@ class ArticleService {
 
       return Result(true, article); // Return successful result with the article
     } catch (e) {
-      return Result(false,
-          'Error getting article',); // Return failure result with error message
+      return Result(
+        false,
+        'Error getting article',
+      ); // Return failure result with error message
     }
   }
 
@@ -117,11 +122,15 @@ class ArticleService {
         );
       }).toList();
 
-      return Result(true,
-          articles,); // Return successful result with the matching articles
+      return Result(
+        true,
+        articles,
+      ); // Return successful result with the matching articles
     } catch (e) {
-      return Result(false,
-          'Error searching articles',); // Return failure result with error message
+      return Result(
+        false,
+        'Error searching articles',
+      ); // Return failure result with error message
     }
   }
 
@@ -145,11 +154,15 @@ class ArticleService {
         );
       }).toList();
 
-      return Result(true,
-          articles,); // Return successful result with the matching articles
+      return Result(
+        true,
+        articles,
+      ); // Return successful result with the matching articles
     } catch (e) {
-      return Result(false,
-          'Error getting articles by filter',); // Return failure result with error message
+      return Result(
+        false,
+        'Error getting articles by filter',
+      ); // Return failure result with error message
     }
   }
 
@@ -172,7 +185,8 @@ class ArticleService {
       final String typeString = _mapArticleTypeToString(article.type);
 
       // Upload image to Firebase Storage and get the image URL
-      final String? imageUrl = await ImageService().addImageToStorage(imageFile);
+      final String? imageUrl =
+          await ImageService().addImageToStorage(imageFile);
 
       if (imageUrl == null) {
         return Result(false, 'Error uploading image.');

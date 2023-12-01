@@ -20,7 +20,8 @@ class UserService {
 
         // Check if the article is already in the cart
         final int existingItemIndex = cartData.indexWhere(
-            (Map<String, dynamic> item) => item['id'] == article.id,);
+          (Map<String, dynamic> item) => item['id'] == article.id,
+        );
 
         if (existingItemIndex != -1) {
           // Article already in the cart, update quantity or perform other logic
@@ -67,7 +68,7 @@ class UserService {
     switch (type) {
       case ArticleType.phone:
         return 'phone';
-      case ArticleType.computer:
+      case ArticleType.laptop:
         return 'computer';
       case ArticleType.tablet:
         return 'tablet';

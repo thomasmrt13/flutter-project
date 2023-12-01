@@ -18,7 +18,7 @@ class ForgetPassword extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-      final AuthService authService = AuthService();
+    final AuthService authService = AuthService();
     return Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: const Color.fromARGB(255, 39, 39, 39),
@@ -70,9 +70,11 @@ class ForgetPassword extends StatelessWidget {
                         onPressed: () async {
                           print(_emailInput.getInputText());
                           if (_formKey.currentState!.validate()) {
-                            final Result result = await authService.sendPasswordResetEmail(_emailInput.getInputText());
+                            final Result result =
+                                await authService.sendPasswordResetEmail(
+                                    _emailInput.getInputText());
 
-                             if (result.success) {
+                            if (result.success) {
                               // Registration successful, navigate to another screen or perform actions accordingly
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
@@ -83,8 +85,9 @@ class ForgetPassword extends StatelessWidget {
                               // Registration failed, show error message
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
-                                  content: Text(result.message.toString() ??
-                                      'An unknown error occurred during registration.'),
+                                  content: Text(
+                                    result.message.toString(),
+                                  ),
                                 ),
                               );
                             }
