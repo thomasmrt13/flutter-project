@@ -120,4 +120,41 @@ class UserService {
         return ArticleType.phone; // Default to phone if unknown type
     }
   }
+
+  Future<Result> deleteProductFromCart(String userId, String productId) async {
+    try {
+      // Retrieve the user's current cart
+      final DocumentSnapshot<Map<String, dynamic>> userSnapshot =
+          await _firestore.collection('users').doc(userId).get();
+
+      if (userSnapshot.exists) {
+        // Convert the user's cart data to a List<Map<String, dynamic>>
+        final List<Map<String, dynamic>> cartData =
+            List<Map<String, dynamic>>.from(userSnapshot.data()!['cart']);
+
+        // Find the index of the product with the specified productId
+        final int indexToDelete = cartData.indexWhere(
+          (item) => item['id'] == productId,
+        );
+
+        if (indexToDelete != -1) {
+          // Remove the product from the cart
+          cartData.removeAt(indexToDelete);
+
+          // Update the user's cart in Firestore
+          await _firestore.collection('users').doc(userId).update({
+            'cart': cartData,
+          });
+
+          return Result(true, 'Product removed from cart successfully.');
+        } else {
+          return Result(false, 'Product not found in cart.');
+        }
+      } else {
+        return Result(false, 'User not found.');
+      }
+    } catch (e) {
+      return Result(false, 'An unexpected error occurred.');
+    }
+  }
 }
