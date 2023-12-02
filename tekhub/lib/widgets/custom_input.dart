@@ -38,7 +38,7 @@ class CustomInput extends StatelessWidget {
           Row(
             children: <Widget>[
               Icon(icon,
-                  size: 24, color: Colors.grey, semanticLabel: 'Email icon'),
+                  size: 24, color: Colors.grey, semanticLabel: 'Email icon',),
               Padding(
                 padding: const EdgeInsets.only(left: 10),
                 child: Text(

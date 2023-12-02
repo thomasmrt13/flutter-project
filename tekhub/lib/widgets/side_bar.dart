@@ -56,7 +56,7 @@ class SideBar extends StatelessWidget {
         ),
         hoverColor: const Color.fromARGB(255, 115, 115, 115),
         textStyle: TextStyle(color: Colors.white.withOpacity(0.7), fontWeight: FontWeight.bold),
-        selectedTextStyle: const TextStyle(color: const Color.fromARGB(255, 126, 217, 87)),
+        selectedTextStyle: const TextStyle(color: Color.fromARGB(255, 126, 217, 87)),
         itemTextPadding: const EdgeInsets.only(left: 30),
         selectedItemTextPadding: const EdgeInsets.only(left: 30),
         itemDecoration: BoxDecoration(
@@ -87,7 +87,7 @@ class SideBar extends StatelessWidget {
       extendedTheme: const SidebarXTheme(
         width: 200,
         decoration: BoxDecoration(
-          color: const Color.fromARGB(255, 39, 39, 39),
+          color: Color.fromARGB(255, 39, 39, 39),
         ),
       ),
       headerBuilder: (BuildContext context, bool extended) {
