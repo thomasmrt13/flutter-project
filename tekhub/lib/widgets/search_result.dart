@@ -27,7 +27,7 @@ class SearchResultState extends State<SearchResult> {
     List<Article> filteredBarArticles = <Article>[];
 
     return Consumer<ProviderListener>(
-      builder: (context, providerListener, child) {
+      builder: (BuildContext context, ProviderListener providerListener, Widget? child) {
         if (providerListener.searchtext.isNotEmpty) {
           filteredArticles = widget.articles
               .where(

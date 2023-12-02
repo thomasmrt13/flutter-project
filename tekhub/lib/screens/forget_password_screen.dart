@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:tekhub/firebase/actions/auth_service.dart';
+import 'package:tekhub/firebase/actions/result.dart';
 import 'package:tekhub/widgets/custom_input.dart';
 import 'package:tekhub/widgets/headline.dart';
-import 'package:tekhub/firebase/actions/result.dart';
-import 'package:tekhub/firebase/actions/auth_service.dart';
 
 class ForgetPassword extends StatelessWidget {
   ForgetPassword({super.key});
@@ -72,7 +72,7 @@ class ForgetPassword extends StatelessWidget {
                           if (_formKey.currentState!.validate()) {
                             final Result result =
                                 await authService.sendPasswordResetEmail(
-                                    _emailInput.getInputText());
+                                    _emailInput.getInputText(),);
 
                             if (result.success) {
                               // Registration successful, navigate to another screen or perform actions accordingly
