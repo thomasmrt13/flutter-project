@@ -3,6 +3,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:tekhub/firebase/actions/result.dart';
+import 'package:tekhub/firebase/models/articles.dart';
+import 'package:tekhub/firebase/models/users.dart';
 
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -84,6 +86,7 @@ class AuthService {
           .set(<String, String>{
         'email': email,
         'username': username,
+        'role': 'user',
       });
 
       final User? user = authResult.user;

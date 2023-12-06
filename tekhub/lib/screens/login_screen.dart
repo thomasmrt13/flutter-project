@@ -1,9 +1,13 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:tekhub/firebase/actions/auth_service.dart';
+import 'package:tekhub/firebase/actions/result.dart';
+import 'package:tekhub/provider/provider_listener.dart';
 import 'package:tekhub/widgets/custom_input.dart';
 import 'package:tekhub/widgets/custom_password.dart';
 import 'package:tekhub/widgets/headline.dart';
-import 'package:tekhub/firebase/actions/result.dart';
 
 class Login extends StatelessWidget {
   Login({super.key});
@@ -74,7 +78,6 @@ class Login extends StatelessWidget {
                       ElevatedButton(
                         onPressed: () async {
                           if (_formKey.currentState!.validate()) {
-                            print(_emailInput.getInputText());
                             // ignore: always_specify_types
                             final Result result =
                                 await authService.signInWithEmailAndPassword(
@@ -84,10 +87,11 @@ class Login extends StatelessWidget {
                             if (result.success) {
                               // Registration successful, navigate to another screen or perform actions accordingly
                               ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
+                                const SnackBar(
                                   content: Text('Connection successful!'),
                                 ),
                               );
+                              Provider.of<ProviderListener>(context, listen: false).updateUser(result.message);
                               await Navigator.pushNamed(context, '/');
                             } else {
                               // Registration failed, show error message
