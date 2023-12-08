@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:tekhub/firebase/actions/auth_service.dart';
-import 'package:tekhub/firebase/actions/result.dart';
+import 'package:tekhub/Firebase/actions/auth_service.dart';
+import 'package:tekhub/Firebase/actions/result.dart';
 import 'package:tekhub/widgets/custom_input.dart';
 import 'package:tekhub/widgets/headline.dart';
 

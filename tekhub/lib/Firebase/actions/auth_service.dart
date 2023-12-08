@@ -2,9 +2,10 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:tekhub/firebase/actions/result.dart';
-import 'package:tekhub/firebase/models/articles.dart';
-import 'package:tekhub/firebase/models/users.dart';
+import 'package:tekhub/Firebase/actions/result.dart';
+import 'package:tekhub/Firebase/models/articles.dart';
+import 'package:tekhub/Firebase/models/user_articles.dart';
+import 'package:tekhub/Firebase/models/users.dart';
 
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -97,19 +98,19 @@ class AuthService {
       });
 
       final User? user = authResult.user;
-       final DocumentSnapshot<Map<String, dynamic>> userDoc =
+      final DocumentSnapshot<Map<String, dynamic>> userDoc =
           await FirebaseFirestore.instance
               .collection('users')
               .doc(user?.uid)
               .get();
 
-            final List<Article> cart =
-          userDoc['cart'] != null ? await _fetchArticles(userDoc['cart']) : [];
-      final List<Article> purchaseHistory = userDoc['purchaseHistory'] != null
-          ? await _fetchArticles(userDoc['purchaseHistory'])
+      final List<UserArticle> cart =
+          userDoc['cart'] != null ? await _fetchUserArticles(userDoc['cart']) : [];
+      final List<UserArticle> purchaseHistory = userDoc['purchaseHistory'] != null
+          ? await _fetchUserArticles(userDoc['purchaseHistory'])
           : [];
-      
-       final MyUser fetchedUser = MyUser(
+
+      final MyUser fetchedUser = MyUser(
         uid: user!.uid,
         email: user.email!,
         username: userDoc['username'] ?? '',
@@ -122,13 +123,11 @@ class AuthService {
         role: _convertStringToUserRole(userDoc['role']),
         profilePictureUrl: userDoc['profilePictureUrl'] ?? '',
       );
-      // Retrieve additional user information if needed
-      // For example, you might fetch user data from Firestore
 
       return Result(
         true,
         fetchedUser,
-      ); // Return a UserResult instance with user information
+      );
     } catch (e) {
       return Result(false, _handleRegistrationError(e));
     }
@@ -174,10 +173,10 @@ class AuthService {
               .doc(user?.uid)
               .get();
 
-      final List<Article> cart =
-          userDoc['cart'] != null ? await _fetchArticles(userDoc['cart']) : [];
-      final List<Article> purchaseHistory = userDoc['purchaseHistory'] != null
-          ? await _fetchArticles(userDoc['purchaseHistory'])
+      final List<UserArticle> cart =
+          userDoc['cart'] != null ? await _fetchUserArticles(userDoc['cart']) : [];
+      final List<UserArticle> purchaseHistory = userDoc['purchaseHistory'] != null
+          ? await _fetchUserArticles(userDoc['purchaseHistory'])
           : [];
 
       final MyUser fetchedUser = MyUser(
@@ -193,10 +192,11 @@ class AuthService {
         role: _convertStringToUserRole(userDoc['role']),
         profilePictureUrl: userDoc['profilePictureUrl'] ?? '',
       );
+
       return Result(
         true,
         fetchedUser,
-      ); // Return a UserResult instance with user information
+      );
     } on FirebaseAuthException catch (e) {
       return Result(false, _handleLoginError(e));
     } catch (e) {
@@ -215,38 +215,34 @@ class AuthService {
     }
   }
 
-  Future<List<Article>> _fetchArticles(List<dynamic>? articleIds) async {
-    if (articleIds == null || articleIds.isEmpty) {
+  Future<List<UserArticle>> _fetchUserArticles(List<dynamic>? articleData) async {
+    if (articleData == null || articleData.isEmpty) {
       return []; // Return an empty list if no articles are present
     }
 
     try {
-      final List<Article> articles = [];
+      final List<UserArticle> userArticles = [];
 
-      for (final String articleId in List<String>.from(articleIds)) {
-        final DocumentSnapshot<Map<String, dynamic>> articleDoc =
-            await FirebaseFirestore.instance
-                .collection('articles')
-                .doc(articleId)
-                .get();
+      for (final Map<String, dynamic> articleInfo in List<Map<String, dynamic>>.from(articleData)) {
+        final Article article = Article(
+          id: articleInfo['id'] ?? '',
+          name: articleInfo['name'] ?? '',
+          price: (articleInfo['price'] ?? 0.0).toDouble(),
+          description: articleInfo['description'] ?? '',
+          type: _convertStringToArticleType(articleInfo['type']),
+          imageUrl: articleInfo['imageUrl'] ?? '',
+        );
 
-        if (articleDoc.exists) {
-          final Article article = Article(
-            id: articleDoc.id,
-            name: articleDoc['name'] ?? '',
-            price: (articleDoc['price'] ?? 0.0).toDouble(),
-            description: articleDoc['description'] ?? '',
-            type: _convertStringToArticleType(articleDoc['type']),
-            imageUrl: articleDoc['imageUrl'] ?? '',
-          );
+        final UserArticle userArticle = UserArticle(
+          article: article,
+          quantity: articleInfo['quantity'] ?? 0,
+        );
 
-          articles.add(article);
-        }
+        userArticles.add(userArticle);
       }
 
-      return articles;
+      return userArticles;
     } catch (e) {
-      print('Error fetching articles: $e');
       return []; // Return an empty list in case of an error
     }
   }
