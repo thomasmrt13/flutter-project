@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:tekhub/Firebase/actions/result.dart';
 import 'package:tekhub/Firebase/models/articles.dart';
 import 'package:tekhub/Firebase/models/user_articles.dart';
+import 'package:tekhub/Firebase/models/user_history_articles.dart';
 import 'package:tekhub/Firebase/models/users.dart';
 
 class AuthService {
@@ -94,7 +95,7 @@ class AuthService {
         'cart': [],
         'purchaseHistory': [],
         'role': 'user',
-        'profilePictureUrl': '', 
+        'profilePictureUrl': '',
       });
 
       final User? user = authResult.user;
@@ -104,11 +105,13 @@ class AuthService {
               .doc(user?.uid)
               .get();
 
-      final List<UserArticle> cart =
-          userDoc['cart'] != null ? await _fetchUserArticles(userDoc['cart']) : [];
-      final List<UserArticle> purchaseHistory = userDoc['purchaseHistory'] != null
-          ? await _fetchUserArticles(userDoc['purchaseHistory'])
+      final List<UserArticle> cart = userDoc['cart'] != null
+          ? await _fetchUserArticles(userDoc['cart'])
           : [];
+      final List<UserHistoryArticles> purchaseHistory =
+          userDoc['purchaseHistory'] != null
+              ? await _fetchUserHistoryArticles(userDoc['purchaseHistory'])
+              : [];
 
       final MyUser fetchedUser = MyUser(
         uid: user!.uid,
@@ -173,11 +176,13 @@ class AuthService {
               .doc(user?.uid)
               .get();
 
-      final List<UserArticle> cart =
-          userDoc['cart'] != null ? await _fetchUserArticles(userDoc['cart']) : [];
-      final List<UserArticle> purchaseHistory = userDoc['purchaseHistory'] != null
-          ? await _fetchUserArticles(userDoc['purchaseHistory'])
+      final List<UserArticle> cart = userDoc['cart'] != null
+          ? await _fetchUserArticles(userDoc['cart'])
           : [];
+      final List<UserHistoryArticles> purchaseHistory =
+          userDoc['purchaseHistory'] != null
+              ? await _fetchUserHistoryArticles(userDoc['purchaseHistory'])
+              : [];
 
       final MyUser fetchedUser = MyUser(
         uid: user!.uid,
@@ -215,7 +220,8 @@ class AuthService {
     }
   }
 
-  Future<List<UserArticle>> _fetchUserArticles(List<dynamic>? articleData) async {
+  Future<List<UserArticle>> _fetchUserArticles(
+      List<dynamic>? articleData) async {
     if (articleData == null || articleData.isEmpty) {
       return []; // Return an empty list if no articles are present
     }
@@ -223,7 +229,8 @@ class AuthService {
     try {
       final List<UserArticle> userArticles = [];
 
-      for (final Map<String, dynamic> articleInfo in List<Map<String, dynamic>>.from(articleData)) {
+      for (final Map<String, dynamic> articleInfo
+          in List<Map<String, dynamic>>.from(articleData)) {
         final Article article = Article(
           id: articleInfo['id'] ?? '',
           name: articleInfo['name'] ?? '',
@@ -242,6 +249,41 @@ class AuthService {
       }
 
       return userArticles;
+    } catch (e) {
+      return []; // Return an empty list in case of an error
+    }
+  }
+
+  Future<List<UserHistoryArticles>> _fetchUserHistoryArticles(
+      List<dynamic>? articleData) async {
+    if (articleData == null || articleData.isEmpty) {
+      return []; // Return an empty list if no articles are present
+    }
+
+    try {
+      final List<UserHistoryArticles> userHistoryArticles = [];
+
+      for (final Map<String, dynamic> articleInfo
+          in List<Map<String, dynamic>>.from(articleData)) {
+        final Article article = Article(
+          id: articleInfo['id'] ?? '',
+          name: articleInfo['name'] ?? '',
+          price: (articleInfo['price'] ?? 0.0).toDouble(),
+          description: articleInfo['description'] ?? '',
+          type: _convertStringToArticleType(articleInfo['type']),
+          imageUrl: articleInfo['imageUrl'] ?? '',
+        );
+
+        final UserHistoryArticles userHistoryArticle = UserHistoryArticles(
+          article: article,
+          quantity: articleInfo['quantity'] ?? 0,
+          purchaseDate: (articleInfo['purchaseDate'] as Timestamp).toDate(),
+        );
+
+        userHistoryArticles.add(userHistoryArticle);
+      }
+
+      return userHistoryArticles;
     } catch (e) {
       return []; // Return an empty list in case of an error
     }

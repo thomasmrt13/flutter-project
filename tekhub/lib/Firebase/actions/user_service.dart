@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:tekhub/Firebase/actions/result.dart';
 import 'package:tekhub/Firebase/models/articles.dart';
 import 'package:tekhub/Firebase/models/user_articles.dart';
+import 'package:tekhub/Firebase/models/user_history_articles.dart';
 
 class UserService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -207,6 +208,42 @@ class UserService {
         false,
         'An unexpected error occurred.',
       );
+    }
+  }
+
+    Future<Result> getHistoryProducts(String userId) async {
+    try {
+      // Retrieve the user's current cart
+      final DocumentSnapshot<Map<String, dynamic>> userSnapshot =
+          await _firestore.collection('users').doc(userId).get();
+
+      if (userSnapshot.exists) {
+        // Convert the user's cart data to a List<Map<String, dynamic>>
+        final List<Map<String, dynamic>> historyData =
+            List<Map<String, dynamic>>.from(userSnapshot.data()!['purchaseHistory']);
+
+        // Convert historyData to a List of UserArticle objects
+        final List<UserHistoryArticles> historyProducts = historyData.map((item) {
+          return UserHistoryArticles(
+            article: Article(
+              id: item['id'],
+              name: item['name'],
+              price: item['price'],
+              description: item['description'],
+              type: _mapStringToArticleType(item['type']),
+              imageUrl: item['imageUrl'],
+            ),
+            quantity: item['quantity'],
+            purchaseDate: item['purchaseDate'],
+          );
+        }).toList();
+
+        return Result(true, historyProducts);
+      } else {
+        return Result(true, []);
+      }
+    } catch (e) {
+      return Result(false, 'Error getting history products');
     }
   }
 }
