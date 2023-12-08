@@ -165,7 +165,9 @@ class UserService {
   }
 
   Future<Result> addToPurchaseHistory(
-      String userId, List<UserArticle> userArticles,) async {
+    String userId,
+    List<UserArticle> userArticles,
+  ) async {
     try {
       // Retrieve the user's current purchase history
       final DocumentSnapshot<Map<String, dynamic>> userSnapshot =
@@ -175,7 +177,8 @@ class UserService {
         // Convert the user's purchase history data to a List<Map<String, dynamic>>
         final List<Map<String, dynamic>> purchaseHistoryData =
             List<Map<String, dynamic>>.from(
-                userSnapshot.data()!['purchaseHistory'],);
+          userSnapshot.data()!['purchaseHistory'],
+        );
 
         // Add the userArticles to the purchase history
         for (final UserArticle userArticle in userArticles) {
@@ -211,7 +214,7 @@ class UserService {
     }
   }
 
-    Future<Result> getHistoryProducts(String userId) async {
+  Future<Result> getHistoryProducts(String userId) async {
     try {
       // Retrieve the user's current cart
       final DocumentSnapshot<Map<String, dynamic>> userSnapshot =
@@ -220,10 +223,12 @@ class UserService {
       if (userSnapshot.exists) {
         // Convert the user's cart data to a List<Map<String, dynamic>>
         final List<Map<String, dynamic>> historyData =
-            List<Map<String, dynamic>>.from(userSnapshot.data()!['purchaseHistory']);
+            List<Map<String, dynamic>>.from(
+                userSnapshot.data()!['purchaseHistory'],);
 
         // Convert historyData to a List of UserArticle objects
-        final List<UserHistoryArticles> historyProducts = historyData.map((item) {
+        final List<UserHistoryArticles> historyProducts =
+            historyData.map((item) {
           return UserHistoryArticles(
             article: Article(
               id: item['id'],
@@ -244,6 +249,49 @@ class UserService {
       }
     } catch (e) {
       return Result(false, 'Error getting history products');
+    }
+  }
+
+  Future<Result> getOneProductFromHistory(
+      String userId, String articleId,) async {
+    try {
+      // Retrieve the user's current purchase history
+      final DocumentSnapshot<Map<String, dynamic>> userSnapshot =
+          await _firestore.collection('users').doc(userId).get();
+
+      if (userSnapshot.exists) {
+        // Convert the user's purchase history data to a List<Map<String, dynamic>>
+        final List<Map<String, dynamic>> purchaseHistoryData =
+            List<Map<String, dynamic>>.from(
+                userSnapshot.data()!['purchaseHistory'] ?? [],);
+
+        // Find the entry with the specified articleId
+        final Map<String, dynamic> productEntry =
+            purchaseHistoryData.firstWhere(
+          (entry) => entry['article']['id'] == articleId,
+        );
+
+        final Article article = Article(
+          id: productEntry['article']['id'],
+          name: productEntry['article']['name'],
+          price: productEntry['article']['price'],
+          description: productEntry['article']['description'],
+          type: _mapStringToArticleType(productEntry['article']['type']),
+          imageUrl: productEntry['article']['imageUrl'],
+        );
+
+        final UserHistoryArticles userHistoryArticle = UserHistoryArticles(
+          article: article,
+          quantity: productEntry['quantity'],
+          purchaseDate: productEntry['purchaseDate'].toDate(),
+        );
+
+        return Result(true, userHistoryArticle);
+      } else {
+        return Result(false, 'User not found.');
+      }
+    } catch (e) {
+      return Result(false, 'An unexpected error occurred.');
     }
   }
 }
