@@ -3,6 +3,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:tekhub/firebase/actions/result.dart';
+import 'package:tekhub/firebase/models/articles.dart';
+import 'package:tekhub/firebase/models/users.dart';
 
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -81,18 +83,51 @@ class AuthService {
       await FirebaseFirestore.instance
           .collection('users')
           .doc(authResult.user!.uid)
-          .set(<String, String>{
+          .set({
         'email': email,
         'username': username,
+        'phoneNumber': '',
+        'address': '',
+        'firstName': '',
+        'lastName': '',
+        'cart': [],
+        'purchaseHistory': [],
+        'role': 'user',
+        'profilePictureUrl': '', 
       });
 
       final User? user = authResult.user;
+       final DocumentSnapshot<Map<String, dynamic>> userDoc =
+          await FirebaseFirestore.instance
+              .collection('users')
+              .doc(user?.uid)
+              .get();
+
+            final List<Article> cart =
+          userDoc['cart'] != null ? await _fetchArticles(userDoc['cart']) : [];
+      final List<Article> purchaseHistory = userDoc['purchaseHistory'] != null
+          ? await _fetchArticles(userDoc['purchaseHistory'])
+          : [];
+      
+       final MyUser fetchedUser = MyUser(
+        uid: user!.uid,
+        email: user.email!,
+        username: userDoc['username'] ?? '',
+        phoneNumber: userDoc['phoneNumber'] ?? '',
+        address: userDoc['address'] ?? '',
+        firstName: userDoc['firstName'] ?? '',
+        lastName: userDoc['lastName'] ?? '',
+        cart: cart,
+        purchaseHistory: purchaseHistory,
+        role: _convertStringToUserRole(userDoc['role']),
+        profilePictureUrl: userDoc['profilePictureUrl'] ?? '',
+      );
       // Retrieve additional user information if needed
       // For example, you might fetch user data from Firestore
 
       return Result(
         true,
-        user,
+        fetchedUser,
       ); // Return a UserResult instance with user information
     } catch (e) {
       return Result(false, _handleRegistrationError(e));
@@ -133,15 +168,99 @@ class AuthService {
       final User? user = authResult.user;
       // Retrieve additional user information if needed
       // For example, you might fetch user data from Firestore
+      final DocumentSnapshot<Map<String, dynamic>> userDoc =
+          await FirebaseFirestore.instance
+              .collection('users')
+              .doc(user?.uid)
+              .get();
 
+      final List<Article> cart =
+          userDoc['cart'] != null ? await _fetchArticles(userDoc['cart']) : [];
+      final List<Article> purchaseHistory = userDoc['purchaseHistory'] != null
+          ? await _fetchArticles(userDoc['purchaseHistory'])
+          : [];
+
+      final MyUser fetchedUser = MyUser(
+        uid: user!.uid,
+        email: user.email!,
+        username: userDoc['username'] ?? '',
+        phoneNumber: userDoc['phoneNumber'] ?? '',
+        address: userDoc['address'] ?? '',
+        firstName: userDoc['firstName'] ?? '',
+        lastName: userDoc['lastName'] ?? '',
+        cart: cart,
+        purchaseHistory: purchaseHistory,
+        role: _convertStringToUserRole(userDoc['role']),
+        profilePictureUrl: userDoc['profilePictureUrl'] ?? '',
+      );
       return Result(
         true,
-        user,
+        fetchedUser,
       ); // Return a UserResult instance with user information
     } on FirebaseAuthException catch (e) {
       return Result(false, _handleLoginError(e));
     } catch (e) {
-      return Result(false, 'An unexpected error occurred during login.');
+      return Result(false, 'An unexpected error occurred during login. $e');
+    }
+  }
+
+  UserRole _convertStringToUserRole(String? role) {
+    switch (role) {
+      case 'admin':
+        return UserRole.admin;
+      case 'user':
+        return UserRole.user;
+      default:
+        return UserRole.user; // Default to user role if unknown
+    }
+  }
+
+  Future<List<Article>> _fetchArticles(List<dynamic>? articleIds) async {
+    if (articleIds == null || articleIds.isEmpty) {
+      return []; // Return an empty list if no articles are present
+    }
+
+    try {
+      final List<Article> articles = [];
+
+      for (final String articleId in List<String>.from(articleIds)) {
+        final DocumentSnapshot<Map<String, dynamic>> articleDoc =
+            await FirebaseFirestore.instance
+                .collection('articles')
+                .doc(articleId)
+                .get();
+
+        if (articleDoc.exists) {
+          final Article article = Article(
+            id: articleDoc.id,
+            name: articleDoc['name'] ?? '',
+            price: (articleDoc['price'] ?? 0.0).toDouble(),
+            description: articleDoc['description'] ?? '',
+            type: _convertStringToArticleType(articleDoc['type']),
+            imageUrl: articleDoc['imageUrl'] ?? '',
+          );
+
+          articles.add(article);
+        }
+      }
+
+      return articles;
+    } catch (e) {
+      print('Error fetching articles: $e');
+      return []; // Return an empty list in case of an error
+    }
+  }
+
+  ArticleType _convertStringToArticleType(String? type) {
+    switch (type) {
+      case 'phone':
+        return ArticleType.phone;
+      case 'laptop':
+        return ArticleType.laptop;
+      case 'tablet':
+        return ArticleType.tablet;
+      default:
+        return ArticleType.phone; // Default to phone type if unknown
     }
   }
 

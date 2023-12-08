@@ -1,7 +1,7 @@
 import 'package:tekhub/firebase/models/articles.dart';
 
-class User {
-  User({
+class MyUser {
+  MyUser({
     required this.uid,
     required this.email,
     required this.username,

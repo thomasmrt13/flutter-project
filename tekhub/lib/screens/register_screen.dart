@@ -1,6 +1,10 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:tekhub/firebase/actions/auth_service.dart';
 import 'package:tekhub/firebase/actions/result.dart';
+import 'package:tekhub/provider/provider_listener.dart';
 import 'package:tekhub/widgets/custom_input.dart';
 import 'package:tekhub/widgets/custom_password.dart';
 import 'package:tekhub/widgets/headline.dart';
@@ -33,7 +37,7 @@ class Register extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-  final AuthService authService = AuthService();
+    final AuthService authService = AuthService();
     return Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: const Color.fromARGB(255, 39, 39, 39),
@@ -46,15 +50,17 @@ class Register extends StatelessWidget {
             key: _formKey,
             child: Container(
               decoration: const BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.all(Radius.circular(20)),),
+                color: Colors.white,
+                borderRadius: BorderRadius.all(Radius.circular(20)),
+              ),
               height: MediaQuery.of(context).size.height * 0.70,
               width: MediaQuery.of(context).size.width,
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(50, 36, 50, 0),
                 child: SingleChildScrollView(
                   padding: EdgeInsets.only(
-                      bottom: MediaQuery.of(context).viewInsets.bottom,),
+                    bottom: MediaQuery.of(context).viewInsets.bottom,
+                  ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: <Widget>[
@@ -90,6 +96,7 @@ class Register extends StatelessWidget {
                             }
 
                             // If form is valid, attempt registration
+                            // ignore: always_specify_types
                             final Result result =
                                 await authService.registerWithEmailAndPassword(
                               _emailInput.getInputText(),
@@ -105,6 +112,10 @@ class Register extends StatelessWidget {
                                   content: Text('Registration successful!'),
                                 ),
                               );
+                              Provider.of<ProviderListener>(context,
+                                      listen: false,)
+                                  .updateUser(result.message);
+                              await Navigator.pushNamed(context, '/');
                             } else {
                               // Registration failed, show error message
                               ScaffoldMessenger.of(context).showSnackBar(
@@ -121,10 +132,13 @@ class Register extends StatelessWidget {
                           fixedSize: const Size(314, 70),
                           foregroundColor: Colors.white,
                           shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
                           padding: const EdgeInsets.symmetric(vertical: 22),
                           textStyle: const TextStyle(
-                              fontSize: 20, fontWeight: FontWeight.w700,),
+                            fontSize: 20,
+                            fontWeight: FontWeight.w700,
+                          ),
                         ),
                         child: const Text('Register'),
                       ),
@@ -136,8 +150,9 @@ class Register extends StatelessWidget {
                           child: const Text(
                             'Already have an account? Sign in',
                             style: TextStyle(
-                                color: Color.fromARGB(255, 126, 217, 87),
-                                fontSize: 17,),
+                              color: Color.fromARGB(255, 126, 217, 87),
+                              fontSize: 17,
+                            ),
                           ),
                         ),
                       ),
