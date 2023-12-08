@@ -224,7 +224,8 @@ class UserService {
         // Convert the user's cart data to a List<Map<String, dynamic>>
         final List<Map<String, dynamic>> historyData =
             List<Map<String, dynamic>>.from(
-                userSnapshot.data()!['purchaseHistory'],);
+          userSnapshot.data()!['purchaseHistory'],
+        );
 
         // Convert historyData to a List of UserArticle objects
         final List<UserHistoryArticles> historyProducts =
@@ -253,7 +254,9 @@ class UserService {
   }
 
   Future<Result> getOneProductFromHistory(
-      String userId, String articleId,) async {
+    String userId,
+    String articleId,
+  ) async {
     try {
       // Retrieve the user's current purchase history
       final DocumentSnapshot<Map<String, dynamic>> userSnapshot =
@@ -263,7 +266,8 @@ class UserService {
         // Convert the user's purchase history data to a List<Map<String, dynamic>>
         final List<Map<String, dynamic>> purchaseHistoryData =
             List<Map<String, dynamic>>.from(
-                userSnapshot.data()!['purchaseHistory'] ?? [],);
+          userSnapshot.data()!['purchaseHistory'] ?? [],
+        );
 
         // Find the entry with the specified articleId
         final Map<String, dynamic> productEntry =
@@ -287,6 +291,46 @@ class UserService {
         );
 
         return Result(true, userHistoryArticle);
+      } else {
+        return Result(false, 'User not found.');
+      }
+    } catch (e) {
+      return Result(false, 'An unexpected error occurred.');
+    }
+  }
+
+  Future<Result> deleteProductFromHistory(
+      String userId, String articleId) async {
+    try {
+      // Retrieve the user's current purchase history
+      final DocumentSnapshot<Map<String, dynamic>> userSnapshot =
+          await _firestore.collection('users').doc(userId).get();
+
+      if (userSnapshot.exists) {
+        // Convert the user's purchase history data to a List<Map<String, dynamic>>
+        final List<Map<String, dynamic>> purchaseHistoryData =
+            List<Map<String, dynamic>>.from(
+                userSnapshot.data()!['purchaseHistory'] ?? []);
+
+        // Find the index of the product with the specified articleId
+        final int indexToDelete = purchaseHistoryData.indexWhere(
+          (entry) => entry['article']['id'] == articleId,
+        );
+
+        if (indexToDelete != -1) {
+          // Remove the product from the purchase history
+          purchaseHistoryData.removeAt(indexToDelete);
+
+          // Update the user's purchase history in Firestore
+          await _firestore.collection('users').doc(userId).update({
+            'purchaseHistory': purchaseHistoryData,
+          });
+
+          return Result(
+              true, 'Product removed from purchase history successfully.');
+        } else {
+          return Result(false, 'Product not found in purchase history.');
+        }
       } else {
         return Result(false, 'User not found.');
       }
