@@ -1,4 +1,5 @@
-import 'package:tekhub/firebase/models/articles.dart';
+import 'package:tekhub/Firebase/models/user_articles.dart';
+import 'package:tekhub/Firebase/models/user_history_articles.dart';
 
 class MyUser {
   MyUser({
@@ -22,8 +23,8 @@ class MyUser {
   final String address;
   final String firstName;
   final String lastName;
-  final List<Article> cart;
-  final List<Article> purchaseHistory;
+  final List<UserArticle> cart;
+  final List<UserHistoryArticles> purchaseHistory;
   final UserRole role;
   final String? profilePictureUrl;
 }

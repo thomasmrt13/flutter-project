@@ -3,9 +3,9 @@
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:tekhub/firebase/actions/image_service.dart';
-import 'package:tekhub/firebase/actions/result.dart';
-import 'package:tekhub/firebase/models/articles.dart';
+import 'package:tekhub/Firebase/actions/image_service.dart';
+import 'package:tekhub/Firebase/actions/result.dart';
+import 'package:tekhub/Firebase/models/articles.dart';
 
 class ArticleService {
   Future<Result> getAllArticles() async {
