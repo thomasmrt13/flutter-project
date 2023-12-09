@@ -1,13 +1,15 @@
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:tekhub/Firebase/models/articles.dart';
 import 'package:tekhub/widgets/button.dart';
 
 class SingleItem extends StatelessWidget {
-  const SingleItem({super.key});
+  const SingleItem({required this.article, super.key});
+  final Article article;
 
   @override
   Widget build(BuildContext context) {
-    final CarouselController buttonCarouselController = CarouselController();
     return SafeArea(
       child: Scaffold(
         backgroundColor: const Color.fromARGB(255, 39, 39, 39),
@@ -20,8 +22,11 @@ class SingleItem extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
                   IconButton(
-                    onPressed: () {},
-                    icon: const Icon(Icons.arrow_back),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    icon: const Icon(CupertinoIcons.back),
+                    color: Colors.white,
                   ),
                 ],
               ),
@@ -45,11 +50,11 @@ class SingleItem extends StatelessWidget {
                 child: SingleChildScrollView(
                   child: Column(
                     children: <Widget>[
-                      const Padding(
-                        padding: EdgeInsets.only(top: 20),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 20),
                         child: Text(
-                          '2020 Apple IPad Air 10.9"',
-                          style: TextStyle(
+                          article.name,
+                          style: const TextStyle(
                             fontSize: 28,
                             fontFamily: 'Raleway',
                             fontWeight: FontWeight.w600,
@@ -73,11 +78,11 @@ class SingleItem extends StatelessWidget {
                       ),
                       Container(
                         alignment: Alignment.topLeft,
-                        child: const Padding(
-                          padding: EdgeInsets.only(left: 39, bottom: 10),
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 39, bottom: 10),
                           child: Text(
-                            r'$579',
-                            style: TextStyle(color: Color.fromARGB(255, 126, 217, 87), fontSize: 22, fontWeight: FontWeight.w700, fontFamily: 'Raleway'),
+                            '${article.price}€',
+                            style: const TextStyle(color: Color.fromARGB(255, 126, 217, 87), fontSize: 22, fontWeight: FontWeight.w700, fontFamily: 'Raleway'),
                           ),
                         ),
                       ),
