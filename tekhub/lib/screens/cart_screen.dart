@@ -17,47 +17,8 @@ class Cart extends StatefulWidget {
 }
 
 class _CartState extends State<Cart> {
-  Future<void> getArticles() async {
-    final List<Article> articles = <Article>[
-      Article(
-        id: '1',
-        name: 'Iphone 12',
-        price: 525,
-        description: 'Iphone 12',
-        type: ArticleType.phone,
-        imageUrl: 'assets/images/ipad.png',
-      ),
-      Article(
-        id: '2',
-        name: 'Ipad Pro',
-        price: 790,
-        description: 'Ipad Pro 2021',
-        type: ArticleType.tablet,
-        imageUrl: 'assets/images/ipad.png',
-      ),
-      Article(
-        id: '3',
-        name: 'Iphone 14 Pro',
-        price: 950,
-        description: 'Iphone 14 Pro Max',
-        type: ArticleType.phone,
-        imageUrl: 'assets/images/ipad.png',
-      ),
-      Article(
-        id: '4',
-        name: 'Macbook Pro',
-        price: 359,
-        description: 'Macbook Pro 2022',
-        type: ArticleType.laptop,
-        imageUrl: 'assets/images/ipad.png',
-      ),
-    ];
-    Provider.of<ProviderListener>(context, listen: false).updateArticles(articles);
-  }
-
   @override
   Widget build(BuildContext context) {
-    getArticles();
     final List<Article> articles = Provider.of<ProviderListener>(context).articles;
     final double total = articles.fold(0, (double previousValue, Article article) => previousValue + article.price);
     return Scaffold(
