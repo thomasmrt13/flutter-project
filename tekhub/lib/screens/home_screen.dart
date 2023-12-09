@@ -66,8 +66,7 @@ class HomeState extends State<Home> {
                       ),
                     );
                   case 3:
-                    //_key.currentState?.closeDrawer();
-                    return const SingleItem();
+                  //_key.currentState?.closeDrawer();
                   default:
                     return const Center(
                       child: Text(
