@@ -54,8 +54,10 @@ class HomeState extends State<Home> {
                     );
                   case 1:
                     //_key.currentState?.closeDrawer();
-                    return const Center(
-                      child: Cart(),
+                    return Center(
+                      child: Cart(
+                        scaffoldKey: _key,
+                      ),
                     );
                   case 2:
                     //_key.currentState?.closeDrawer();
