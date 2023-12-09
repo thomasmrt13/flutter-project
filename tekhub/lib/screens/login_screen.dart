@@ -76,10 +76,10 @@ class Login extends StatelessWidget {
                           if (_formKey.currentState!.validate()) {
                             print(_emailInput.getInputText());
                             // ignore: always_specify_types
-                            final Result result =
-                                await authService.signInWithEmailAndPassword(
-                                    _emailInput.getInputText(),
-                                    _passwordInput.getInputText(),);
+                            final Result result = await authService.signInWithEmailAndPassword(
+                              _emailInput.getInputText(),
+                              _passwordInput.getInputText(),
+                            );
 
                             if (result.success) {
                               // Registration successful, navigate to another screen or perform actions accordingly
@@ -98,10 +98,10 @@ class Login extends StatelessWidget {
                               );
                             }
                           }
+                          await Navigator.pushNamed(context, '/');
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor:
-                              const Color.fromARGB(255, 126, 217, 87),
+                          backgroundColor: const Color.fromARGB(255, 126, 217, 87),
                           fixedSize: const Size(314, 70),
                           foregroundColor: Colors.white,
                           shape: RoundedRectangleBorder(

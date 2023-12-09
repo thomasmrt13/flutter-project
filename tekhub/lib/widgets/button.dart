@@ -59,7 +59,7 @@ class LargeButton extends Button {
     this.text = 'click',
     this.onClick,
   }) : super(
-          color: const Color(0xFF5956E9),
+          color: const Color.fromARGB(255, 126, 217, 87),
           fontSize: 20,
           height: 70,
           width: 314,

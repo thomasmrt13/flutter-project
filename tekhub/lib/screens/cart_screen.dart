@@ -1,35 +1,137 @@
 import 'package:flutter/material.dart';
-import 'package:tekhub/widgets/side_bar.dart';
+import 'package:provider/provider.dart';
 import 'package:sidebarx/sidebarx.dart';
+import 'package:tekhub/Firebase/models/articles.dart';
+import 'package:tekhub/provider/provider_listener.dart';
+import 'package:tekhub/widgets/button.dart';
+import 'package:tekhub/widgets/cart_item.dart';
+import 'package:tekhub/widgets/side_bar.dart';
 
 class Cart extends StatefulWidget {
-  const Cart({super.key});
+  const Cart({required this.scaffoldKey, super.key});
+
+  final GlobalKey<ScaffoldState> scaffoldKey;
 
   @override
   State<Cart> createState() => _CartState();
 }
 
 class _CartState extends State<Cart> {
+  Future<void> getArticles() async {
+    final List<Article> articles = <Article>[
+      Article(
+        id: '1',
+        name: 'Iphone 12',
+        price: 525,
+        description: 'Iphone 12',
+        type: ArticleType.phone,
+        imageUrl: 'assets/images/ipad.png',
+      ),
+      Article(
+        id: '2',
+        name: 'Ipad Pro',
+        price: 790,
+        description: 'Ipad Pro 2021',
+        type: ArticleType.tablet,
+        imageUrl: 'assets/images/ipad.png',
+      ),
+      Article(
+        id: '3',
+        name: 'Iphone 14 Pro',
+        price: 950,
+        description: 'Iphone 14 Pro Max',
+        type: ArticleType.phone,
+        imageUrl: 'assets/images/ipad.png',
+      ),
+      Article(
+        id: '4',
+        name: 'Macbook Pro',
+        price: 359,
+        description: 'Macbook Pro 2022',
+        type: ArticleType.laptop,
+        imageUrl: 'assets/images/ipad.png',
+      ),
+    ];
+    Provider.of<ProviderListener>(context, listen: false).updateArticles(articles);
+  }
+
   @override
   Widget build(BuildContext context) {
+    getArticles();
+    final List<Article> articles = Provider.of<ProviderListener>(context).articles;
+    final double total = articles.fold(0, (double previousValue, Article article) => previousValue + article.price);
     return Scaffold(
-        appBar: AppBar(
-          title: const Text('TekHub'),
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-        ),
-        body: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'Cart',
-              style: TextStyle(
-                fontSize: 30,
-                fontWeight: FontWeight.bold,
+      backgroundColor: const Color.fromARGB(255, 39, 39, 39),
+      body: Column(
+        children: <Widget>[
+          Align(
+            alignment: Alignment.topLeft,
+            child: Padding(
+              padding: const EdgeInsets.only(left: 10, top: 12),
+              child: IconButton(
+                icon: const Icon(
+                  Icons.menu,
+                  color: Colors.white,
+                ),
+                onPressed: () {
+                  widget.scaffoldKey.currentState?.openDrawer();
+                },
               ),
             ),
-          ],
-        ));
+          ),
+          SizedBox(
+            height: MediaQuery.of(context).size.height * 0.11,
+            width: MediaQuery.of(context).size.width,
+            child: const Padding(
+              padding: EdgeInsets.all(10),
+              child: Text(
+                'My Cart',
+                style: TextStyle(fontFamily: 'Raleway', fontSize: 50, fontWeight: FontWeight.bold, color: Colors.white),
+              ),
+            ),
+          ),
+          Container(
+            margin: const EdgeInsets.only(top: 10, left: 10, right: 10),
+            height: MediaQuery.of(context).size.height * 0.55,
+            child: Expanded(
+              child: ListView(
+                children: articles.map((Article article) {
+                  return CartItem(
+                    assetPath: article.imageUrl,
+                    title: article.name,
+                    price: article.price,
+                  );
+                }).toList(),
+              ),
+            ),
+          ),
+          const SizedBox(height: 20),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: <Widget>[
+              const Text(
+                'Total',
+                style: TextStyle(fontSize: 17, fontFamily: 'Raleway', color: Colors.white, fontWeight: FontWeight.bold),
+              ),
+              Text(
+                '\$ ${total.toStringAsFixed(2)}',
+                style: const TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                  color: Color.fromARGB(255, 126, 217, 87),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 30),
+          LargeButton(
+            text: 'Checkout',
+            onClick: () {},
+          ),
+          const SizedBox(height: 20),
+        ],
+      ),
+    );
   }
 }
 
