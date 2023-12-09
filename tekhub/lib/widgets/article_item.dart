@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tekhub/Firebase/models/articles.dart';
+import 'package:tekhub/screens/product_detail_screen.dart';
 
 class SingleArticle extends StatelessWidget {
   const SingleArticle({required this.article, super.key});
@@ -16,7 +17,12 @@ class SingleArticle extends StatelessWidget {
           borderRadius: const BorderRadius.all(Radius.elliptical(20, 20)),
           splashColor: Colors.white,
           onTap: () async {
-            await Navigator.pushNamed(context, '/singleitem');
+            await Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (BuildContext context) => SingleItem(article: article),
+              ),
+            );
           },
           child: SizedBox(
             width: 156,
