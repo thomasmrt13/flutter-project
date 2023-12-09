@@ -6,6 +6,7 @@ import 'package:ecommerce_app/widgets/empty_state.dart'; */
 import 'package:flutter/material.dart';
 import 'package:sidebarx/sidebarx.dart';
 import 'package:tekhub/screens/cart.screen.dart';
+import 'package:tekhub/widgets/home_admin_widget.dart';
 import 'package:tekhub/widgets/home_widget.dart';
 import 'package:tekhub/widgets/side_bar.dart';
 
@@ -49,6 +50,8 @@ class HomeState extends State<Home> {
   }
 
   Widget buildSmallScreenBody(BuildContext context) {
+    bool isAdmin = false;
+
     return Row(
       children: <Widget>[
         Expanded(
@@ -59,7 +62,9 @@ class HomeState extends State<Home> {
                 switch (_controller.selectedIndex) {
                   case 0:
                     _key.currentState?.closeDrawer();
-                    return const HomeWidget();
+                    return isAdmin != false
+                        ? const HomeWidget()
+                        : const HomeAdminWidget();
                   case 1:
                     _key.currentState?.closeDrawer();
                     return const Center(

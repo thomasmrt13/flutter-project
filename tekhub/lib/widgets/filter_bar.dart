@@ -65,7 +65,7 @@ class FilterBarState extends State<FilterBar>
               color: Colors.white,
               fontWeight: FontWeight.bold,
             ),
-            borderWidth: 1,
+            borderWidth: 2,
             unselectedBorderColor: const Color.fromARGB(255, 126, 217, 87),
             borderColor: const Color.fromARGB(255, 126, 217, 87),
             radius: 100,
