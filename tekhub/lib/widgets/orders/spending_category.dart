@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:tekhub/Firebase/models/orders.dart';
+import 'package:tekhub/Firebase/models/articles.dart';
 import 'package:tekhub/widgets/orders/custom_icon_button.dart';
 import 'package:tekhub/widgets/orders/price_text.dart';
 
 class SpendingCategory extends StatelessWidget {
-  final SpendingCategoryModel data;
+  final Article data;
 
   SpendingCategory(this.data);
 
@@ -28,8 +28,8 @@ class SpendingCategory extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                Image.asset(data.image, width: 64),
-                PriceText(price: data.price),
+                Image.asset(data.imageUrl, width: 64),
+                PriceText(price: data.price.toInt()),
                 Row(children: [
                   CustomIconButton(icon: Icons.delete),
                   SizedBox(width: 8),
@@ -44,11 +44,11 @@ class SpendingCategory extends StatelessWidget {
             margin: EdgeInsets.only(left: 16),
             padding: EdgeInsets.symmetric(vertical: 4, horizontal: 24),
             decoration: BoxDecoration(
-              color: data.color,
+              color: Color.fromARGB(255, 126, 217, 87),
               borderRadius: BorderRadius.circular(36),
             ),
             child: Text(
-              data.label,
+              data.name,
               style: TextStyle(
                   color: Colors.white,
                   fontWeight: FontWeight.w800,

@@ -17,7 +17,7 @@ Map<String, WidgetBuilder> getApplicationRoutes() {
     'forget-password': (BuildContext contex) => ForgetPassword(),
     'card-information': (BuildContext contex) => const CardPage(),
     'profile': (BuildContext contex) => const ProfilePage(),
-    'cart': (BuildContext contex) => const CardPage(),
+    'card': (BuildContext contex) => const CardPage(),
     'checkout': (BuildContext contex) => const Checkout(),
   };
 }

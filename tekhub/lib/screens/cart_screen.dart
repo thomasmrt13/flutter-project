@@ -19,8 +19,12 @@ class Cart extends StatefulWidget {
 class _CartState extends State<Cart> {
   @override
   Widget build(BuildContext context) {
-    final List<Article> articles = Provider.of<ProviderListener>(context).articles;
-    final double total = articles.fold(0, (double previousValue, Article article) => previousValue + article.price);
+    final List<Article> articles =
+        Provider.of<ProviderListener>(context).articles;
+    final double total = articles.fold(
+        0,
+        (double previousValue, Article article) =>
+            previousValue + article.price);
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 39, 39, 39),
       body: Column(
@@ -47,7 +51,11 @@ class _CartState extends State<Cart> {
               padding: EdgeInsets.all(10),
               child: Text(
                 'My Cart',
-                style: TextStyle(fontFamily: 'Raleway', fontSize: 50, fontWeight: FontWeight.bold, color: Colors.white),
+                style: TextStyle(
+                    fontFamily: 'Raleway',
+                    fontSize: 50,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white),
               ),
             ),
           ),
@@ -72,7 +80,11 @@ class _CartState extends State<Cart> {
             children: <Widget>[
               const Text(
                 'Total',
-                style: TextStyle(fontSize: 17, fontFamily: 'Raleway', color: Colors.white, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                    fontSize: 17,
+                    fontFamily: 'Raleway',
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold),
               ),
               Text(
                 '\$ ${total.toStringAsFixed(2)}',
