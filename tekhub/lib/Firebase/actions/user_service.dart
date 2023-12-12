@@ -1,12 +1,14 @@
 // ignore_for_file: always_specify_types
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:tekhub/Firebase/actions/result.dart';
 import 'package:tekhub/Firebase/models/articles.dart';
 import 'package:tekhub/Firebase/models/user_articles.dart';
 import 'package:tekhub/Firebase/models/user_history_articles.dart';
 
 class UserService {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   Future<Result> updateUserInformation(
@@ -50,6 +52,20 @@ class UserService {
       });
 
       return Result(true, 'User information updated successfully.');
+    } catch (e) {
+      return Result(false, 'An unexpected error occurred.');
+    }
+  }
+
+  Future<Result> deleteUser(String userId) async {
+    try {
+      // Delete the user's authentication credentials
+      await _auth.currentUser?.delete();
+
+      // Delete the user's information from Firestore
+      await _firestore.collection('users').doc(userId).delete();
+
+      return Result(true, 'User deleted successfully.');
     } catch (e) {
       return Result(false, 'An unexpected error occurred.');
     }
