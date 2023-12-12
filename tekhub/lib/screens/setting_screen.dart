@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 class SettingsPage extends StatelessWidget {
   const SettingsPage({super.key});
+  final bool isAdmin = true;
 
   Future<void> showLogoutDialog(BuildContext context) async {
     return showDialog<void>(
@@ -123,72 +124,134 @@ class SettingsPage extends StatelessWidget {
       ),
       body: ListView(
         padding: EdgeInsets.all(16.0),
-        children: <Widget>[
-          _SectionCard(
-            title: 'Settings',
-            children: <Widget>[
-              Align(
-                alignment: Alignment.bottomCenter,
-                child: SizedBox(
-                  width: 150,
-                  height: 150,
-                  child: Stack(
-                    fit: StackFit.expand,
-                    children: [
-                      Container(
-                        decoration: const BoxDecoration(
-                          color: Colors.black,
-                          shape: BoxShape.circle,
-                          image: DecorationImage(
-                              fit: BoxFit.cover,
-                              image: NetworkImage(
-                                  'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80')),
+        children: isAdmin == false
+            ? <Widget>[
+                _SectionCard(
+                  title: 'Settings',
+                  children: <Widget>[
+                    Align(
+                      alignment: Alignment.bottomCenter,
+                      child: SizedBox(
+                        width: 150,
+                        height: 150,
+                        child: Stack(
+                          fit: StackFit.expand,
+                          children: [
+                            Container(
+                              decoration: const BoxDecoration(
+                                color: Colors.black,
+                                shape: BoxShape.circle,
+                                image: DecorationImage(
+                                    fit: BoxFit.cover,
+                                    image: NetworkImage(
+                                        'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80')),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                    ],
-                  ),
+                    )
+                  ],
                 ),
-              )
-            ],
-          ),
-          SizedBox(height: 16.0),
-          _SectionCard(
-            title: 'General',
-            children: <Widget>[
-              _CustomListTile(
-                title: 'Profile',
-                icon: Icons.person,
-                onTap: () => handleProfileClick(context),
-              ),
-              _CustomListTile(
-                title: 'Card information',
-                icon: Icons.credit_card,
-                onTap: () => handleCardClick(context),
-              ),
-            ],
-          ),
-          SizedBox(height: 16.0),
-          _SectionCard(
-            title: 'Privacy and Security',
-            children: <Widget>[
-              _CustomListTile(
-                title: 'Reset password',
-                icon: Icons.security,
-                onTap: () => handleResetClick(context),
-              ),
-              _CustomListTile(
-                title: 'Log out',
-                icon: Icons.lock,
-                onTap: () => showLogoutDialog(context),
-              ),
-              _CustomListTile(
-                title: 'Delete account',
-                icon: Icons.delete,
-                onTap: () => showDeleteDialog(context),
-              ),
-            ],
-          ),
-        ],
+                SizedBox(height: 16.0),
+                _SectionCard(
+                  title: 'General',
+                  children: <Widget>[
+                    _CustomListTile(
+                      title: 'Profile',
+                      icon: Icons.person,
+                      onTap: () => handleProfileClick(context),
+                    ),
+                    _CustomListTile(
+                      title: 'Card information',
+                      icon: Icons.credit_card,
+                      onTap: () => handleCardClick(context),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 16.0),
+                _SectionCard(
+                  title: 'Privacy and Security',
+                  children: <Widget>[
+                    _CustomListTile(
+                      title: 'Reset password',
+                      icon: Icons.security,
+                      onTap: () => handleResetClick(context),
+                    ),
+                    _CustomListTile(
+                      title: 'Log out',
+                      icon: Icons.lock,
+                      onTap: () => showLogoutDialog(context),
+                    ),
+                    _CustomListTile(
+                      title: 'Delete account',
+                      icon: Icons.delete,
+                      onTap: () => showDeleteDialog(context),
+                    ),
+                  ],
+                ),
+              ]
+            : <Widget>[
+                _SectionCard(
+                  title: 'Settings',
+                  children: <Widget>[
+                    Align(
+                      alignment: Alignment.bottomCenter,
+                      child: SizedBox(
+                        width: 150,
+                        height: 150,
+                        child: Stack(
+                          fit: StackFit.expand,
+                          children: [
+                            Container(
+                              decoration: const BoxDecoration(
+                                color: Colors.black,
+                                shape: BoxShape.circle,
+                                image: DecorationImage(
+                                    fit: BoxFit.cover,
+                                    image: NetworkImage(
+                                        'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80')),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+                SizedBox(height: 16.0),
+                _SectionCard(
+                  title: 'General',
+                  children: <Widget>[
+                    _CustomListTile(
+                      title: 'Profile',
+                      icon: Icons.person,
+                      onTap: () => handleProfileClick(context),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 16.0),
+                _SectionCard(
+                  title: 'Privacy and Security',
+                  children: <Widget>[
+                    _CustomListTile(
+                      title: 'Reset password',
+                      icon: Icons.security,
+                      onTap: () => handleResetClick(context),
+                    ),
+                    _CustomListTile(
+                      title: 'Log out',
+                      icon: Icons.lock,
+                      onTap: () => showLogoutDialog(context),
+                    ),
+                    _CustomListTile(
+                      title: 'Delete account',
+                      icon: Icons.delete,
+                      onTap: () => showDeleteDialog(context),
+                    ),
+                  ],
+                ),
+              ],
       ),
     );
   }
