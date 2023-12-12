@@ -15,8 +15,7 @@ class Home extends StatefulWidget {
 }
 
 class HomeState extends State<Home> {
-  final SidebarXController _controller =
-      SidebarXController(selectedIndex: 0, extended: false);
+  final SidebarXController _controller = SidebarXController(selectedIndex: 0, extended: false);
   final GlobalKey<ScaffoldState> _key = GlobalKey<ScaffoldState>();
 
   @override
@@ -28,12 +27,8 @@ class HomeState extends State<Home> {
           return Scaffold(
             key: _key,
             backgroundColor: Colors.white,
-            drawer: MediaQuery.of(context).size.width < 600
-                ? SideBar(_controller)
-                : SideBar(_controller),
-            body: isSmallScreen
-                ? buildSmallScreenBody(context)
-                : buildSmallScreenBody(context),
+            drawer: MediaQuery.of(context).size.width < 600 ? SideBar(_controller) : SideBar(_controller),
+            body: isSmallScreen ? buildSmallScreenBody(context) : buildSmallScreenBody(context),
           );
         },
       ),
@@ -59,7 +54,7 @@ class HomeState extends State<Home> {
                           )
                         : const HomeAdminWidget();
                   case 1:
-                    //_key.currentState?.closeDrawer();
+                    _key.currentState?.closeDrawer();
                     return Center(
                       child: Cart(
                         scaffoldKey: _key,
