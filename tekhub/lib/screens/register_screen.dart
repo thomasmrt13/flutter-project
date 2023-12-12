@@ -1,8 +1,10 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:tekhub/Firebase/actions/auth_service.dart';
 import 'package:tekhub/Firebase/actions/result.dart';
+import 'package:tekhub/provider/provider_listener.dart';
 import 'package:tekhub/widgets/custom_input.dart';
 import 'package:tekhub/widgets/custom_password.dart';
 import 'package:tekhub/widgets/headline.dart';
@@ -95,7 +97,7 @@ class Register extends StatelessWidget {
                                 }
 
                                 // If form is valid, attempt registration
-                                final Result result = await authService
+                                final Result<dynamic> result = await authService
                                     .registerWithEmailAndPassword(
                                   _emailInput.getInputText(),
                                   _passwordInput.getInputText(),
@@ -110,6 +112,11 @@ class Register extends StatelessWidget {
                                       content: Text('Registration successful!'),
                                     ),
                                   );
+                                  Provider.of<ProviderListener>(
+                                    context,
+                                    listen: false,
+                                  ).updateUser(result.message);
+                                  await Navigator.pushNamed(context, '/');
                                 } else {
                                   // Registration failed, show error message
                                   ScaffoldMessenger.of(context).showSnackBar(
@@ -158,6 +165,6 @@ class Register extends StatelessWidget {
               ),
             ],
           ),
-        ));
+        ),);
   }
 }
