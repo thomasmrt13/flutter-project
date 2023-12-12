@@ -9,6 +9,52 @@ import 'package:tekhub/Firebase/models/user_history_articles.dart';
 class UserService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
+  Future<Result> updateUserInformation(
+    String userId,
+    String username,
+    String phoneNumber,
+    String address,
+    String firstName,
+    String lastName,
+    String profilePictureUrl,
+  ) async {
+    try {
+      // Check if the username is already in use by another user
+      final QuerySnapshot<Map<String, dynamic>> usernameCheck =
+          await FirebaseFirestore.instance
+              .collection('users')
+              .where('username', isEqualTo: username)
+              .get();
+
+      // Exclude the current user from the check
+      final QuerySnapshot<Map<String, dynamic>> currentUserCheck =
+          await FirebaseFirestore.instance
+              .collection('users')
+              .where('uid', isEqualTo: userId)
+              .get();
+
+      if (usernameCheck.docs.isNotEmpty &&
+          usernameCheck.docs.first.id != currentUserCheck.docs.first.id) {
+        // Username is already in use by another user
+        return Result(false, 'The username is already in use.');
+      }
+
+      // Update user information in Firestore
+      await FirebaseFirestore.instance.collection('users').doc(userId).update({
+        'username': username,
+        'phoneNumber': phoneNumber,
+        'address': address,
+        'firstName': firstName,
+        'lastName': lastName,
+        'profilePictureUrl': profilePictureUrl,
+      });
+
+      return Result(true, 'User information updated successfully.');
+    } catch (e) {
+      return Result(false, 'An unexpected error occurred.');
+    }
+  }
+
   Future<Result> addToCart(String userId, UserArticle userArticle) async {
     try {
       // Retrieve the user's current cart
