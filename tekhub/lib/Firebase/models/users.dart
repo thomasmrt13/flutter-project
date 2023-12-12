@@ -25,7 +25,7 @@ class MyUser {
   final String lastName;
   final List<UserArticle> cart;
   final List<UserHistoryArticles> purchaseHistory;
-  final UserRole role;
+  final String role;
   final String? profilePictureUrl;
 }
 

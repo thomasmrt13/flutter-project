@@ -123,7 +123,7 @@ class AuthService {
         lastName: userDoc['lastName'] ?? '',
         cart: cart,
         purchaseHistory: purchaseHistory,
-        role: _convertStringToUserRole(userDoc['role']),
+        role: userDoc['role'] ?? '',
         profilePictureUrl: userDoc['profilePictureUrl'] ?? '',
       );
 
@@ -194,7 +194,7 @@ class AuthService {
         lastName: userDoc['lastName'] ?? '',
         cart: cart,
         purchaseHistory: purchaseHistory,
-        role: _convertStringToUserRole(userDoc['role']),
+        role: userDoc['role'] ?? '',
         profilePictureUrl: userDoc['profilePictureUrl'] ?? '',
       );
 
@@ -206,17 +206,6 @@ class AuthService {
       return Result(false, _handleLoginError(e));
     } catch (e) {
       return Result(false, 'An unexpected error occurred during login. $e');
-    }
-  }
-
-  UserRole _convertStringToUserRole(String? role) {
-    switch (role) {
-      case 'admin':
-        return UserRole.admin;
-      case 'user':
-        return UserRole.user;
-      default:
-        return UserRole.user; // Default to user role if unknown
     }
   }
 
