@@ -103,7 +103,6 @@ class Login extends StatelessWidget {
                               );
                             }
                           }
-                          await Navigator.pushNamed(context, '/');
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor:

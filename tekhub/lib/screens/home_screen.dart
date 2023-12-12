@@ -1,8 +1,3 @@
-/* import 'package:ecommerce_app/screens/cart.dart';
-import 'package:ecommerce_app/screens/iniciopage.dart';
-import 'package:ecommerce_app/screens/no_favorites.dart';
-import 'package:ecommerce_app/screens/profile.dart';
-import 'package:ecommerce_app/widgets/empty_state.dart'; */
 import 'package:flutter/material.dart';
 import 'package:sidebarx/sidebarx.dart';
 import 'package:tekhub/screens/cart_screen.dart';
@@ -46,7 +41,7 @@ class HomeState extends State<Home> {
   }
 
   Widget buildSmallScreenBody(BuildContext context) {
-    bool isAdmin = false;
+    bool isAdmin = true;
 
     return Row(
       children: <Widget>[
