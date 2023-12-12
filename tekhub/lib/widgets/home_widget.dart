@@ -50,11 +50,13 @@ class HomeWidgetState extends State<HomeWidget> {
         imageUrl: 'assets/images/ipad.png',
       ),
     ];
-    Provider.of<ProviderListener>(context, listen: false).updateArticles(articles);
+    Provider.of<ProviderListener>(context, listen: false)
+        .updateArticles(articles);
   }
 
   @override
   Widget build(BuildContext context) {
+    const int cartItems = 0;
     getArticles();
     return Consumer<ProviderListener>(
       builder: (
@@ -101,6 +103,39 @@ class HomeWidgetState extends State<HomeWidget> {
                 searchtext: providerListener.searchtext,
                 articles: providerListener.articles,
               ),
+            ],
+          ),
+          floatingActionButton: Stack(
+            children: [
+              FloatingActionButton(
+                backgroundColor: const Color(0xFF272727),
+                onPressed: () {
+                  Navigator.pushNamed(context, 'cart');
+                },
+                child: const Icon(
+                  Icons.shopping_cart,
+                  color: Color.fromARGB(255, 126, 217, 87),
+                ),
+              ),
+              if (cartItems > 0)
+                Positioned(
+                  top: -10,
+                  right: -5,
+                  child: Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: Color.fromARGB(255, 126, 217, 87),
+                      shape: BoxShape.circle,
+                    ),
+                    child: Text(
+                      cartItems.toString(),
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
             ],
           ),
         );
