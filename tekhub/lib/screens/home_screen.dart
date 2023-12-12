@@ -8,7 +8,6 @@ import 'package:sidebarx/sidebarx.dart';
 import 'package:tekhub/screens/cart_screen.dart';
 import 'package:tekhub/screens/orders_screen.dart';
 import 'package:tekhub/screens/setting_screen.dart';
-import 'package:tekhub/screens/cart_screen.dart';
 import 'package:tekhub/widgets/home_admin_widget.dart';
 import 'package:tekhub/widgets/home_widget.dart';
 import 'package:tekhub/widgets/side_bar.dart';
@@ -42,7 +41,7 @@ class HomeState extends State<Home> {
   }
 
   Widget buildSmallScreenBody(BuildContext context) {
-    bool isAdmin = false;
+    const bool isAdmin = false;
 
     return Row(
       children: <Widget>[
@@ -61,13 +60,10 @@ class HomeState extends State<Home> {
                         : const HomeAdminWidget();
                   case 1:
                     _key.currentState?.closeDrawer();
-                    return const Center(
-                      child: Cart(),
-                    );
-                  case 1:
-                    //_key.currentState?.closeDrawer();
                     return Center(
-                      child: Cart(scaffoldKey: _key),
+                      child: Cart(
+                        scaffoldKey: _key,
+                      ),
                     );
                   case 2:
                     //_key.currentState?.closeDrawer();
