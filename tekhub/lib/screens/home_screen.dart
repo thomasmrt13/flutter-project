@@ -74,7 +74,7 @@ class HomeState extends State<Home> {
                     );
                   case 3:
                     //_key.currentState?.closeDrawer();
-                    return SettingsPage();
+                    return const SettingsPage();
                   default:
                     return const Center(
                       child: Text(
