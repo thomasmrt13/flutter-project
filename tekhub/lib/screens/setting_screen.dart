@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 class SettingsPage extends StatelessWidget {
   const SettingsPage({super.key});
-  final bool isAdmin = true;
+  final bool isAdmin = false;
 
   Future<void> showLogoutDialog(BuildContext context) async {
     return showDialog<void>(
@@ -119,11 +119,8 @@ class SettingsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Settings'),
-      ),
       body: ListView(
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         children: isAdmin == false
             ? <Widget>[
                 _SectionCard(
@@ -153,7 +150,7 @@ class SettingsPage extends StatelessWidget {
                     )
                   ],
                 ),
-                SizedBox(height: 16.0),
+                const SizedBox(height: 16.0),
                 _SectionCard(
                   title: 'General',
                   children: <Widget>[
@@ -169,7 +166,7 @@ class SettingsPage extends StatelessWidget {
                     ),
                   ],
                 ),
-                SizedBox(height: 16.0),
+                const SizedBox(height: 16.0),
                 _SectionCard(
                   title: 'Privacy and Security',
                   children: <Widget>[
@@ -219,7 +216,7 @@ class SettingsPage extends StatelessWidget {
                     )
                   ],
                 ),
-                SizedBox(height: 16.0),
+                const SizedBox(height: 16.0),
                 _SectionCard(
                   title: 'General',
                   children: <Widget>[
@@ -230,7 +227,7 @@ class SettingsPage extends StatelessWidget {
                     ),
                   ],
                 ),
-                SizedBox(height: 16.0),
+                const SizedBox(height: 16.0),
                 _SectionCard(
                   title: 'Privacy and Security',
                   children: <Widget>[
@@ -266,26 +263,26 @@ class _SectionCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: Color.fromARGB(255, 39, 39, 39),
+      color: const Color.fromARGB(255, 39, 39, 39),
       elevation: 4.0,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10.0),
       ),
       child: Padding(
-        padding: EdgeInsets.all(12.0),
+        padding: const EdgeInsets.all(12.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Text(
               title,
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
                 color: Colors
                     .white, // Choisis une couleur qui correspond à ton thème
               ),
             ),
-            SizedBox(height: 12.0),
+            const SizedBox(height: 12.0),
             ...children,
           ],
         ),
@@ -306,10 +303,13 @@ class _SingleSection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         Padding(
-          padding: EdgeInsets.all(8.0),
+          padding: const EdgeInsets.all(8.0),
           child: Text(
             title,
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            style: const TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                fontFamily: 'Raleway'),
           ),
         ),
         ...children,
@@ -329,7 +329,7 @@ class _CustomListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.symmetric(vertical: 4),
+      margin: const EdgeInsets.symmetric(vertical: 4),
       decoration: BoxDecoration(
         border: Border.all(
           color: Colors.white, // Couleur de la bordure
@@ -338,11 +338,14 @@ class _CustomListTile extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
       ),
       child: ListTile(
-        iconColor: Color.fromARGB(255, 126, 217, 87),
+        iconColor: const Color.fromARGB(255, 126, 217, 87),
         textColor: Colors.white,
         leading: Icon(icon),
         trailing: const Icon(CupertinoIcons.forward, size: 18),
-        title: Text(title),
+        title: Text(
+          title,
+          style: const TextStyle(fontFamily: 'Raleway'),
+        ),
         onTap: onTap,
       ),
     );

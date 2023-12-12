@@ -18,102 +18,118 @@ class ForgetPassword extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-      final AuthService authService = AuthService();
+    final AuthService authService = AuthService();
     return Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: const Color.fromARGB(255, 39, 39, 39),
-      body: Column(
-        children: <Widget>[
-          SizedBox(height: MediaQuery.of(context).size.height * 0.10),
-          const Center(
-            child: Headline(title: 'Forget Password'),
+      appBar: AppBar(
+        leading: IconButton(
+          icon: Icon(
+            Icons.arrow_back_ios,
+            color: Colors.white,
           ),
-          SizedBox(height: MediaQuery.of(context).size.height * 0.01),
-          Form(
-            key: _formKey,
-            child: Container(
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.all(Radius.circular(20)),
-              ),
-              height: MediaQuery.of(context).size.height * 0.65,
-              width: MediaQuery.of(context).size.width,
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(50, 36, 50, 0),
-                child: SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: <Widget>[
-                      const Text(
-                        'Enter your email address',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontFamily: 'Raleway',
-                          fontSize: 18,
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        ),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+      ),
+      body: SingleChildScrollView(
+        child: Column(
+          children: <Widget>[
+            SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+            const Center(
+              child: Headline(title: 'Forget Password'),
+            ),
+            SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+            Form(
+              key: _formKey,
+              child: Container(
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.all(Radius.circular(20)),
+                ),
+                height: MediaQuery.of(context).size.height * 0.65,
+                width: MediaQuery.of(context).size.width,
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(50, 36, 50, 0),
+                  child: SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: <Widget>[
+                        const Text(
+                          'Enter your email address',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontFamily: 'Raleway',
+                            fontSize: 18,
+                          ),
                         ),
-                      ),
-                      const Text(
-                        'you will receive a link to reset your password',
-                        style: TextStyle(
-                          fontWeight: FontWeight.w200,
-                          fontFamily: 'Raleway',
-                          fontSize: 15,
-                          fontStyle: FontStyle
-                              .italic, // Add this line to make the text italic
+                        const Text(
+                          'you will receive a link to reset your password',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w200,
+                            fontFamily: 'Raleway',
+                            fontSize: 15,
+                            fontStyle: FontStyle
+                                .italic, // Add this line to make the text italic
+                          ),
                         ),
-                      ),
-                      _emailInput,
-                      SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.10,
-                      ),
-                      ElevatedButton(
-                        onPressed: () async {
-                          print(_emailInput.getInputText());
-                          if (_formKey.currentState!.validate()) {
-                            final Result result =
-                                await authService.sendPasswordResetEmail(
-                                    _emailInput.getInputText(),);
+                        _emailInput,
+                        SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.10,
+                        ),
+                        ElevatedButton(
+                          onPressed: () async {
+                            print(_emailInput.getInputText());
+                            if (_formKey.currentState!.validate()) {
+                              final Result result =
+                                  await authService.sendPasswordResetEmail(
+                                _emailInput.getInputText(),
+                              );
 
-                             if (result.success) {
-                              // Registration successful, navigate to another screen or perform actions accordingly
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(result.message.toString()),
-                                ),
-                              );
-                            } else {
-                              // Registration failed, show error message
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(result.message.toString()),
-                                ),
-                              );
+                              if (result.success) {
+                                // Registration successful, navigate to another screen or perform actions accordingly
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(result.message.toString()),
+                                  ),
+                                );
+                              } else {
+                                // Registration failed, show error message
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(result.message.toString()),
+                                  ),
+                                );
+                              }
                             }
-                          }
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor:
-                              const Color.fromARGB(255, 126, 217, 87),
-                          fixedSize: const Size(314, 70),
-                          foregroundColor: Colors.white,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor:
+                                const Color.fromARGB(255, 126, 217, 87),
+                            fixedSize: const Size(314, 70),
+                            foregroundColor: Colors.white,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            padding: const EdgeInsets.symmetric(vertical: 22),
+                            textStyle: const TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.w700,
+                            ),
                           ),
-                          padding: const EdgeInsets.symmetric(vertical: 22),
-                          textStyle: const TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.w700,
-                          ),
+                          child: const Text('Send'),
                         ),
-                        child: const Text('Send'),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

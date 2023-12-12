@@ -7,6 +7,7 @@ import 'package:tekhub/widgets/card/card_input_formatter.dart';
 import 'package:tekhub/widgets/card/card_month_input_formatter.dart';
 import 'package:tekhub/widgets/card/master_card.dart';
 import 'package:tekhub/widgets/card/my_painter.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 class CardPage extends StatefulWidget {
   const CardPage({Key? key}) : super(key: key);
@@ -35,91 +36,100 @@ class _CardPageState extends State<CardPage> {
             children: [
               const SizedBox(height: 30),
               FlipCard(
-                  fill: Fill.fillFront,
-                  direction: FlipDirection.HORIZONTAL,
-                  controller: flipCardController,
-                  onFlip: () {
-                    print('Flip');
-                  },
-                  flipOnTouch: false,
-                  onFlipDone: (isFront) {
-                    print('isFront: $isFront');
-                  },
-                  front: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
-                    child: buildCreditCard(
-                      color: Color.fromARGB(255, 39, 39, 39),
-                      cardExpiration: cardExpiryDateController.text.isEmpty
-                          ? "08/2022"
-                          : cardExpiryDateController.text,
-                      cardHolder: cardHolderNameController.text.isEmpty
-                          ? "Card Holder"
-                          : cardHolderNameController.text.toUpperCase(),
-                      cardNumber: cardNumberController.text.isEmpty
-                          ? "XXXX XXXX XXXX XXXX"
-                          : cardNumberController.text,
-                    ),
+                fill: Fill.fillFront,
+                direction: FlipDirection.HORIZONTAL,
+                controller: flipCardController,
+                onFlip: () {
+                  print('Flip');
+                },
+                flipOnTouch: false,
+                onFlipDone: (isFront) {
+                  print('isFront: $isFront');
+                },
+                front: Padding(
+                  padding: EdgeInsets.symmetric(
+                      horizontal: kIsWeb == true
+                          ? MediaQuery.of(context).size.width * 0.35
+                          : 5), // Ajustez la largeur ici
+                  child: buildCreditCard(
+                    color: Color.fromARGB(255, 39, 39, 39),
+                    cardExpiration: cardExpiryDateController.text.isEmpty
+                        ? "08/2022"
+                        : cardExpiryDateController.text,
+                    cardHolder: cardHolderNameController.text.isEmpty
+                        ? "Card Holder"
+                        : cardHolderNameController.text.toUpperCase(),
+                    cardNumber: cardNumberController.text.isEmpty
+                        ? "XXXX XXXX XXXX XXXX"
+                        : cardNumberController.text,
                   ),
-                  back: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
-                    child: Card(
-                      elevation: 4.0,
-                      color: Color.fromARGB(255, 39, 39, 39),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(14),
-                      ),
-                      child: Container(
-                        height: 230,
-                        padding: const EdgeInsets.only(
-                            left: 16.0, right: 16.0, bottom: 22.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Container(
-                              height: 45,
-                              width: MediaQuery.of(context).size.width / 1.2,
-                              decoration: BoxDecoration(
-                                color: Colors.white.withOpacity(0.2),
-                                borderRadius: BorderRadius.circular(5),
-                              ),
+                ),
+                back: Padding(
+                  padding: EdgeInsets.symmetric(
+                      horizontal: kIsWeb == true
+                          ? MediaQuery.of(context).size.width * 0.35
+                          : 5), // Ajustez la largeur ici
+                  child: Card(
+                    elevation: 4.0,
+                    color: Color.fromARGB(255, 39, 39, 39),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                    child: Container(
+                      height: 230,
+                      padding: const EdgeInsets.only(
+                          left: 16.0, right: 16.0, bottom: 22.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Container(
+                            height: 45,
+                            width: MediaQuery.of(context).size.width /
+                                1, // Ajustez la largeur ici
+                            decoration: BoxDecoration(
+                              color: Colors.white.withOpacity(0.2),
+                              borderRadius: BorderRadius.circular(5),
                             ),
-                            CustomPaint(
-                              painter: MyPainter(),
-                              child: SizedBox(
-                                height: 35,
-                                width: MediaQuery.of(context).size.width / 1.2,
-                                child: Align(
-                                  alignment: Alignment.centerRight,
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(5),
-                                    child: Text(
-                                      cardCvvController.text.isEmpty
-                                          ? "XXX"
-                                          : cardCvvController.text,
-                                      style: const TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 21,
-                                      ),
+                          ),
+                          CustomPaint(
+                            painter: MyPainter(),
+                            child: SizedBox(
+                              height: 35,
+                              width: MediaQuery.of(context).size.width /
+                                  1, // Ajustez la largeur ici
+                              child: Align(
+                                alignment: Alignment.centerRight,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(5),
+                                  child: Text(
+                                    cardCvvController.text.isEmpty
+                                        ? "XXX"
+                                        : cardCvvController.text,
+                                    style: const TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 21,
                                     ),
                                   ),
                                 ),
                               ),
                             ),
-                            const SizedBox(height: 10),
-                            const Text(
-                              'Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old.',
-                              style: TextStyle(
-                                color: Colors.white54,
-                                fontSize: 11,
-                              ),
-                              textAlign: TextAlign.center,
+                          ),
+                          const SizedBox(height: 10),
+                          const Text(
+                            'Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old.',
+                            style: TextStyle(
+                              color: Colors.white54,
+                              fontSize: 11,
                             ),
-                          ],
-                        ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ],
                       ),
                     ),
-                  )),
+                  ),
+                ),
+              ),
               const SizedBox(height: 40),
               Container(
                 height: 55,

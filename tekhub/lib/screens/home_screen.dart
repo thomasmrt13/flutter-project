@@ -33,10 +33,10 @@ class HomeState extends State<Home> {
             backgroundColor: Colors.white,
             drawer: MediaQuery.of(context).size.width < 600
                 ? SideBar(_controller)
-                : null,
+                : SideBar(_controller),
             body: isSmallScreen
                 ? buildSmallScreenBody(context)
-                : DesktopHomeLayout(_controller),
+                : buildSmallScreenBody(context),
           );
         },
       ),
