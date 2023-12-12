@@ -118,12 +118,9 @@ class HomeAdminWidgetState extends State<HomeAdminWidget> {
                               color: Color.fromARGB(255, 126, 217, 87))),
                       child: TextField(
                         controller: titleController,
-                        maxLength: 20, // Set the character limit to 20
                         decoration: InputDecoration(
                           border: InputBorder.none,
                           labelText: "Title",
-                          counterText:
-                              '${titleController.text.length}/20', // Display character count
                         ),
                       ),
                     ),
@@ -203,7 +200,6 @@ class HomeAdminWidgetState extends State<HomeAdminWidget> {
                           keyboardType: TextInputType.multiline,
                           maxLines: 4,
                           decoration: InputDecoration(
-                              counterText: '${titleController.text.length}/300',
                               border: InputBorder.none,
                               hintText: "Description",
                               focusedBorder: OutlineInputBorder()),
