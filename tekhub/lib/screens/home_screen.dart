@@ -6,7 +6,7 @@ import 'package:ecommerce_app/widgets/empty_state.dart'; */
 import 'package:flutter/material.dart';
 import 'package:sidebarx/sidebarx.dart';
 import 'package:tekhub/screens/cart_screen.dart';
-import 'package:tekhub/screens/product_detail_screen.dart';
+import 'package:tekhub/screens/setting_screen.dart';
 import 'package:tekhub/widgets/home_widget.dart';
 import 'package:tekhub/widgets/side_bar.dart';
 
@@ -18,7 +18,8 @@ class Home extends StatefulWidget {
 }
 
 class HomeState extends State<Home> {
-  final SidebarXController _controller = SidebarXController(selectedIndex: 0, extended: false);
+  final SidebarXController _controller =
+      SidebarXController(selectedIndex: 0, extended: false);
   final GlobalKey<ScaffoldState> _key = GlobalKey<ScaffoldState>();
 
   @override
@@ -30,8 +31,12 @@ class HomeState extends State<Home> {
           return Scaffold(
             key: _key,
             backgroundColor: Colors.white,
-            drawer: MediaQuery.of(context).size.width < 600 ? SideBar(_controller) : null,
-            body: isSmallScreen ? buildSmallScreenBody(context) : DesktopHomeLayout(_controller),
+            drawer: MediaQuery.of(context).size.width < 600
+                ? SideBar(_controller)
+                : null,
+            body: isSmallScreen
+                ? buildSmallScreenBody(context)
+                : DesktopHomeLayout(_controller),
           );
         },
       ),
@@ -68,7 +73,8 @@ class HomeState extends State<Home> {
                       ),
                     );
                   case 3:
-                  //_key.currentState?.closeDrawer();
+                    //_key.currentState?.closeDrawer();
+                    return SettingsPage();
                   default:
                     return const Center(
                       child: Text(
