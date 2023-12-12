@@ -1,10 +1,8 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:tekhub/Firebase/actions/auth_service.dart';
 import 'package:tekhub/Firebase/actions/result.dart';
-import 'package:tekhub/provider/provider_listener.dart';
 import 'package:tekhub/widgets/custom_input.dart';
 import 'package:tekhub/widgets/custom_password.dart';
 import 'package:tekhub/widgets/headline.dart';

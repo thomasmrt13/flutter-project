@@ -5,9 +5,9 @@ import 'package:ecommerce_app/screens/profile.dart';
 import 'package:ecommerce_app/widgets/empty_state.dart'; */
 import 'package:flutter/material.dart';
 import 'package:sidebarx/sidebarx.dart';
+import 'package:tekhub/screens/cart_screen.dart';
 import 'package:tekhub/screens/orders_screen.dart';
 import 'package:tekhub/screens/setting_screen.dart';
-import 'package:tekhub/screens/cart.screen.dart';
 import 'package:tekhub/widgets/home_admin_widget.dart';
 import 'package:tekhub/widgets/home_widget.dart';
 import 'package:tekhub/widgets/side_bar.dart';
@@ -59,13 +59,10 @@ class HomeState extends State<Home> {
                   case 0:
                     _key.currentState?.closeDrawer();
                     return isAdmin != false
-                        ? const HomeWidget()
+                        ? HomeWidget(
+                            scaffoldKey: _key,
+                          )
                         : const HomeAdminWidget();
-                  case 1:
-                    _key.currentState?.closeDrawer();
-                    return const Center(
-                      child: Cart(),
-                    );
                   case 1:
                     //_key.currentState?.closeDrawer();
                     return Center(
