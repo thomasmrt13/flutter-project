@@ -6,6 +6,7 @@ import 'package:ecommerce_app/widgets/empty_state.dart'; */
 import 'package:flutter/material.dart';
 import 'package:sidebarx/sidebarx.dart';
 import 'package:tekhub/screens/cart_screen.dart';
+import 'package:tekhub/screens/orders_screen.dart';
 import 'package:tekhub/screens/setting_screen.dart';
 import 'package:tekhub/widgets/home_widget.dart';
 import 'package:tekhub/widgets/side_bar.dart';
@@ -66,12 +67,7 @@ class HomeState extends State<Home> {
                     );
                   case 2:
                     //_key.currentState?.closeDrawer();
-                    return const Center(
-                      child: Text(
-                        'Orders',
-                        style: TextStyle(color: Colors.black, fontSize: 40),
-                      ),
-                    );
+                    return OrdersScreen();
                   case 3:
                     //_key.currentState?.closeDrawer();
                     return const SettingsPage();
