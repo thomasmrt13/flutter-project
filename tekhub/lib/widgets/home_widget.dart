@@ -23,7 +23,7 @@ class HomeWidgetState extends State<HomeWidget> {
         price: 525,
         description: 'Iphone 12',
         type: ArticleType.phone,
-        imageUrl: 'assets/images/ipad.png',
+        imageUrl: 'assets/images/logo.png',
       ),
       Article(
         id: '2',
@@ -31,7 +31,7 @@ class HomeWidgetState extends State<HomeWidget> {
         price: 790,
         description: 'Ipad Pro 2021',
         type: ArticleType.tablet,
-        imageUrl: 'assets/images/ipad.png',
+        imageUrl: 'assets/images/logo.png',
       ),
       Article(
         id: '3',
@@ -39,7 +39,7 @@ class HomeWidgetState extends State<HomeWidget> {
         price: 950,
         description: 'Iphone 14 Pro Max',
         type: ArticleType.phone,
-        imageUrl: 'assets/images/ipad.png',
+        imageUrl: 'assets/images/logo.png',
       ),
       Article(
         id: '4',
@@ -47,7 +47,7 @@ class HomeWidgetState extends State<HomeWidget> {
         price: 359,
         description: 'Macbook Pro 2022',
         type: ArticleType.laptop,
-        imageUrl: 'assets/images/ipad.png',
+        imageUrl: 'assets/images/logo.png',
       ),
     ];
     Provider.of<ProviderListener>(context, listen: false)

@@ -87,7 +87,9 @@ class _CartState extends State<Cart> {
           const SizedBox(height: 30),
           LargeButton(
             text: 'Checkout',
-            onClick: () {},
+            onClick: () async {
+              await Navigator.pushNamed(context, 'checkout');
+            },
           ),
           const SizedBox(height: 20),
         ],
