@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:tekhub/screens/login_screen.dart';
 
 class Splash extends StatefulWidget {
+  const Splash({super.key});
+
   @override
-  _SplashState createState() => _SplashState();
+  SplashState createState() => SplashState();
 }
 
-class _SplashState extends State<Splash> with SingleTickerProviderStateMixin {
+class SplashState extends State<Splash> with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<double> _scaleAnimation;
   late Animation<double> _rotationAnimation;
@@ -16,20 +18,20 @@ class _SplashState extends State<Splash> with SingleTickerProviderStateMixin {
     super.initState();
     _animationController = AnimationController(
       vsync: this,
-      duration: Duration(seconds: 3),
+      duration: const Duration(seconds: 3),
     );
 
     _scaleAnimation = Tween<double>(begin: 0.5, end: 1.5).animate(
       CurvedAnimation(
         parent: _animationController,
-        curve: Interval(0.0, 0.5, curve: Curves.easeInOut),
+        curve: const Interval(0, 0.5, curve: Curves.easeInOut),
       ),
     );
 
-    _rotationAnimation = Tween<double>(begin: 0.0, end: 2 * 3.14159).animate(
+    _rotationAnimation = Tween<double>(begin: 0, end: 2 * 3.14159).animate(
       CurvedAnimation(
         parent: _animationController,
-        curve: Interval(0.5, 1.0, curve: Curves.easeInOut),
+        curve: const Interval(0.5, 1, curve: Curves.easeInOut),
       ),
     );
 
@@ -72,7 +74,7 @@ class _SplashState extends State<Splash> with SingleTickerProviderStateMixin {
                 child: Container(
                   width: MediaQuery.of(context).size.width * 0.7,
                   height: MediaQuery.of(context).size.height * 0.7,
-                  decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
                     image: DecorationImage(
                       image: AssetImage('assets/images/logo.png'),
                     ),
