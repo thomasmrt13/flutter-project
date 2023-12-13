@@ -2,20 +2,20 @@ import 'package:flutter/material.dart';
 
 class CardAlertDialog extends StatelessWidget {
   const CardAlertDialog({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
         backgroundColor:
-            Color.fromARGB(255, 39, 39, 39), // Set the background color to blue
+            const Color.fromARGB(255, 39, 39, 39), // Set the background color to blue
         content: Stack(
           clipBehavior: Clip.none,
-          children: [
+          children: <Widget>[
             Positioned(
-              right: -40.0,
-              top: -40.0,
+              right: -40,
+              top: -40,
               child: InkResponse(
                 onTap: () {
                   Navigator.of(context).pop();
@@ -26,11 +26,11 @@ class CardAlertDialog extends StatelessWidget {
                 ),
               ),
             ),
-            Column(
+            const Column(
               mainAxisSize: MainAxisSize.min,
-              children: const [
+              children: <Widget>[
                 Padding(
-                  padding: EdgeInsets.all(8.0),
+                  padding: EdgeInsets.all(8),
                   child: Text(
                     'Creditds Card Added',
                     style: TextStyle(
@@ -41,18 +41,18 @@ class CardAlertDialog extends StatelessWidget {
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.all(8.0),
+                  padding: EdgeInsets.all(8),
                   child: Text(
                     'You can now use your card to make payments.',
                     style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
-                        color: Colors.white),
+                        color: Colors.white,),
                   ),
                 ),
               ],
             ),
           ],
-        ));
+        ),);
   }
 }

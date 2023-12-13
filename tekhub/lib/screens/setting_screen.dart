@@ -15,7 +15,7 @@ class SettingsPage extends StatelessWidget {
               style: TextStyle(
                   color: Colors.white,
                   fontFamily: 'Raleway',
-                  fontWeight: FontWeight.bold)),
+                  fontWeight: FontWeight.bold,),),
           content: const Text(
             'Are you sure you want to logout?',
             style: TextStyle(fontFamily: 'Raleway', color: Colors.white),
@@ -40,7 +40,7 @@ class SettingsPage extends StatelessWidget {
                 'Confirm',
                 style: TextStyle(
                     color: Color.fromARGB(255, 126, 217, 87),
-                    fontWeight: FontWeight.bold),
+                    fontWeight: FontWeight.bold,),
               ),
             ),
           ],
@@ -59,7 +59,7 @@ class SettingsPage extends StatelessWidget {
               style: TextStyle(
                   color: Colors.white,
                   fontFamily: 'Raleway',
-                  fontWeight: FontWeight.bold)),
+                  fontWeight: FontWeight.bold,),),
           content: const Text(
             'Are you sure you want to delete your account?',
             style: TextStyle(fontFamily: 'Raleway', color: Colors.white),
@@ -84,7 +84,7 @@ class SettingsPage extends StatelessWidget {
                 'Confirm',
                 style: TextStyle(
                     color: Color.fromARGB(255, 126, 217, 87),
-                    fontWeight: FontWeight.bold),
+                    fontWeight: FontWeight.bold,),
               ),
             ),
           ],
@@ -120,7 +120,7 @@ class SettingsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: ListView(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16),
         children: isAdmin == false
             ? <Widget>[
                 _SectionCard(
@@ -133,7 +133,7 @@ class SettingsPage extends StatelessWidget {
                         height: 150,
                         child: Stack(
                           fit: StackFit.expand,
-                          children: [
+                          children: <Widget>[
                             Container(
                               decoration: const BoxDecoration(
                                 color: Colors.black,
@@ -141,16 +141,16 @@ class SettingsPage extends StatelessWidget {
                                 image: DecorationImage(
                                     fit: BoxFit.cover,
                                     image: NetworkImage(
-                                        'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80')),
+                                        'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80',),),
                               ),
                             ),
                           ],
                         ),
                       ),
-                    )
+                    ),
                   ],
                 ),
-                const SizedBox(height: 16.0),
+                const SizedBox(height: 16),
                 _SectionCard(
                   title: 'General',
                   children: <Widget>[
@@ -166,7 +166,7 @@ class SettingsPage extends StatelessWidget {
                     ),
                   ],
                 ),
-                const SizedBox(height: 16.0),
+                const SizedBox(height: 16),
                 _SectionCard(
                   title: 'Privacy and Security',
                   children: <Widget>[
@@ -199,7 +199,7 @@ class SettingsPage extends StatelessWidget {
                         height: 150,
                         child: Stack(
                           fit: StackFit.expand,
-                          children: [
+                          children: <Widget>[
                             Container(
                               decoration: const BoxDecoration(
                                 color: Colors.black,
@@ -207,16 +207,16 @@ class SettingsPage extends StatelessWidget {
                                 image: DecorationImage(
                                     fit: BoxFit.cover,
                                     image: NetworkImage(
-                                        'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80')),
+                                        'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80',),),
                               ),
                             ),
                           ],
                         ),
                       ),
-                    )
+                    ),
                   ],
                 ),
-                const SizedBox(height: 16.0),
+                const SizedBox(height: 16),
                 _SectionCard(
                   title: 'General',
                   children: <Widget>[
@@ -227,7 +227,7 @@ class SettingsPage extends StatelessWidget {
                     ),
                   ],
                 ),
-                const SizedBox(height: 16.0),
+                const SizedBox(height: 16),
                 _SectionCard(
                   title: 'Privacy and Security',
                   children: <Widget>[
@@ -255,21 +255,21 @@ class SettingsPage extends StatelessWidget {
 }
 
 class _SectionCard extends StatelessWidget {
+
+  const _SectionCard({required this.title, required this.children});
   final String title;
   final List<Widget> children;
-
-  _SectionCard({required this.title, required this.children});
 
   @override
   Widget build(BuildContext context) {
     return Card(
       color: const Color.fromARGB(255, 39, 39, 39),
-      elevation: 4.0,
+      elevation: 4,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10.0),
+        borderRadius: BorderRadius.circular(10),
       ),
       child: Padding(
-        padding: const EdgeInsets.all(12.0),
+        padding: const EdgeInsets.all(12),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
@@ -282,7 +282,7 @@ class _SectionCard extends StatelessWidget {
                     .white, // Choisis une couleur qui correspond à ton thème
               ),
             ),
-            const SizedBox(height: 12.0),
+            const SizedBox(height: 12),
             ...children,
           ],
         ),
@@ -292,10 +292,10 @@ class _SectionCard extends StatelessWidget {
 }
 
 class _SingleSection extends StatelessWidget {
+
+  const _SingleSection({required this.title, required this.children});
   final String title;
   final List<Widget> children;
-
-  _SingleSection({required this.title, required this.children});
 
   @override
   Widget build(BuildContext context) {
@@ -303,13 +303,13 @@ class _SingleSection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.all(8),
           child: Text(
             title,
             style: const TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
-                fontFamily: 'Raleway'),
+                fontFamily: 'Raleway',),
           ),
         ),
         ...children,
@@ -319,12 +319,12 @@ class _SingleSection extends StatelessWidget {
 }
 
 class _CustomListTile extends StatelessWidget {
+
+  const _CustomListTile(
+      {required this.title, required this.icon, required this.onTap,});
   final String title;
   final IconData icon;
   final VoidCallback onTap;
-
-  _CustomListTile(
-      {required this.title, required this.icon, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -333,7 +333,6 @@ class _CustomListTile extends StatelessWidget {
       decoration: BoxDecoration(
         border: Border.all(
           color: Colors.white, // Couleur de la bordure
-          width: 1, // Épaisseur de la bordure
         ),
         borderRadius: BorderRadius.circular(12),
       ),

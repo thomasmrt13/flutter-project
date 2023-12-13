@@ -24,7 +24,7 @@ class ForgetPassword extends StatelessWidget {
       backgroundColor: const Color.fromARGB(255, 39, 39, 39),
       appBar: AppBar(
         leading: IconButton(
-          icon: Icon(
+          icon: const Icon(
             Icons.arrow_back_ios,
             color: Colors.white,
           ),

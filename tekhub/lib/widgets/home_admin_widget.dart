@@ -57,21 +57,21 @@ class HomeAdminWidgetState extends State<HomeAdminWidget> {
     getArticles();
 
     // Function to show the modal
-    void _showModal() {
-      final List<bool> _selectedType = <bool>[true, false, false];
-      int _selectedTypeIndex = 0;
-      TextEditingController titleController = TextEditingController();
-      TextEditingController priceController = TextEditingController();
-      TextEditingController descriptionController = TextEditingController();
+    void showModal() {
+      final List<bool> selectedType = <bool>[true, false, false];
+      int selectedTypeIndex = 0;
+      final TextEditingController titleController = TextEditingController();
+      final TextEditingController priceController = TextEditingController();
+      final TextEditingController descriptionController = TextEditingController();
 
       const List<Widget> type = <Widget>[
         Text('Iphone'),
         Text('Laptop'),
-        Text('Tablet')
+        Text('Tablet'),
       ];
 
-      String _getSelectedType() {
-        switch (_selectedTypeIndex) {
+      String getSelectedType() {
+        switch (selectedTypeIndex) {
           case 0:
             return 'phone';
           case 1:
@@ -95,11 +95,11 @@ class HomeAdminWidgetState extends State<HomeAdminWidget> {
                     SizedBox(
                       height: MediaQuery.of(context).size.height * 0.03,
                     ),
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 10),
+                    const Padding(
+                      padding: EdgeInsets.only(bottom: 10),
                       child: Text(
                         'Add a product',
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontFamily: 'Raleway',
                           fontSize: 20,
@@ -115,45 +115,44 @@ class HomeAdminWidgetState extends State<HomeAdminWidget> {
                           borderRadius: BorderRadius.circular(25),
                           border: Border.all(
                               width: 2,
-                              color: Color.fromARGB(255, 126, 217, 87))),
+                              color: const Color.fromARGB(255, 126, 217, 87),),),
                       child: TextField(
                         controller: titleController,
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           border: InputBorder.none,
-                          labelText: "Title",
+                          labelText: 'Title',
                         ),
                       ),
                     ),
                     SizedBox(
                       height: MediaQuery.of(context).size.height * 0.02,
                     ),
-                    Text('Device Type'),
+                    const Text('Device Type'),
                     const SizedBox(height: 5),
                     ToggleButtons(
-                      direction: Axis.horizontal,
                       onPressed: (int index) {
                         setState(() {
-                          for (int i = 0; i < _selectedType.length; i++) {
-                            _selectedType[i] = i == index;
+                          for (int i = 0; i < selectedType.length; i++) {
+                            selectedType[i] = i == index;
                           }
                           // Update the selected type index
-                          _selectedTypeIndex = index;
-                          print(_getSelectedType());
+                          selectedTypeIndex = index;
+                          print(getSelectedType());
                           // TODO: Modify UI based on the selected type
                           // For example, update Text or other widgets
                         });
                       },
                       borderRadius: const BorderRadius.all(Radius.circular(8)),
-                      selectedBorderColor: Color.fromARGB(255, 126, 217, 87),
+                      selectedBorderColor: const Color.fromARGB(255, 126, 217, 87),
                       borderWidth: 2,
                       selectedColor: Colors.white,
-                      fillColor: Color(0xFF272727),
-                      color: Color(0xFF272727),
+                      fillColor: const Color(0xFF272727),
+                      color: const Color(0xFF272727),
                       constraints: const BoxConstraints(
-                        minHeight: 40.0,
-                        minWidth: 80.0,
+                        minHeight: 40,
+                        minWidth: 80,
                       ),
-                      isSelected: _selectedType,
+                      isSelected: selectedType,
                       children: type,
                     ),
                     SizedBox(
@@ -161,18 +160,18 @@ class HomeAdminWidgetState extends State<HomeAdminWidget> {
                     ),
                     Container(
                       constraints: BoxConstraints(
-                          maxWidth: MediaQuery.of(context).size.height * 0.45),
+                          maxWidth: MediaQuery.of(context).size.height * 0.45,),
                       padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(25),
                           border: Border.all(
                               width: 2,
-                              color: Color.fromARGB(255, 126, 217, 87))),
+                              color: const Color.fromARGB(255, 126, 217, 87),),),
                       child: TextField(
                         controller: priceController,
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           border: InputBorder.none,
-                          labelText: "Price",
+                          labelText: 'Price',
                         ),
                       ),
                     ),
@@ -189,7 +188,7 @@ class HomeAdminWidgetState extends State<HomeAdminWidget> {
                         borderRadius: BorderRadius.circular(25),
                         border: Border.all(
                           width: 2,
-                          color: Color.fromARGB(255, 126, 217, 87),
+                          color: const Color.fromARGB(255, 126, 217, 87),
                         ),
                       ),
                       child: SizedBox(
@@ -199,10 +198,10 @@ class HomeAdminWidgetState extends State<HomeAdminWidget> {
                           controller: descriptionController,
                           keyboardType: TextInputType.multiline,
                           maxLines: 4,
-                          decoration: InputDecoration(
+                          decoration: const InputDecoration(
                               border: InputBorder.none,
-                              hintText: "Description",
-                              focusedBorder: OutlineInputBorder()),
+                              hintText: 'Description',
+                              focusedBorder: OutlineInputBorder(),),
                         ),
                       ),
                     ),
@@ -214,7 +213,7 @@ class HomeAdminWidgetState extends State<HomeAdminWidget> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment
                             .center, // Aligns buttons at the center horizontally
-                        children: [
+                        children: <Widget>[
                           ElevatedButton(
                             onPressed: () {},
                             style: ElevatedButton.styleFrom(
@@ -236,33 +235,32 @@ class HomeAdminWidgetState extends State<HomeAdminWidget> {
                                 fontWeight: FontWeight.w700,
                               ),
                             ),
-                            child: Row(
+                            child: const Row(
                               mainAxisAlignment: MainAxisAlignment.center,
-                              children: const <Widget>[
+                              children: <Widget>[
                                 Icon(Icons.add_photo_alternate,
-                                    size: 24), // Replace with your icon
+                                    size: 24,), // Replace with your icon
                                 SizedBox(
                                     width:
-                                        8), // Adjust spacing between icon and text
+                                        8,), // Adjust spacing between icon and text
                                 Text('Add pictures'),
                               ],
                             ),
                           ),
 
-                          SizedBox(
-                              width: 10), // Adding some space between buttons
+                          const SizedBox(
+                              width: 10,), // Adding some space between buttons
                           ElevatedButton(
                             onPressed: () {
                               // Retrieve values from controllers
-                              String title = titleController.text;
-                              String price = priceController.text;
-                              String description = descriptionController.text;
+                              final String title = titleController.text;
+                              final String price = priceController.text;
+                              final String description = descriptionController.text;
 
                               // Use these values as needed
                               // For example, you can print them
                               print(
-                                'Title: $title, Price: $price, Description: $description, type: ' +
-                                    _getSelectedType(),
+                                'Title: $title, Price: $price, Description: $description, type: ${getSelectedType()}',
                               );
 
                               // Close the modal bottom sheet
@@ -271,7 +269,7 @@ class HomeAdminWidgetState extends State<HomeAdminWidget> {
                             style: ElevatedButton.styleFrom(
                               backgroundColor: const Color(0xFF272727),
                               fixedSize: Size(
-                                  MediaQuery.of(context).size.height * 0.2, 30),
+                                  MediaQuery.of(context).size.height * 0.2, 30,),
                               foregroundColor: Colors.white,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10),
@@ -329,7 +327,7 @@ class HomeAdminWidgetState extends State<HomeAdminWidget> {
           ),
           floatingActionButton: FloatingActionButton(
             backgroundColor: const Color(0xFF272727),
-            onPressed: _showModal,
+            onPressed: showModal,
             child: const Icon(
               Icons.add,
               color: Color.fromARGB(255, 126, 217, 87),

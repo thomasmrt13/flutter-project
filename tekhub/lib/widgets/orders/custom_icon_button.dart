@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
 class CustomIconButton extends StatelessWidget {
-  final IconData? icon;
 
   const CustomIconButton({
-    Key? key,
+    super.key,
     this.icon,
-  }) : super(key: key);
+  });
+  final IconData? icon;
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +15,7 @@ class CustomIconButton extends StatelessWidget {
       height: 36,
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(24),
-          color: Color.fromARGB(255, 39, 39, 39)),
+          color: const Color.fromARGB(255, 39, 39, 39),),
       // Wrap the IconButton in a Material widget for the
       // IconButton's splash to render above the container.
       child: Material(
@@ -25,7 +25,7 @@ class CustomIconButton extends StatelessWidget {
         // Material widget, which is circular due to the radius above.
         clipBehavior: Clip.hardEdge,
         child: IconButton(
-          color: Color.fromARGB(255, 126, 217, 87),
+          color: const Color.fromARGB(255, 126, 217, 87),
           iconSize: 18,
           icon: Icon(
             icon ?? Icons.calendar_today,

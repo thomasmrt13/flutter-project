@@ -1,5 +1,6 @@
 import 'package:flip_card/flip_card.dart';
 import 'package:flip_card/flip_card_controller.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:tekhub/widgets/card/card_alert_dialog.dart';
@@ -7,10 +8,9 @@ import 'package:tekhub/widgets/card/card_input_formatter.dart';
 import 'package:tekhub/widgets/card/card_month_input_formatter.dart';
 import 'package:tekhub/widgets/card/master_card.dart';
 import 'package:tekhub/widgets/card/my_painter.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
 
 class CardPage extends StatefulWidget {
-  const CardPage({Key? key}) : super(key: key);
+  const CardPage({super.key});
 
   @override
   State<CardPage> createState() => _CardPageState();
@@ -32,57 +32,60 @@ class _CardPageState extends State<CardPage> {
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
+            children: <Widget>[
               const SizedBox(height: 30),
               FlipCard(
                 fill: Fill.fillFront,
-                direction: FlipDirection.HORIZONTAL,
                 controller: flipCardController,
                 onFlip: () {
                   print('Flip');
                 },
                 flipOnTouch: false,
-                onFlipDone: (isFront) {
+                onFlipDone: (bool isFront) {
                   print('isFront: $isFront');
                 },
                 front: Padding(
                   padding: EdgeInsets.symmetric(
-                      horizontal: kIsWeb == true
-                          ? MediaQuery.of(context).size.width * 0.35
-                          : 5), // Ajustez la largeur ici
+                    horizontal: kIsWeb == true
+                        ? MediaQuery.of(context).size.width * 0.35
+                        : 5,
+                  ), // Ajustez la largeur ici
                   child: buildCreditCard(
-                    color: Color.fromARGB(255, 39, 39, 39),
+                    color: const Color.fromARGB(255, 39, 39, 39),
                     cardExpiration: cardExpiryDateController.text.isEmpty
-                        ? "08/2022"
+                        ? '08/2022'
                         : cardExpiryDateController.text,
                     cardHolder: cardHolderNameController.text.isEmpty
-                        ? "Card Holder"
+                        ? 'Card Holder'
                         : cardHolderNameController.text.toUpperCase(),
                     cardNumber: cardNumberController.text.isEmpty
-                        ? "XXXX XXXX XXXX XXXX"
+                        ? 'XXXX XXXX XXXX XXXX'
                         : cardNumberController.text,
                   ),
                 ),
                 back: Padding(
                   padding: EdgeInsets.symmetric(
-                      horizontal: kIsWeb == true
-                          ? MediaQuery.of(context).size.width * 0.35
-                          : 5), // Ajustez la largeur ici
+                    horizontal: kIsWeb == true
+                        ? MediaQuery.of(context).size.width * 0.35
+                        : 5,
+                  ), // Ajustez la largeur ici
                   child: Card(
-                    elevation: 4.0,
-                    color: Color.fromARGB(255, 39, 39, 39),
+                    elevation: 4,
+                    color: const Color.fromARGB(255, 39, 39, 39),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(14),
                     ),
                     child: Container(
                       height: 230,
                       padding: const EdgeInsets.only(
-                          left: 16.0, right: 16.0, bottom: 22.0),
+                        left: 16,
+                        right: 16,
+                        bottom: 22,
+                      ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
+                        children: <Widget>[
                           Container(
                             height: 45,
                             width: MediaQuery.of(context).size.width /
@@ -104,7 +107,7 @@ class _CardPageState extends State<CardPage> {
                                   padding: const EdgeInsets.all(5),
                                   child: Text(
                                     cardCvvController.text.isEmpty
-                                        ? "XXX"
+                                        ? 'XXX'
                                         : cardCvvController.text,
                                     style: const TextStyle(
                                       color: Colors.black,
@@ -155,20 +158,21 @@ class _CardPageState extends State<CardPage> {
                       color: Colors.grey,
                     ),
                   ),
-                  inputFormatters: [
+                  inputFormatters: <TextInputFormatter>[
                     FilteringTextInputFormatter.digitsOnly,
                     LengthLimitingTextInputFormatter(16),
                     CardInputFormatter(),
                   ],
-                  onChanged: (value) {
-                    var text = value.replaceAll(RegExp(r'\s+\b|\b\s'), ' ');
+                  onChanged: (String value) {
+                    final String text =
+                        value.replaceAll(RegExp(r'\s+\b|\b\s'), ' ');
                     setState(() {
-                      cardNumberController.value = cardNumberController.value
-                          .copyWith(
-                              text: text,
-                              selection:
-                                  TextSelection.collapsed(offset: text.length),
-                              composing: TextRange.empty);
+                      cardNumberController.value =
+                          cardNumberController.value.copyWith(
+                        text: text,
+                        selection: TextSelection.collapsed(offset: text.length),
+                        composing: TextRange.empty,
+                      );
                     });
                   },
                 ),
@@ -198,14 +202,15 @@ class _CardPageState extends State<CardPage> {
                       color: Colors.grey,
                     ),
                   ),
-                  onChanged: (value) {
+                  onChanged: (String value) {
                     setState(() {
                       cardHolderNameController.value =
                           cardHolderNameController.value.copyWith(
-                              text: value,
-                              selection:
-                                  TextSelection.collapsed(offset: value.length),
-                              composing: TextRange.empty);
+                        text: value,
+                        selection:
+                            TextSelection.collapsed(offset: value.length),
+                        composing: TextRange.empty,
+                      );
                     });
                   },
                 ),
@@ -213,7 +218,7 @@ class _CardPageState extends State<CardPage> {
               const SizedBox(height: 12),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: [
+                children: <Widget>[
                   Container(
                     height: 55,
                     width: MediaQuery.of(context).size.width / 2.4,
@@ -238,20 +243,22 @@ class _CardPageState extends State<CardPage> {
                           color: Colors.grey,
                         ),
                       ),
-                      inputFormatters: [
+                      inputFormatters: <TextInputFormatter>[
                         FilteringTextInputFormatter.digitsOnly,
                         LengthLimitingTextInputFormatter(4),
                         CardDateInputFormatter(),
                       ],
-                      onChanged: (value) {
-                        var text = value.replaceAll(RegExp(r'\s+\b|\b\s'), ' ');
+                      onChanged: (String value) {
+                        final String text = value.replaceAll(RegExp(r'\s+\b|\b\s'), ' ');
                         setState(() {
                           cardExpiryDateController.value =
                               cardExpiryDateController.value.copyWith(
-                                  text: text,
-                                  selection: TextSelection.collapsed(
-                                      offset: text.length),
-                                  composing: TextRange.empty);
+                            text: text,
+                            selection: TextSelection.collapsed(
+                              offset: text.length,
+                            ),
+                            composing: TextRange.empty,
+                          );
                         });
                       },
                     ),
@@ -281,25 +288,24 @@ class _CardPageState extends State<CardPage> {
                           color: Colors.grey,
                         ),
                       ),
-                      inputFormatters: [
+                      inputFormatters: <TextInputFormatter>[
                         FilteringTextInputFormatter.digitsOnly,
                         LengthLimitingTextInputFormatter(3),
                       ],
                       onTap: () {
                         setState(() {
-                          Future.delayed(const Duration(milliseconds: 300), () {
-                            flipCardController.toggleCard();
-                          });
+                          Future.delayed(const Duration(milliseconds: 300), flipCardController.toggleCard);
                         });
                       },
-                      onChanged: (value) {
+                      onChanged: (String value) {
                         setState(() {
-                          int length = value.length;
+                          final int length = value.length;
                           if (length == 4 || length == 9 || length == 14) {
                             cardNumberController.text = '$value ';
                             cardNumberController.selection =
                                 TextSelection.fromPosition(
-                                    TextPosition(offset: value.length + 1));
+                              TextPosition(offset: value.length + 1),
+                            );
                           }
                         });
                       },
@@ -311,10 +317,10 @@ class _CardPageState extends State<CardPage> {
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   foregroundColor: Colors.white,
-                  backgroundColor: Color.fromARGB(255, 126, 217, 87),
+                  backgroundColor: const Color.fromARGB(255, 126, 217, 87),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(15),
-                    side: BorderSide(
+                    side: const BorderSide(
                       color: Color.fromARGB(255, 126, 217, 87),
                       width: 2,
                     ),
@@ -325,8 +331,9 @@ class _CardPageState extends State<CardPage> {
                 onPressed: () {
                   Future.delayed(const Duration(milliseconds: 300), () {
                     showDialog(
-                        context: context,
-                        builder: (context) => const CardAlertDialog());
+                      context: context,
+                      builder: (BuildContext context) => const CardAlertDialog(),
+                    );
                     cardCvvController.clear();
                     cardExpiryDateController.clear();
                     cardHolderNameController.clear();
@@ -347,7 +354,7 @@ class _CardPageState extends State<CardPage> {
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   foregroundColor: Colors.white,
-                  backgroundColor: Color.fromARGB(255, 39, 39, 39),
+                  backgroundColor: const Color.fromARGB(255, 39, 39, 39),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(15),
                   ),
@@ -360,9 +367,10 @@ class _CardPageState extends State<CardPage> {
                 child: Text(
                   'Cancel'.toUpperCase(),
                   style: const TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.w500,
-                      color: Colors.white),
+                    fontSize: 15,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.white,
+                  ),
                 ),
               ),
             ],

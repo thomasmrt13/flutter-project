@@ -4,17 +4,17 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 class ProfilePage extends StatefulWidget {
-  const ProfilePage({Key? key}) : super(key: key);
+  const ProfilePage({super.key});
 
   @override
-  _ProfilePageState createState() => _ProfilePageState();
+  ProfilePageState createState() => ProfilePageState();
 }
 
-class _ProfilePageState extends State<ProfilePage> {
-  TextEditingController _userNameController = TextEditingController();
-  TextEditingController _emailController = TextEditingController();
-  TextEditingController _phoneNumberController = TextEditingController();
-  TextEditingController _addressController = TextEditingController();
+class ProfilePageState extends State<ProfilePage> {
+  final TextEditingController _userNameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _phoneNumberController = TextEditingController();
+  final TextEditingController _addressController = TextEditingController();
 
   @override
   void dispose() {
@@ -27,18 +27,18 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
-    final bool isAdmin = true;
+    const bool isAdmin = true;
     return Scaffold(
       body: Column(
-        children: [
+        children: <Widget>[
           const Expanded(flex: 2, child: _TopPortion()),
           Expanded(
             flex: 3,
             child: Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.all(8),
               child: SingleChildScrollView(
                 child: Column(
-                  children: [
+                  children: <Widget>[
                     Text(
                       'User Name',
                       style: Theme.of(context).textTheme.titleLarge?.copyWith(
@@ -50,7 +50,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     if (isAdmin == false)
                       Form(
                         child: Column(
-                          children: [
+                          children: <Widget>[
                             TextFormField(
                               controller: _userNameController,
                               decoration: const InputDecoration(
@@ -81,7 +81,8 @@ class _ProfilePageState extends State<ProfilePage> {
                             TextFormField(
                               controller: _addressController,
                               decoration: InputDecoration(
-                                labelStyle: TextStyle(fontFamily: 'Raleway'),
+                                labelStyle:
+                                    const TextStyle(fontFamily: 'Raleway'),
                                 labelText: 'Address',
                                 prefixIcon: const Icon(Icons.house),
                                 suffixIcon: IconButton(
@@ -113,11 +114,13 @@ class _ProfilePageState extends State<ProfilePage> {
                                   ),
                                 ),
                                 onPressed: () {
-                                  String userName = _userNameController.text;
-                                  String email = _emailController.text;
-                                  String phoneNumber =
+                                  final String userName =
+                                      _userNameController.text;
+                                  final String email = _emailController.text;
+                                  final String phoneNumber =
                                       _phoneNumberController.text;
-                                  String address = _addressController.text;
+                                  final String address =
+                                      _addressController.text;
 
                                   // Use the captured values as needed
                                   print('Username: $userName');
@@ -143,7 +146,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     else
                       Form(
                         child: Column(
-                          children: [
+                          children: <Widget>[
                             TextFormField(
                               controller: _userNameController,
                               decoration: const InputDecoration(
@@ -177,7 +180,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                 style: ElevatedButton.styleFrom(
                                   foregroundColor: Colors.white,
                                   backgroundColor:
-                                      Color.fromARGB(255, 126, 217, 87),
+                                      const Color.fromARGB(255, 126, 217, 87),
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(15),
                                   ),
@@ -187,9 +190,10 @@ class _ProfilePageState extends State<ProfilePage> {
                                   ),
                                 ),
                                 onPressed: () {
-                                  String userName = _userNameController.text;
-                                  String email = _emailController.text;
-                                  String phoneNumber =
+                                  final String userName =
+                                      _userNameController.text;
+                                  final String email = _emailController.text;
+                                  final String phoneNumber =
                                       _phoneNumberController.text;
 
                                   // Use the captured values as needed
@@ -224,7 +228,7 @@ class _ProfilePageState extends State<ProfilePage> {
 }
 
 class _TopPortion extends StatefulWidget {
-  const _TopPortion({Key? key}) : super(key: key);
+  const _TopPortion();
 
   @override
   __TopPortionState createState() => __TopPortionState();
@@ -234,7 +238,7 @@ class __TopPortionState extends State<_TopPortion> {
   File? _selectedImage; // Store the selected image file
 
   Future<void> _getImage() async {
-    final pickedFile =
+    final XFile? pickedFile =
         await ImagePicker().pickImage(source: ImageSource.gallery);
 
     setState(() {
@@ -250,14 +254,14 @@ class __TopPortionState extends State<_TopPortion> {
   Widget build(BuildContext context) {
     return Stack(
       fit: StackFit.expand,
-      children: [
+      children: <Widget>[
         Container(
           margin: const EdgeInsets.only(bottom: 50),
           decoration: const BoxDecoration(
             gradient: LinearGradient(
               begin: Alignment.bottomCenter,
               end: Alignment.topCenter,
-              colors: [
+              colors: <Color>[
                 Color.fromARGB(255, 39, 39, 39),
                 Color.fromARGB(255, 39, 39, 39),
               ],
@@ -291,7 +295,7 @@ class __TopPortionState extends State<_TopPortion> {
             height: 150,
             child: Stack(
               fit: StackFit.expand,
-              children: [
+              children: <Widget>[
                 Container(
                   decoration: BoxDecoration(
                     color: Colors.black,

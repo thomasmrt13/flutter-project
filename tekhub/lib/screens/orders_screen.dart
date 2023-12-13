@@ -4,7 +4,9 @@ import 'package:tekhub/widgets/orders/price_text.dart';
 import 'package:tekhub/widgets/orders/spending_category.dart';
 
 class OrdersScreen extends StatelessWidget {
-  static const categoryModels = [
+  const OrdersScreen({super.key});
+
+  static const List<SpendingCategoryModel> categoryModels = <SpendingCategoryModel>[
     SpendingCategoryModel(
       'Ipad Pro',
       'assets/images/ipad.png',
@@ -27,14 +29,14 @@ class OrdersScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Color.fromARGB(255, 39, 39, 39),
+      color: const Color.fromARGB(255, 39, 39, 39),
       child: Column(
-        children: [
-          Container(
+        children: <Widget>[
+          SizedBox(
             height: 180,
-            child: Stack(children: [
+            child: Stack(children: <Widget>[
               Container(
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.only(
                     bottomLeft: Radius.circular(50),
@@ -42,18 +44,18 @@ class OrdersScreen extends StatelessWidget {
                   ),
                 ),
                 height: 150,
-                padding: EdgeInsets.only(left: 36, top: 12),
+                padding: const EdgeInsets.only(left: 36, top: 12),
                 width: double.infinity,
-                child: Column(
+                child: const Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
+                  children: <Widget>[
                     Text(
                       'Orders',
                       style: TextStyle(
                           color: Colors.black,
                           fontWeight: FontWeight.w700,
                           fontFamily: 'Raleway',
-                          fontSize: 50),
+                          fontSize: 50,),
                     ),
                   ],
                 ),
@@ -65,11 +67,16 @@ class OrdersScreen extends StatelessWidget {
                 child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
+                    children: <Widget>[
                       Container(
-                        child: Row(
+                        padding:
+                            const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                        decoration: BoxDecoration(
+                            color: const Color.fromARGB(255, 126, 217, 87),
+                            borderRadius: BorderRadius.circular(32),),
+                        child: const Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
+                          children: <Widget>[
                             Text(
                               'TOTAL',
                               style: TextStyle(color: Colors.white),
@@ -81,28 +88,23 @@ class OrdersScreen extends StatelessWidget {
                             ),
                           ],
                         ),
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-                        decoration: BoxDecoration(
-                            color: Color.fromARGB(255, 126, 217, 87),
-                            borderRadius: BorderRadius.circular(32)),
                       ),
-                    ]),
-              )
-            ]),
+                    ],),
+              ),
+            ],),
           ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 36.0, vertical: 24),
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 36, vertical: 24),
             child: SearchBar(),
           ),
           Expanded(
-            child: ListView(children: [
-              for (var model in categoryModels)
+            child: ListView(children: <Widget>[
+              for (final SpendingCategoryModel model in categoryModels)
                 Padding(
                     padding: const EdgeInsets.symmetric(
-                        horizontal: 36.0, vertical: 16),
-                    child: SpendingCategory(model))
-            ]),
+                        horizontal: 36, vertical: 16,),
+                    child: SpendingCategory(model),),
+            ],),
           ),
         ],
       ),

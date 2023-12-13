@@ -91,7 +91,7 @@ class Login extends StatelessWidget {
                                 ),
                               );
                               Provider.of<ProviderListener>(context,
-                                      listen: false)
+                                      listen: false,)
                                   .updateUser(result.message);
                               await Navigator.pushNamed(context, '/');
                             } else {

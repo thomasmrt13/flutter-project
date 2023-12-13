@@ -362,7 +362,9 @@ class UserService {
   }
 
   Future<Result> deleteProductFromHistory(
-      String userId, String articleId) async {
+    String userId,
+    String articleId,
+  ) async {
     try {
       // Retrieve the user's current purchase history
       final DocumentSnapshot<Map<String, dynamic>> userSnapshot =
@@ -372,7 +374,8 @@ class UserService {
         // Convert the user's purchase history data to a List<Map<String, dynamic>>
         final List<Map<String, dynamic>> purchaseHistoryData =
             List<Map<String, dynamic>>.from(
-                userSnapshot.data()!['purchaseHistory'] ?? []);
+          userSnapshot.data()!['purchaseHistory'] ?? [],
+        );
 
         // Find the index of the product with the specified articleId
         final int indexToDelete = purchaseHistoryData.indexWhere(
@@ -389,7 +392,9 @@ class UserService {
           });
 
           return Result(
-              true, 'Product removed from purchase history successfully.');
+            true,
+            'Product removed from purchase history successfully.',
+          );
         } else {
           return Result(false, 'Product not found in purchase history.');
         }

@@ -210,7 +210,8 @@ class AuthService {
   }
 
   Future<List<UserArticle>> _fetchUserArticles(
-      List<dynamic>? articleData) async {
+    List<dynamic>? articleData,
+  ) async {
     if (articleData == null || articleData.isEmpty) {
       return []; // Return an empty list if no articles are present
     }
@@ -244,7 +245,8 @@ class AuthService {
   }
 
   Future<List<UserHistoryArticles>> _fetchUserHistoryArticles(
-      List<dynamic>? articleData) async {
+    List<dynamic>? articleData,
+  ) async {
     if (articleData == null || articleData.isEmpty) {
       return []; // Return an empty list if no articles are present
     }

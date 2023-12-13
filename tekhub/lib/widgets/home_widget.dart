@@ -106,7 +106,7 @@ class HomeWidgetState extends State<HomeWidget> {
             ],
           ),
           floatingActionButton: Stack(
-            children: [
+            children: <Widget>[
               FloatingActionButton(
                 backgroundColor: const Color(0xFF272727),
                 onPressed: () {
@@ -123,13 +123,13 @@ class HomeWidgetState extends State<HomeWidget> {
                   right: -5,
                   child: Container(
                     padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
+                    decoration: const BoxDecoration(
                       color: Color.fromARGB(255, 126, 217, 87),
                       shape: BoxShape.circle,
                     ),
                     child: Text(
                       cartItems.toString(),
-                      style: TextStyle(
+                      style: const TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
                       ),
