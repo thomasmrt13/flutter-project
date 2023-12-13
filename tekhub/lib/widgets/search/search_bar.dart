@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tekhub/provider/provider_listener.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 class SearchBarComponent extends StatefulWidget {
   const SearchBarComponent({super.key});
@@ -16,7 +17,9 @@ class SearchBarComponentState extends State<SearchBarComponent> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: 267,
+      width: kIsWeb
+          ? MediaQuery.of(context).size.width * 0.8
+          : MediaQuery.of(context).size.width * 0.7,
       child: TextField(
         onSubmitted: (String value) {},
         controller: _searchController,

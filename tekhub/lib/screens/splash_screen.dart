@@ -1,63 +1,87 @@
 import 'package:flutter/material.dart';
+import 'package:tekhub/screens/login_screen.dart';
 
-class Splash extends StatelessWidget {
-  const Splash({super.key});
+class Splash extends StatefulWidget {
+  @override
+  _SplashState createState() => _SplashState();
+}
+
+class _SplashState extends State<Splash> with SingleTickerProviderStateMixin {
+  late AnimationController _animationController;
+  late Animation<double> _scaleAnimation;
+  late Animation<double> _rotationAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _animationController = AnimationController(
+      vsync: this,
+      duration: Duration(seconds: 3),
+    );
+
+    _scaleAnimation = Tween<double>(begin: 0.5, end: 1.5).animate(
+      CurvedAnimation(
+        parent: _animationController,
+        curve: Interval(0.0, 0.5, curve: Curves.easeInOut),
+      ),
+    );
+
+    _rotationAnimation = Tween<double>(begin: 0.0, end: 2 * 3.14159).animate(
+      CurvedAnimation(
+        parent: _animationController,
+        curve: Interval(0.5, 1.0, curve: Curves.easeInOut),
+      ),
+    );
+
+    _animationController.forward();
+
+    // Navigating to another page after animation completes
+    _animationController.addStatusListener((status) {
+      if (status == AnimationStatus.completed) {
+        _navigateToNextScreen();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
+
+  void _navigateToNextScreen() {
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(
+        builder: (_) => Login(), // Replace Login with your desired screen
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).primaryColor,
-      extendBody: true,
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: <Widget>[
-          const Padding(
-            padding: EdgeInsets.only(top: 50),
-            child: Center(
-              child: Text(
-                'Welcome to our marketplace !',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 45,
-                  fontWeight: FontWeight.bold,
-                ),
-                textAlign: TextAlign.center,
-              ),
-            ),
-          ),
-          const Expanded(
-            child: Center(
-              child: Image(
-                image: AssetImage('assets/images/logo.png'),
-                fit: BoxFit.contain,
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(bottom: 30),
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                foregroundColor: Colors.white,
-                backgroundColor: const Color.fromARGB(255, 126, 217, 87),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 80,
-                  vertical: 22,
-                ),
-                textStyle: const TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.w700,
+      body: Center(
+        child: AnimatedBuilder(
+          animation: _animationController,
+          builder: (BuildContext context, Widget? child) {
+            return Transform.scale(
+              scale: _scaleAnimation.value,
+              child: Transform.rotate(
+                angle: _rotationAnimation.value,
+                child: Container(
+                  width: MediaQuery.of(context).size.width * 0.7,
+                  height: MediaQuery.of(context).size.height * 0.7,
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage('assets/images/logo.png'),
+                    ),
+                  ),
                 ),
               ),
-              onPressed: () async {
-                await Navigator.pushReplacementNamed(context, 'login');
-              },
-              child: const Text('Get Started'),
-            ),
-          ),
-        ],
+            );
+          },
+        ),
       ),
     );
   }
