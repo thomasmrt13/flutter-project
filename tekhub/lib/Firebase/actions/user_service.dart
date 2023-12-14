@@ -16,9 +16,6 @@ class UserService {
     String username,
     String phoneNumber,
     String address,
-    String firstName,
-    String lastName,
-    String profilePictureUrl,
   ) async {
     try {
       // Check if the username is already in use by another user
@@ -29,14 +26,13 @@ class UserService {
               .get();
 
       // Exclude the current user from the check
-      final QuerySnapshot<Map<String, dynamic>> currentUserCheck =
+      final DocumentSnapshot<Map<String, dynamic>> userDoc =
           await FirebaseFirestore.instance
               .collection('users')
-              .where('uid', isEqualTo: userId)
+              .doc(userId)
               .get();
 
-      if (usernameCheck.docs.isNotEmpty &&
-          usernameCheck.docs.first.id != currentUserCheck.docs.first.id) {
+      if (usernameCheck.docs.isNotEmpty && userDoc['username'] != username) {
         // Username is already in use by another user
         return Result(false, 'The username is already in use.');
       }
@@ -46,14 +42,11 @@ class UserService {
         'username': username,
         'phoneNumber': phoneNumber,
         'address': address,
-        'firstName': firstName,
-        'lastName': lastName,
-        'profilePictureUrl': profilePictureUrl,
       });
 
       return Result(true, 'User information updated successfully.');
     } catch (e) {
-      return Result(false, 'An unexpected error occurred.');
+      return Result(false, 'An unexpected error occurred. $e');
     }
   }
 

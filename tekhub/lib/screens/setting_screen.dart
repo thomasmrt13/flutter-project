@@ -1,5 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:tekhub/Firebase/actions/result.dart';
+import 'package:tekhub/Firebase/actions/user_service.dart';
+import 'package:tekhub/Firebase/models/users.dart';
+import 'package:tekhub/provider/provider_listener.dart';
 
 class SettingsPage extends StatelessWidget {
   const SettingsPage({super.key});
@@ -49,7 +54,8 @@ class SettingsPage extends StatelessWidget {
     );
   }
 
-  Future<void> showDeleteDialog(BuildContext context) async {
+  Future<void> showDeleteDialog(
+      BuildContext context, UserService userService, MyUser user) async {
     return showDialog<void>(
       context: context,
       builder: (BuildContext context) {
@@ -76,9 +82,27 @@ class SettingsPage extends StatelessWidget {
               ),
             ),
             TextButton(
-              onPressed: () {
+              onPressed: () async {
+                final Result<dynamic> result = await userService.deleteUser(
+                  user.uid,
+                );
+                if (result.success) {
+                  // Registration successful, navigate to another screen or perform actions accordingly
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Account deleted!'),
+                    ),
+                  );
                 Navigator.of(context).pop(); // Ferme le dialogue
                 Navigator.pushNamed(context, 'login');
+                } else {
+                  // Registration failed, show error message
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(result.message.toString()),
+                    ),
+                  );
+                }
               },
               child: const Text(
                 'Confirm',
@@ -118,10 +142,12 @@ class SettingsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final UserService userService = UserService();
+    final MyUser user = Provider.of<ProviderListener>(context).user;
     return Scaffold(
       body: ListView(
         padding: const EdgeInsets.all(16.0),
-        children: isAdmin == false
+        children: user.role == 'user'
             ? <Widget>[
                 _SectionCard(
                   title: 'Settings',
@@ -183,7 +209,7 @@ class SettingsPage extends StatelessWidget {
                     _CustomListTile(
                       title: 'Delete account',
                       icon: Icons.delete,
-                      onTap: () => showDeleteDialog(context),
+                      onTap: () => showDeleteDialog(context, userService, user),
                     ),
                   ],
                 ),
@@ -244,7 +270,7 @@ class SettingsPage extends StatelessWidget {
                     _CustomListTile(
                       title: 'Delete account',
                       icon: Icons.delete,
-                      onTap: () => showDeleteDialog(context),
+                      onTap: () => showDeleteDialog(context, userService, user),
                     ),
                   ],
                 ),

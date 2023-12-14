@@ -2,6 +2,11 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
+import 'package:tekhub/Firebase/actions/result.dart';
+import 'package:tekhub/Firebase/actions/user_service.dart';
+import 'package:tekhub/Firebase/models/users.dart';
+import 'package:tekhub/provider/provider_listener.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({Key? key}) : super(key: key);
@@ -11,23 +16,21 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  TextEditingController _userNameController = TextEditingController();
-  TextEditingController _emailController = TextEditingController();
-  TextEditingController _phoneNumberController = TextEditingController();
-  TextEditingController _addressController = TextEditingController();
+  late String _username = "";
+  late String _phoneNumber = "";
+  late String _adress = "";
+  final _formKey = GlobalKey<FormState>();
 
   @override
   void dispose() {
-    _userNameController.dispose();
-    _emailController.dispose();
-    _phoneNumberController.dispose();
-    _addressController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final bool isAdmin = true;
+    final UserService userService = UserService();
+    final MyUser user = Provider.of<ProviderListener>(context).user;
+
     return Scaffold(
       body: Column(
         children: [
@@ -35,53 +38,55 @@ class _ProfilePageState extends State<ProfilePage> {
           Expanded(
             flex: 3,
             child: Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.all(8),
               child: SingleChildScrollView(
                 child: Column(
-                  children: [
+                  children: <Widget>[
                     Text(
-                      'User Name',
+                      user.username,
                       style: Theme.of(context).textTheme.titleLarge?.copyWith(
                             fontWeight: FontWeight.bold,
                             fontFamily: 'Raleway',
                           ),
                     ),
                     const SizedBox(height: 16),
-                    if (isAdmin == false)
+                    if (user.role == 'user')
                       Form(
+                        key: _formKey,
                         child: Column(
-                          children: [
+                          children: <Widget>[
                             TextFormField(
-                              controller: _userNameController,
+                              initialValue: user.username,
                               decoration: const InputDecoration(
                                 labelStyle: TextStyle(fontFamily: 'Raleway'),
                                 labelText: 'User Name',
                                 prefixIcon: Icon(Icons.account_circle),
                               ),
+                              onSaved: (String? value) => _username = value!,
                             ),
                             const SizedBox(height: 20),
                             TextFormField(
-                              controller: _emailController,
-                              decoration: const InputDecoration(
-                                labelStyle: TextStyle(fontFamily: 'Raleway'),
-                                labelText: 'Email',
-                                prefixIcon: Icon(Icons.mail),
-                              ),
-                            ),
-                            const SizedBox(height: 20),
-                            TextFormField(
-                              controller: _phoneNumberController,
+                              initialValue: user.phoneNumber,
                               decoration: const InputDecoration(
                                 labelStyle: TextStyle(fontFamily: 'Raleway'),
                                 labelText: 'Phone Number',
                                 prefixIcon: Icon(Icons.phone),
                               ),
+                              keyboardType: TextInputType.phone,
+                              validator: (String? value) {
+                                final RegExp regex = RegExp(r'^\+?\d{9,15}$');
+                                if (value != '' && !regex.hasMatch(value!)) {
+                                  return 'Le numéro de téléphone doit être un format valide';
+                                }
+                                return null;
+                              },
+                              onSaved: (String? value) => _phoneNumber = value!,
                             ),
                             const SizedBox(height: 20),
                             TextFormField(
-                              controller: _addressController,
+                              initialValue: user.address,
                               decoration: InputDecoration(
-                                labelStyle: TextStyle(fontFamily: 'Raleway'),
+                                labelStyle: const TextStyle(fontFamily: 'Raleway'),
                                 labelText: 'Address',
                                 prefixIcon: const Icon(Icons.house),
                                 suffixIcon: IconButton(
@@ -91,6 +96,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                   onPressed: () {},
                                 ),
                               ),
+                              onSaved: (String? value) => _adress = value!,
                             ),
                             const SizedBox(height: 20),
                             SizedBox(
@@ -112,20 +118,54 @@ class _ProfilePageState extends State<ProfilePage> {
                                     55,
                                   ),
                                 ),
-                                onPressed: () {
-                                  String userName = _userNameController.text;
-                                  String email = _emailController.text;
-                                  String phoneNumber =
-                                      _phoneNumberController.text;
-                                  String address = _addressController.text;
-
-                                  // Use the captured values as needed
-                                  print('Username: $userName');
-                                  print('Email: $email');
-                                  print('Phone Number: $phoneNumber');
-                                  print('Address: $address');
-
-                                  Navigator.pop(context);
+                                onPressed: () async {
+                                  if (_formKey.currentState != null &&
+                                      _formKey.currentState!.validate()) {
+                                    _formKey.currentState!.save();
+                                    final Result<dynamic> result =
+                                        await userService.updateUserInformation(
+                                      user.uid,
+                                      _username,
+                                      _phoneNumber,
+                                      _adress,
+                                    );
+                                    if (result.success) {
+                                      final MyUser newUserInfo = MyUser(
+                                        uid: user.uid,
+                                        email: user.email,
+                                        username: _username,
+                                        phoneNumber: _phoneNumber,
+                                        address: _adress,
+                                        cart: user.cart,
+                                        purchaseHistory: user.purchaseHistory,
+                                        role: user.role,
+                                        cardNumber: user.cardNumber,
+                                        creditCardName: user.creditCardName,
+                                        expirationDate: user.expirationDate,
+                                        cvv: user.cvv,
+                                      );
+                                      // Registration successful, navigate to another screen or perform actions accordingly
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        const SnackBar(
+                                          content: Text('Settings changed!'),
+                                        ),
+                                      );
+                                      Provider.of<ProviderListener>(context,
+                                              listen: false)
+                                          .updateUser(newUserInfo);
+                                      Navigator.pop(context);
+                                    } else {
+                                      // Registration failed, show error message
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        SnackBar(
+                                          content:
+                                              Text(result.message.toString()),
+                                        ),
+                                      );
+                                    }
+                                  }
                                 },
                                 child: Text(
                                   'Save'.toUpperCase(),
@@ -143,32 +183,33 @@ class _ProfilePageState extends State<ProfilePage> {
                     else
                       Form(
                         child: Column(
-                          children: [
+                          children: <Widget>[
                             TextFormField(
-                              controller: _userNameController,
+                              initialValue: user.username,
                               decoration: const InputDecoration(
                                 labelStyle: TextStyle(fontFamily: 'Raleway'),
                                 labelText: 'User Name',
                                 prefixIcon: Icon(Icons.account_circle),
                               ),
+                              onSaved: (String? value) => _username = value!,
                             ),
                             const SizedBox(height: 20),
                             TextFormField(
-                              controller: _emailController,
-                              decoration: const InputDecoration(
-                                labelStyle: TextStyle(fontFamily: 'Raleway'),
-                                labelText: 'Email',
-                                prefixIcon: Icon(Icons.mail),
-                              ),
-                            ),
-                            const SizedBox(height: 20),
-                            TextFormField(
-                              controller: _phoneNumberController,
+                              initialValue: user.phoneNumber,
                               decoration: const InputDecoration(
                                 labelStyle: TextStyle(fontFamily: 'Raleway'),
                                 labelText: 'Phone Number',
                                 prefixIcon: Icon(Icons.phone),
                               ),
+                              keyboardType: TextInputType.phone,
+                              validator: (String? value) {
+                                final RegExp regex = RegExp(r'^\+?\d{9,15}$');
+                                if (!regex.hasMatch(value!)) {
+                                  return 'Le numéro de téléphone doit être un format valide';
+                                }
+                                return null;
+                              },
+                              onSaved: (String? value) => _phoneNumber = value!,
                             ),
                             const SizedBox(height: 50),
                             SizedBox(
@@ -177,7 +218,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                 style: ElevatedButton.styleFrom(
                                   foregroundColor: Colors.white,
                                   backgroundColor:
-                                      Color.fromARGB(255, 126, 217, 87),
+                                      const Color.fromARGB(255, 126, 217, 87),
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(15),
                                   ),
@@ -187,16 +228,6 @@ class _ProfilePageState extends State<ProfilePage> {
                                   ),
                                 ),
                                 onPressed: () {
-                                  String userName = _userNameController.text;
-                                  String email = _emailController.text;
-                                  String phoneNumber =
-                                      _phoneNumberController.text;
-
-                                  // Use the captured values as needed
-                                  print('Username: $userName');
-                                  print('Email: $email');
-                                  print('Phone Number: $phoneNumber');
-
                                   Navigator.pop(context);
                                 },
                                 child: Text(
@@ -291,7 +322,7 @@ class __TopPortionState extends State<_TopPortion> {
             height: 150,
             child: Stack(
               fit: StackFit.expand,
-              children: [
+              children: <Widget>[
                 Container(
                   decoration: BoxDecoration(
                     color: Colors.black,

@@ -1,13 +1,16 @@
 import 'package:flip_card/flip_card.dart';
 import 'package:flip_card/flip_card_controller.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
+import 'package:tekhub/Firebase/models/users.dart';
+import 'package:tekhub/provider/provider_listener.dart';
 import 'package:tekhub/widgets/card/card_alert_dialog.dart';
 import 'package:tekhub/widgets/card/card_input_formatter.dart';
 import 'package:tekhub/widgets/card/card_month_input_formatter.dart';
 import 'package:tekhub/widgets/card/master_card.dart';
 import 'package:tekhub/widgets/card/my_painter.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
 
 class CardPage extends StatefulWidget {
   const CardPage({Key? key}) : super(key: key);
@@ -28,6 +31,8 @@ class _CardPageState extends State<CardPage> {
 
   @override
   Widget build(BuildContext context) {
+    final MyUser user = Provider.of<ProviderListener>(context).user;
+    
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(

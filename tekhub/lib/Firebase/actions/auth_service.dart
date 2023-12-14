@@ -90,12 +90,14 @@ class AuthService {
         'username': username,
         'phoneNumber': '',
         'address': '',
-        'firstName': '',
-        'lastName': '',
         'cart': [],
         'purchaseHistory': [],
         'role': 'user',
         'profilePictureUrl': '',
+        'cardNumber': '',
+        'creditCardName': '',
+        'expirationDate': '',
+        'cvv': '',
       });
 
       final User? user = authResult.user;
@@ -119,12 +121,14 @@ class AuthService {
         username: userDoc['username'] ?? '',
         phoneNumber: userDoc['phoneNumber'] ?? '',
         address: userDoc['address'] ?? '',
-        firstName: userDoc['firstName'] ?? '',
-        lastName: userDoc['lastName'] ?? '',
         cart: cart,
         purchaseHistory: purchaseHistory,
         role: userDoc['role'] ?? '',
         profilePictureUrl: userDoc['profilePictureUrl'] ?? '',
+        cardNumber: userDoc['cardNumber'] ?? '',
+        creditCardName: userDoc['creditCardName'] ?? '',
+        expirationDate: userDoc['expirationDate'] ?? '',
+        cvv: userDoc['cvv'] ?? '',
       );
 
       return Result(
@@ -139,7 +143,6 @@ class AuthService {
   String _handleLoginError(FirebaseAuthException error) {
     String errorMessage = 'An error occurred during login.';
 
-    print(error.code);
     switch (error.code) {
       case 'invalid-credential':
         errorMessage = 'Invalid credentials.';
@@ -190,12 +193,14 @@ class AuthService {
         username: userDoc['username'] ?? '',
         phoneNumber: userDoc['phoneNumber'] ?? '',
         address: userDoc['address'] ?? '',
-        firstName: userDoc['firstName'] ?? '',
-        lastName: userDoc['lastName'] ?? '',
         cart: cart,
         purchaseHistory: purchaseHistory,
         role: userDoc['role'] ?? '',
         profilePictureUrl: userDoc['profilePictureUrl'] ?? '',
+        cardNumber: userDoc['cardNumber'] ?? '',
+        creditCardName: userDoc['creditCardName'] ?? '',
+        expirationDate: userDoc['expirationDate'] ?? '',
+        cvv: userDoc['cvv'] ?? '',
       );
 
       return Result(

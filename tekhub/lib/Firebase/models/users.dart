@@ -8,12 +8,14 @@ class MyUser {
     required this.username,
     required this.phoneNumber,
     required this.address,
-    required this.firstName,
-    required this.lastName,
     required this.cart,
     required this.purchaseHistory,
     required this.role,
     this.profilePictureUrl,
+    this.cardNumber,
+    this.creditCardName,
+    this.expirationDate,
+    this.cvv,
   });
 
   final String uid;
@@ -21,12 +23,14 @@ class MyUser {
   final String username;
   final String phoneNumber;
   final String address;
-  final String firstName;
-  final String lastName;
   final List<UserArticle> cart;
   final List<UserHistoryArticles> purchaseHistory;
   final String role;
   final String? profilePictureUrl;
+  final String? cardNumber;
+  final String? creditCardName;
+  final String? expirationDate;
+  final String? cvv;
 }
 
 enum UserRole { admin, user }
