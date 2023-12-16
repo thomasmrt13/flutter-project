@@ -54,7 +54,7 @@ class HomeState extends State<Home> {
                           )
                         : const HomeAdminWidget();
                   case 1:
-                    _key.currentState?.closeDrawer();
+                    //_key.currentState?.closeDrawer();
                     return Center(
                       child: Cart(
                         scaffoldKey: _key,
