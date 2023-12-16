@@ -61,8 +61,6 @@ class CustomPassword extends StatelessWidget {
               border: UnderlineInputBorder(
                 borderSide: BorderSide(color: Colors.grey),
               ),
-              suffixText: 'Show',
-              suffixStyle: TextStyle(color: Color.fromARGB(255, 126, 217, 87)),
             ),
             obscureText: true,
           ),
