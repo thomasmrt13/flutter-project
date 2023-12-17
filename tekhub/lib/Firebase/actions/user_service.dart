@@ -50,6 +50,47 @@ class UserService {
     }
   }
 
+  Future<Result> updateCardInformation(
+    String userId,
+    String? cardNumber,
+    String? creditCardName,
+    String? expirationDate,
+    String? cvv,
+  ) async {
+    try {
+      if (cardNumber == '' ||
+          creditCardName == '' ||
+          expirationDate == '' ||
+          cvv == '') {
+        return Result(false, 'All parameters must be provided.');
+      }
+
+      if (cardNumber?.length != 19) {
+        return Result(false, 'Card number must be 16 digits.');
+      }
+
+      if (expirationDate?.length != 5) {
+        return Result(false, 'Invalid expiration date format.');
+      }
+
+      if (cvv?.length != 3) {
+        return Result(false, 'CVV must be 3 digits.');
+      }
+
+      // Update user information in Firestore
+      await FirebaseFirestore.instance.collection('users').doc(userId).update({
+        'cardNumber': cardNumber,
+        'creditCardName': creditCardName,
+        'expirationDate': expirationDate,
+        'cvv': cvv,
+      });
+
+      return Result(true, 'User information updated successfully.');
+    } catch (e) {
+      return Result(false, 'An unexpected error occurred. $e');
+    }
+  }
+
   Future<Result> deleteUser(String userId) async {
     try {
       // Delete the user's authentication credentials

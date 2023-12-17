@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 
 Card buildCreditCard({
   required Color color,
-  required String cardNumber,
-  required String cardHolder,
-  required String cardExpiration,
+  required String? cardNumber,
+  required String? cardHolder,
+  required String? cardExpiration,
 }) {
   return Card(
     elevation: 4.0,
@@ -36,7 +36,7 @@ Card buildCreditCard({
           ),
           const SizedBox(height: 20),
           Text(
-            cardNumber,
+            cardNumber!,
             style: const TextStyle(
               color: Colors.white,
               fontSize: 21,
@@ -49,9 +49,9 @@ Card buildCreditCard({
             children: <Widget>[
               buildDetailsBlock(
                 label: 'CARDHOLDER',
-                value: cardHolder,
+                value: cardHolder!,
               ),
-              buildDetailsBlock(label: 'VALID THRU', value: cardExpiration),
+              buildDetailsBlock(label: 'VALID THRU', value: cardExpiration!),
             ],
           ),
         ],

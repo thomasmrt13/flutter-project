@@ -4,6 +4,8 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:tekhub/Firebase/actions/result.dart';
+import 'package:tekhub/Firebase/actions/user_service.dart';
 import 'package:tekhub/Firebase/models/users.dart';
 import 'package:tekhub/provider/provider_listener.dart';
 import 'package:tekhub/widgets/card/card_alert_dialog.dart';
@@ -26,13 +28,19 @@ class _CardPageState extends State<CardPage> {
   final TextEditingController cardExpiryDateController =
       TextEditingController();
   final TextEditingController cardCvvController = TextEditingController();
+  late String _cardNumber = '';
+  late String _creditCardName = '';
+  late String _expirationDate = '';
+  late String _cvv = '';
+  final _formKey = GlobalKey<FormState>();
 
   final FlipCardController flipCardController = FlipCardController();
 
   @override
   Widget build(BuildContext context) {
+    final UserService userService = UserService();
     final MyUser user = Provider.of<ProviderListener>(context).user;
-    
+
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
@@ -44,46 +52,45 @@ class _CardPageState extends State<CardPage> {
                 fill: Fill.fillFront,
                 direction: FlipDirection.HORIZONTAL,
                 controller: flipCardController,
-                onFlip: () {
-                  print('Flip');
-                },
+                onFlip: () {},
                 flipOnTouch: false,
-                onFlipDone: (isFront) {
-                  print('isFront: $isFront');
-                },
+                onFlipDone: (bool isFront) {},
                 front: Padding(
                   padding: EdgeInsets.symmetric(
-                      horizontal: kIsWeb == true
-                          ? MediaQuery.of(context).size.width * 0.35
-                          : 5), // Ajustez la largeur ici
+                    horizontal: kIsWeb == true
+                        ? MediaQuery.of(context).size.width * 0.35
+                        : 5,
+                  ), // Ajustez la largeur ici
                   child: buildCreditCard(
                     color: Color.fromARGB(255, 39, 39, 39),
-                    cardExpiration: cardExpiryDateController.text.isEmpty
-                        ? "08/2022"
-                        : cardExpiryDateController.text,
-                    cardHolder: cardHolderNameController.text.isEmpty
-                        ? "Card Holder"
-                        : cardHolderNameController.text.toUpperCase(),
-                    cardNumber: cardNumberController.text.isEmpty
-                        ? "XXXX XXXX XXXX XXXX"
-                        : cardNumberController.text,
+                    cardExpiration:
+                        _expirationDate == '' ? user.expirationDate : _expirationDate,
+                    cardHolder: _creditCardName == ''
+                        ? user.creditCardName
+                        : _creditCardName.toUpperCase(),
+                    cardNumber:
+                        _cardNumber == '' ? user.cardNumber : _cardNumber,
                   ),
                 ),
                 back: Padding(
                   padding: EdgeInsets.symmetric(
-                      horizontal: kIsWeb == true
-                          ? MediaQuery.of(context).size.width * 0.35
-                          : 5), // Ajustez la largeur ici
+                    horizontal: kIsWeb == true
+                        ? MediaQuery.of(context).size.width * 0.35
+                        : 5,
+                  ), // Ajustez la largeur ici
                   child: Card(
-                    elevation: 4.0,
-                    color: Color.fromARGB(255, 39, 39, 39),
+                    elevation: 4,
+                    color: const Color.fromARGB(255, 39, 39, 39),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(14),
                     ),
                     child: Container(
                       height: 230,
                       padding: const EdgeInsets.only(
-                          left: 16.0, right: 16.0, bottom: 22.0),
+                        left: 16,
+                        right: 16,
+                        bottom: 22,
+                      ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -108,9 +115,7 @@ class _CardPageState extends State<CardPage> {
                                 child: Padding(
                                   padding: const EdgeInsets.all(5),
                                   child: Text(
-                                    cardCvvController.text.isEmpty
-                                        ? "XXX"
-                                        : cardCvvController.text,
+                                    _cvv == '' ? 'XXX' : _cvv,
                                     style: const TextStyle(
                                       color: Colors.black,
                                       fontSize: 21,
@@ -144,7 +149,7 @@ class _CardPageState extends State<CardPage> {
                   borderRadius: BorderRadius.circular(15),
                 ),
                 child: TextFormField(
-                  controller: cardNumberController,
+                  initialValue: user.cardNumber,
                   keyboardType: TextInputType.number,
                   decoration: const InputDecoration(
                     border: InputBorder.none,
@@ -165,15 +170,10 @@ class _CardPageState extends State<CardPage> {
                     LengthLimitingTextInputFormatter(16),
                     CardInputFormatter(),
                   ],
-                  onChanged: (value) {
+                  onChanged: (String value) {
                     var text = value.replaceAll(RegExp(r'\s+\b|\b\s'), ' ');
                     setState(() {
-                      cardNumberController.value = cardNumberController.value
-                          .copyWith(
-                              text: text,
-                              selection:
-                                  TextSelection.collapsed(offset: text.length),
-                              composing: TextRange.empty);
+                      _cardNumber = text; // Update the _cardNumber variable
                     });
                   },
                 ),
@@ -187,7 +187,7 @@ class _CardPageState extends State<CardPage> {
                   borderRadius: BorderRadius.circular(15),
                 ),
                 child: TextFormField(
-                  controller: cardHolderNameController,
+                  initialValue: user.creditCardName,
                   keyboardType: TextInputType.name,
                   decoration: const InputDecoration(
                     border: InputBorder.none,
@@ -203,14 +203,9 @@ class _CardPageState extends State<CardPage> {
                       color: Colors.grey,
                     ),
                   ),
-                  onChanged: (value) {
+                  onChanged: (String value) {
                     setState(() {
-                      cardHolderNameController.value =
-                          cardHolderNameController.value.copyWith(
-                              text: value,
-                              selection:
-                                  TextSelection.collapsed(offset: value.length),
-                              composing: TextRange.empty);
+                      _creditCardName = value;
                     });
                   },
                 ),
@@ -227,7 +222,7 @@ class _CardPageState extends State<CardPage> {
                       borderRadius: BorderRadius.circular(15),
                     ),
                     child: TextFormField(
-                      controller: cardExpiryDateController,
+                      initialValue: user.expirationDate,
                       keyboardType: TextInputType.number,
                       decoration: const InputDecoration(
                         border: InputBorder.none,
@@ -248,15 +243,11 @@ class _CardPageState extends State<CardPage> {
                         LengthLimitingTextInputFormatter(4),
                         CardDateInputFormatter(),
                       ],
-                      onChanged: (value) {
-                        var text = value.replaceAll(RegExp(r'\s+\b|\b\s'), ' ');
+                      onChanged: (String value) {
+                        final String text =
+                            value.replaceAll(RegExp(r'\s+\b|\b\s'), ' ');
                         setState(() {
-                          cardExpiryDateController.value =
-                              cardExpiryDateController.value.copyWith(
-                                  text: text,
-                                  selection: TextSelection.collapsed(
-                                      offset: text.length),
-                                  composing: TextRange.empty);
+                          _expirationDate = text;
                         });
                       },
                     ),
@@ -270,7 +261,7 @@ class _CardPageState extends State<CardPage> {
                       borderRadius: BorderRadius.circular(15),
                     ),
                     child: TextFormField(
-                      controller: cardCvvController,
+                      initialValue: user.cvv,
                       keyboardType: TextInputType.number,
                       decoration: const InputDecoration(
                         border: InputBorder.none,
@@ -297,15 +288,10 @@ class _CardPageState extends State<CardPage> {
                           });
                         });
                       },
-                      onChanged: (value) {
+                      onChanged: (String value) {
                         setState(() {
-                          int length = value.length;
-                          if (length == 4 || length == 9 || length == 14) {
-                            cardNumberController.text = '$value ';
-                            cardNumberController.selection =
-                                TextSelection.fromPosition(
-                                    TextPosition(offset: value.length + 1));
-                          }
+                          _cvv = value;
+                          print(_cvv);
                         });
                       },
                     ),
@@ -327,17 +313,54 @@ class _CardPageState extends State<CardPage> {
                   minimumSize:
                       Size(MediaQuery.of(context).size.width / 1.12, 55),
                 ),
-                onPressed: () {
-                  Future.delayed(const Duration(milliseconds: 300), () {
-                    showDialog(
-                        context: context,
-                        builder: (context) => const CardAlertDialog());
-                    cardCvvController.clear();
-                    cardExpiryDateController.clear();
-                    cardHolderNameController.clear();
-                    cardNumberController.clear();
-                    flipCardController.toggleCard();
-                  });
+                onPressed: () async {
+                  _cardNumber == '' ? _cardNumber = user.cardNumber! : _cardNumber = _cardNumber;
+                  _creditCardName == '' ? _creditCardName = user.creditCardName! : _creditCardName = _creditCardName;
+                  _expirationDate == '' ? _expirationDate = user.expirationDate! : _expirationDate = _expirationDate;
+                  _cvv == '' ? _cvv = user.cvv! : _cvv = _cvv;
+                  final Result<dynamic> result =
+                      await userService.updateCardInformation(
+                    user.uid,
+                    _cardNumber,
+                    _creditCardName,
+                    _expirationDate,
+                    _cvv,
+                  );
+                  if (result.success) {
+                    final MyUser newUserInfo = MyUser(
+                      uid: user.uid,
+                      email: user.email,
+                      username: user.username,
+                      phoneNumber: user.phoneNumber,
+                      address: user.address,
+                      cart: user.cart,
+                      purchaseHistory: user.purchaseHistory,
+                      role: user.role,
+                      cardNumber: _cardNumber,
+                      creditCardName: _creditCardName,
+                      expirationDate: _expirationDate,
+                      cvv: _cvv,
+                    );
+                    Provider.of<ProviderListener>(context, listen: false)
+                        .updateUser(newUserInfo);
+                    Future.delayed(const Duration(milliseconds: 300), () {
+                      showDialog(
+                          context: context,
+                          builder: (context) => const CardAlertDialog());
+                      cardCvvController.clear();
+                      cardExpiryDateController.clear();
+                      cardHolderNameController.clear();
+                      cardNumberController.clear();
+                      flipCardController.toggleCard();
+                    });
+                  } else {
+                    // Registration failed, show error message
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(result.message.toString()),
+                      ),
+                    );
+                  }
                 },
                 child: Text(
                   'Save'.toUpperCase(),
