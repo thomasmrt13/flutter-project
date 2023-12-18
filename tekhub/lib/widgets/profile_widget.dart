@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
+import 'package:tekhub/Firebase/actions/image_service.dart';
 import 'package:tekhub/Firebase/actions/result.dart';
 import 'package:tekhub/Firebase/actions/user_service.dart';
 import 'package:tekhub/Firebase/models/users.dart';
@@ -265,17 +266,74 @@ class _TopPortion extends StatefulWidget {
 
 class __TopPortionState extends State<_TopPortion> {
   File? _selectedImage; // Store the selected image file
+String _profileImageUrl = '';
+    @override
+  void initState() {
+    super.initState();
+   _loadProfileImage();
+  }
 
+  Future<void> _loadProfileImage() async {
+    final MyUser user = Provider.of<ProviderListener>(context, listen: false).user;
+
+    // Fetch user's profile picture URL from Firebase
+    final result = await ImageService().getUserProfileImageUrl(user.uid);
+
+    if (result.success) {
+      setState(() {
+        _profileImageUrl = result.message;
+      });
+    } else {
+      // If fetching fails, use a default image URL
+      setState(() {
+        _profileImageUrl =
+            'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80';
+      });
+    }
+  }
   Future<void> _getImage() async {
-    final XFile? pickedFile =
-        await ImagePicker().pickImage(source: ImageSource.gallery);
+    final XFile? pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
 
-    setState(() {
-      if (pickedFile != null) {
-        _selectedImage = File(pickedFile.path);
+    if (pickedFile != null) {
+      File imageFile = File(pickedFile.path);
+
+      // Upload the image to Firebase Storage
+      final Result<String> uploadResult = await ImageService().uploadImageToStorage(imageFile, 'profile_pictures');
+
+      if (uploadResult.success) {
+        // Update the user's profile picture URL in the database
+        final MyUser user = Provider.of<ProviderListener>(context, listen: false).user;
+        final Result<dynamic> updateResult = await ImageService().getUserProfileImageUrl(user.uid);
+
+        if (updateResult.success) {
+          // Update the local state with the new profile picture URL
+          setState(() {
+            _profileImageUrl = uploadResult.message;
+          });
+
+          // Show a success message or perform additional actions if needed
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Profile picture updated successfully!'),
+            ),
+          );
+        } else {
+          // Show an error message if updating the profile picture URL fails
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(updateResult.message.toString()),
+            ),
+          );
+        }
       } else {
+        // Show an error message if uploading the image fails
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(uploadResult.message.toString()),
+          ),
+        );
       }
-    });
+    }
   }
 
   @override
@@ -335,10 +393,10 @@ class __TopPortionState extends State<_TopPortion> {
                               _selectedImage!,
                             ), // Display selected image
                           )
-                        : const DecorationImage(
+                        : DecorationImage(
                             fit: BoxFit.cover,
                             image: NetworkImage(
-                              'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80',
+                              _profileImageUrl,
                             ),
                           ),
                   ),
