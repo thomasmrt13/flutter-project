@@ -24,7 +24,7 @@ class ForgetPassword extends StatelessWidget {
       backgroundColor: const Color.fromARGB(255, 39, 39, 39),
       appBar: AppBar(
         leading: IconButton(
-          icon: Icon(
+          icon: const Icon(
             Icons.arrow_back_ios,
             color: Colors.white,
           ),
@@ -82,14 +82,14 @@ class ForgetPassword extends StatelessWidget {
                         ),
                         ElevatedButton(
                           onPressed: () async {
-                            print(_emailInput.getInputText());
                             if (_formKey.currentState!.validate()) {
-                              final Result result =
+                              final Result<dynamic> result =
                                   await authService.sendPasswordResetEmail(
                                 _emailInput.getInputText(),
                               );
 
                               if (result.success) {
+                                if (!context.mounted) return;
                                 // Registration successful, navigate to another screen or perform actions accordingly
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
@@ -97,6 +97,7 @@ class ForgetPassword extends StatelessWidget {
                                   ),
                                 );
                               } else {
+                                if (!context.mounted) return;
                                 // Registration failed, show error message
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(

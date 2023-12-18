@@ -15,7 +15,7 @@ import 'package:tekhub/widgets/card/master_card.dart';
 import 'package:tekhub/widgets/card/my_painter.dart';
 
 class CardPage extends StatefulWidget {
-  const CardPage({Key? key}) : super(key: key);
+  const CardPage({super.key});
 
   @override
   State<CardPage> createState() => _CardPageState();
@@ -32,7 +32,6 @@ class _CardPageState extends State<CardPage> {
   late String _creditCardName = '';
   late String _expirationDate = '';
   late String _cvv = '';
-  final _formKey = GlobalKey<FormState>();
 
   final FlipCardController flipCardController = FlipCardController();
 
@@ -45,12 +44,10 @@ class _CardPageState extends State<CardPage> {
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
+            children: <Widget>[
               const SizedBox(height: 30),
               FlipCard(
                 fill: Fill.fillFront,
-                direction: FlipDirection.HORIZONTAL,
                 controller: flipCardController,
                 onFlip: () {},
                 flipOnTouch: false,
@@ -62,7 +59,7 @@ class _CardPageState extends State<CardPage> {
                         : 5,
                   ), // Ajustez la largeur ici
                   child: buildCreditCard(
-                    color: Color.fromARGB(255, 39, 39, 39),
+                    color: const Color.fromARGB(255, 39, 39, 39),
                     cardExpiration:
                         _expirationDate == '' ? user.expirationDate : _expirationDate,
                     cardHolder: _creditCardName == ''
@@ -94,7 +91,7 @@ class _CardPageState extends State<CardPage> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
+                        children: <Widget>[
                           Container(
                             height: 45,
                             width: MediaQuery.of(context).size.width /
@@ -165,13 +162,13 @@ class _CardPageState extends State<CardPage> {
                       color: Colors.grey,
                     ),
                   ),
-                  inputFormatters: [
+                  inputFormatters: <TextInputFormatter>[
                     FilteringTextInputFormatter.digitsOnly,
                     LengthLimitingTextInputFormatter(16),
                     CardInputFormatter(),
                   ],
                   onChanged: (String value) {
-                    var text = value.replaceAll(RegExp(r'\s+\b|\b\s'), ' ');
+                    final String text = value.replaceAll(RegExp(r'\s+\b|\b\s'), ' ');
                     setState(() {
                       _cardNumber = text; // Update the _cardNumber variable
                     });
@@ -213,7 +210,7 @@ class _CardPageState extends State<CardPage> {
               const SizedBox(height: 12),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: [
+                children: <Widget>[
                   Container(
                     height: 55,
                     width: MediaQuery.of(context).size.width / 2.4,
@@ -238,7 +235,7 @@ class _CardPageState extends State<CardPage> {
                           color: Colors.grey,
                         ),
                       ),
-                      inputFormatters: [
+                      inputFormatters: <TextInputFormatter>[
                         FilteringTextInputFormatter.digitsOnly,
                         LengthLimitingTextInputFormatter(4),
                         CardDateInputFormatter(),
@@ -277,21 +274,18 @@ class _CardPageState extends State<CardPage> {
                           color: Colors.grey,
                         ),
                       ),
-                      inputFormatters: [
+                      inputFormatters: <TextInputFormatter>[
                         FilteringTextInputFormatter.digitsOnly,
                         LengthLimitingTextInputFormatter(3),
                       ],
                       onTap: () {
                         setState(() {
-                          Future.delayed(const Duration(milliseconds: 300), () {
-                            flipCardController.toggleCard();
-                          });
+                          Future<void>.delayed(const Duration(milliseconds: 300), flipCardController.toggleCard);
                         });
                       },
                       onChanged: (String value) {
                         setState(() {
                           _cvv = value;
-                          print(_cvv);
                         });
                       },
                     ),
@@ -302,10 +296,10 @@ class _CardPageState extends State<CardPage> {
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   foregroundColor: Colors.white,
-                  backgroundColor: Color.fromARGB(255, 126, 217, 87),
+                  backgroundColor: const Color.fromARGB(255, 126, 217, 87),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(15),
-                    side: BorderSide(
+                    side: const BorderSide(
                       color: Color.fromARGB(255, 126, 217, 87),
                       width: 2,
                     ),
@@ -327,6 +321,7 @@ class _CardPageState extends State<CardPage> {
                     _cvv,
                   );
                   if (result.success) {
+                    if (!context.mounted) return;
                     final MyUser newUserInfo = MyUser(
                       uid: user.uid,
                       email: user.email,
@@ -343,10 +338,10 @@ class _CardPageState extends State<CardPage> {
                     );
                     Provider.of<ProviderListener>(context, listen: false)
                         .updateUser(newUserInfo);
-                    Future.delayed(const Duration(milliseconds: 300), () {
+                    Future<void>.delayed(const Duration(milliseconds: 300), () {
                       showDialog(
                           context: context,
-                          builder: (context) => const CardAlertDialog());
+                          builder: (BuildContext context) => const CardAlertDialog(),);
                       cardCvvController.clear();
                       cardExpiryDateController.clear();
                       cardHolderNameController.clear();
@@ -354,6 +349,7 @@ class _CardPageState extends State<CardPage> {
                       flipCardController.toggleCard();
                     });
                   } else {
+                    if (!context.mounted) return;
                     // Registration failed, show error message
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
@@ -375,7 +371,7 @@ class _CardPageState extends State<CardPage> {
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   foregroundColor: Colors.white,
-                  backgroundColor: Color.fromARGB(255, 39, 39, 39),
+                  backgroundColor: const Color.fromARGB(255, 39, 39, 39),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(15),
                   ),
@@ -390,7 +386,7 @@ class _CardPageState extends State<CardPage> {
                   style: const TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.w500,
-                      color: Colors.white),
+                      color: Colors.white,),
                 ),
               ),
             ],

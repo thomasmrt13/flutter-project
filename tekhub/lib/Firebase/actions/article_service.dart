@@ -1,5 +1,3 @@
-// ignore_for_file: always_specify_types
-
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -8,12 +6,12 @@ import 'package:tekhub/Firebase/actions/result.dart';
 import 'package:tekhub/Firebase/models/articles.dart';
 
 class ArticleService {
-  Future<Result> getAllArticles() async {
+  Future<Result<dynamic>> getAllArticles() async {
     try {
       final QuerySnapshot<Map<String, dynamic>> articlesSnapshot =
           await FirebaseFirestore.instance.collection('articles').get();
 
-      final List<Article> articles = articlesSnapshot.docs.map((doc) {
+      final List<Article> articles = articlesSnapshot.docs.map((QueryDocumentSnapshot<Map<String, dynamic>> doc) {
         final Map<String, dynamic> data = doc.data();
         return Article(
           id: doc.id,
@@ -25,10 +23,9 @@ class ArticleService {
         );
       }).toList();
 
-      return Result(true, articles); // Return successful result with articles
+      return Result<dynamic>.success(articles); // Return successful result with articles
     } catch (e) {
-      return Result(
-        false,
+      return Result<dynamic>.failure(
         'Error getting articles',
       ); // Return failure result with error message
     }
@@ -58,7 +55,7 @@ class ArticleService {
     }
   }
 
-  Future<Result> getArticleById(String articleId) async {
+  Future<Result<dynamic>> getArticleById(String articleId) async {
     try {
       final DocumentSnapshot<Map<String, dynamic>> articleSnapshot =
           await FirebaseFirestore.instance
@@ -67,8 +64,7 @@ class ArticleService {
               .get();
 
       if (!articleSnapshot.exists) {
-        return Result(
-          false,
+        return Result<dynamic>.failure(
           'Article not found',
         ); // Return failure result with error message
       }
@@ -83,22 +79,21 @@ class ArticleService {
         imageUrl: data['imageUrl'] ?? '',
       );
 
-      return Result(true, article); // Return successful result with the article
+      return Result<dynamic>.success(article); // Return successful result with the article
     } catch (e) {
-      return Result(
-        false,
+      return Result<dynamic>.failure(
         'Error getting article',
       ); // Return failure result with error message
     }
   }
 
-  Future<Result> searchArticles(String query) async {
+  Future<Result<dynamic>> searchArticles(String query) async {
     try {
       // Convert the query to lowercase for case-insensitive comparison
       final String lowercaseQuery = query.toLowerCase();
 
       // Create an array of substrings from the query
-      final List<String> querySubstrings = [];
+      final List<String> querySubstrings = <String>[];
       for (int i = 1; i <= lowercaseQuery.length; i++) {
         querySubstrings.add(lowercaseQuery.substring(0, i));
       }
@@ -110,7 +105,7 @@ class ArticleService {
               .where('searchKeywords', arrayContainsAny: querySubstrings)
               .get();
 
-      final List<Article> articles = articlesSnapshot.docs.map((doc) {
+      final List<Article> articles = articlesSnapshot.docs.map((QueryDocumentSnapshot<Map<String, dynamic>> doc) {
         final Map<String, dynamic> data = doc.data();
         return Article(
           id: doc.id,
@@ -122,19 +117,17 @@ class ArticleService {
         );
       }).toList();
 
-      return Result(
-        true,
+      return Result<dynamic>.success(
         articles,
       ); // Return successful result with the matching articles
     } catch (e) {
-      return Result(
-        false,
+      return Result<dynamic>.failure(
         'Error searching articles',
       ); // Return failure result with error message
     }
   }
 
-  Future<Result> getArticlesByFilter(ArticleType filterType) async {
+  Future<Result<dynamic>> getArticlesByFilter(ArticleType filterType) async {
     try {
       final QuerySnapshot<Map<String, dynamic>> articlesSnapshot =
           await FirebaseFirestore.instance
@@ -142,7 +135,7 @@ class ArticleService {
               .where('type', isEqualTo: _mapArticleTypeToString(filterType))
               .get();
 
-      final List<Article> articles = articlesSnapshot.docs.map((doc) {
+      final List<Article> articles = articlesSnapshot.docs.map((QueryDocumentSnapshot<Map<String, dynamic>> doc) {
         final Map<String, dynamic> data = doc.data();
         return Article(
           id: doc.id,
@@ -154,56 +147,54 @@ class ArticleService {
         );
       }).toList();
 
-      return Result(
-        true,
+      return Result<dynamic>.success(
         articles,
       ); // Return successful result with the matching articles
     } catch (e) {
-      return Result(
-        false,
+      return Result<dynamic>.failure(
         'Error getting articles by filter',
       ); // Return failure result with error message
     }
   }
 
-  Future<Result> addArticle(Article article, File imageFile) async {
+  Future<Result<dynamic>> addArticle(Article article, File imageFile) async {
     try {
       if (article.name.isEmpty) {
-        return Result(false, 'Invalid article data. Name is required.');
+        return Result<dynamic>.failure('Invalid article data. Name is required.');
       }
 
       if (article.price <= 0) {
-        return Result(false, 'Invalid article data. Price is required.');
+        return Result<dynamic>.failure('Invalid article data. Price is required.');
       }
 
       // ignore: unnecessary_null_comparison
       if (article.type == null) {
-        return Result(false, 'Invalid article data. Type is required.');
+        return Result<dynamic>.failure('Invalid article data. Type is required.');
       }
 
       // Convert the ArticleType enum to its corresponding string value
       final String typeString = _mapArticleTypeToString(article.type);
 
       // Upload image to Firebase Storage and get the image URL
-      final String? imageUrl =
+      final Result<dynamic> result =
           await ImageService().addImageToStorage(imageFile);
 
-      if (imageUrl == null) {
-        return Result(false, 'Error uploading image.');
+      if (result.success == true) {
+        return Result<dynamic>.failure('Error uploading image.');
       }
 
       // Add the article information to Firestore with the image URL
-      await FirebaseFirestore.instance.collection('articles').add({
+      await FirebaseFirestore.instance.collection('articles').add(<String, dynamic>{
         'name': article.name,
         'price': article.price,
         'description': article.description,
         'type': typeString,
-        'imageUrl': imageUrl,
+        'imageUrl': result.message,
       });
 
-      return Result(true, 'Article added successfully');
+      return Result<dynamic>.success('Article added successfully');
     } catch (e) {
-      return Result(false, 'Error adding article: $e');
+      return Result<dynamic>.failure('Error adding article: $e');
     }
   }
 }

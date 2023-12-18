@@ -7,23 +7,22 @@ Card buildCreditCard({
   required String? cardExpiration,
 }) {
   return Card(
-    elevation: 4.0,
+    elevation: 4,
     color: color,
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(14),
     ),
     child: Container(
       height: 230,
-      padding: const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 22.0),
+      padding: const EdgeInsets.only(left: 16, right: 16, bottom: 22),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
           const SizedBox(height: 10),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              const Text(
+          const Row(
+            children: <Widget>[
+              Text(
                 'Credits Card',
                 style: TextStyle(
                   color: Colors.white,
@@ -69,7 +68,7 @@ Column buildDetailsBlock({required String label, required String value}) {
         style: const TextStyle(
             color: Color.fromARGB(255, 126, 217, 87),
             fontSize: 10,
-            fontWeight: FontWeight.bold),
+            fontWeight: FontWeight.bold,),
       ),
       Text(
         value,
@@ -79,7 +78,7 @@ Column buildDetailsBlock({required String label, required String value}) {
           fontWeight: FontWeight.w600,
           letterSpacing: .5,
         ),
-      )
+      ),
     ],
   );
 }

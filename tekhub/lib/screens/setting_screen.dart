@@ -20,7 +20,7 @@ class SettingsPage extends StatelessWidget {
               style: TextStyle(
                   color: Colors.white,
                   fontFamily: 'Raleway',
-                  fontWeight: FontWeight.bold)),
+                  fontWeight: FontWeight.bold,),),
           content: const Text(
             'Are you sure you want to logout?',
             style: TextStyle(fontFamily: 'Raleway', color: Colors.white),
@@ -45,7 +45,7 @@ class SettingsPage extends StatelessWidget {
                 'Confirm',
                 style: TextStyle(
                     color: Color.fromARGB(255, 126, 217, 87),
-                    fontWeight: FontWeight.bold),
+                    fontWeight: FontWeight.bold,),
               ),
             ),
           ],
@@ -55,7 +55,7 @@ class SettingsPage extends StatelessWidget {
   }
 
   Future<void> showDeleteDialog(
-      BuildContext context, UserService userService, MyUser user) async {
+      BuildContext context, UserService userService, MyUser user,) async {
     return showDialog<void>(
       context: context,
       builder: (BuildContext context) {
@@ -65,7 +65,7 @@ class SettingsPage extends StatelessWidget {
               style: TextStyle(
                   color: Colors.white,
                   fontFamily: 'Raleway',
-                  fontWeight: FontWeight.bold)),
+                  fontWeight: FontWeight.bold,),),
           content: const Text(
             'Are you sure you want to delete your account?',
             style: TextStyle(fontFamily: 'Raleway', color: Colors.white),
@@ -87,6 +87,7 @@ class SettingsPage extends StatelessWidget {
                   user.uid,
                 );
                 if (result.success) {
+                  if (!context.mounted) return;
                   // Registration successful, navigate to another screen or perform actions accordingly
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
@@ -94,8 +95,9 @@ class SettingsPage extends StatelessWidget {
                     ),
                   );
                 Navigator.of(context).pop(); // Ferme le dialogue
-                Navigator.pushNamed(context, 'login');
+                await Navigator.pushNamed(context, 'login');
                 } else {
+                  if (!context.mounted) return;
                   // Registration failed, show error message
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
@@ -108,7 +110,7 @@ class SettingsPage extends StatelessWidget {
                 'Confirm',
                 style: TextStyle(
                     color: Color.fromARGB(255, 126, 217, 87),
-                    fontWeight: FontWeight.bold),
+                    fontWeight: FontWeight.bold,),
               ),
             ),
           ],
@@ -117,22 +119,22 @@ class SettingsPage extends StatelessWidget {
     );
   }
 
-  void handleProfileClick(BuildContext context) {
+  Future<void> handleProfileClick(BuildContext context) async {
     // Action à exécuter lors du clic sur Profile
     // Par exemple, naviguer vers la page de profil
-    Navigator.pushNamed(context, 'profile');
+    await Navigator.pushNamed(context, 'profile');
   }
 
-  void handleCardClick(BuildContext context) {
+  Future<void> handleCardClick(BuildContext context) async {
     // Action à exécuter lors du clic sur Profile
     // Par exemple, naviguer vers la page de profil
-    Navigator.pushNamed(context, 'card-information');
+    await Navigator.pushNamed(context, 'card-information');
   }
 
-  void handleResetClick(BuildContext context) {
+  Future<void> handleResetClick(BuildContext context) async {
     // Action à exécuter lors du clic sur Profile
     // Par exemple, naviguer vers la page de profil
-    Navigator.pushNamed(context, 'forget-password');
+    await Navigator.pushNamed(context, 'forget-password');
   }
 
   void handleDeleteClick(BuildContext context) {
@@ -146,7 +148,7 @@ class SettingsPage extends StatelessWidget {
     final MyUser user = Provider.of<ProviderListener>(context).user;
     return Scaffold(
       body: ListView(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16),
         children: user.role == 'user'
             ? <Widget>[
                 _SectionCard(
@@ -159,57 +161,56 @@ class SettingsPage extends StatelessWidget {
                         height: 150,
                         child: Stack(
                           fit: StackFit.expand,
-                          children: [
+                          children: <Widget>[
                             Container(
                               decoration: const BoxDecoration(
                                 color: Colors.black,
                                 shape: BoxShape.circle,
                                 image: DecorationImage(
                                     fit: BoxFit.cover,
-                                    image: NetworkImage(
-                                        'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80')),
+                                    image: AssetImage('assets/images/avatar.png'),),
                               ),
                             ),
                           ],
                         ),
                       ),
-                    )
+                    ),
                   ],
                 ),
-                const SizedBox(height: 16.0),
+                const SizedBox(height: 16),
                 _SectionCard(
                   title: 'General',
                   children: <Widget>[
                     _CustomListTile(
                       title: 'Profile',
                       icon: Icons.person,
-                      onTap: () => handleProfileClick(context),
+                      onTap: () async => handleProfileClick(context),
                     ),
                     _CustomListTile(
                       title: 'Card information',
                       icon: Icons.credit_card,
-                      onTap: () => handleCardClick(context),
+                      onTap: () async => handleCardClick(context),
                     ),
                   ],
                 ),
-                const SizedBox(height: 16.0),
+                const SizedBox(height: 16),
                 _SectionCard(
                   title: 'Privacy and Security',
                   children: <Widget>[
                     _CustomListTile(
                       title: 'Reset password',
                       icon: Icons.security,
-                      onTap: () => handleResetClick(context),
+                      onTap: () async => handleResetClick(context),
                     ),
                     _CustomListTile(
                       title: 'Log out',
                       icon: Icons.lock,
-                      onTap: () => showLogoutDialog(context),
+                      onTap: () async => showLogoutDialog(context),
                     ),
                     _CustomListTile(
                       title: 'Delete account',
                       icon: Icons.delete,
-                      onTap: () => showDeleteDialog(context, userService, user),
+                      onTap: () async => showDeleteDialog(context, userService, user),
                     ),
                   ],
                 ),
@@ -225,7 +226,7 @@ class SettingsPage extends StatelessWidget {
                         height: 150,
                         child: Stack(
                           fit: StackFit.expand,
-                          children: [
+                          children: <Widget>[
                             Container(
                               decoration: const BoxDecoration(
                                 color: Colors.black,
@@ -233,44 +234,44 @@ class SettingsPage extends StatelessWidget {
                                 image: DecorationImage(
                                     fit: BoxFit.cover,
                                     image: NetworkImage(
-                                        'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80')),
+                                        'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80',),),
                               ),
                             ),
                           ],
                         ),
                       ),
-                    )
+                    ),
                   ],
                 ),
-                const SizedBox(height: 16.0),
+                const SizedBox(height: 16),
                 _SectionCard(
                   title: 'General',
                   children: <Widget>[
                     _CustomListTile(
                       title: 'Profile',
                       icon: Icons.person,
-                      onTap: () => handleProfileClick(context),
+                      onTap: () async => handleProfileClick(context),
                     ),
                   ],
                 ),
-                const SizedBox(height: 16.0),
+                const SizedBox(height: 16),
                 _SectionCard(
                   title: 'Privacy and Security',
                   children: <Widget>[
                     _CustomListTile(
                       title: 'Reset password',
                       icon: Icons.security,
-                      onTap: () => handleResetClick(context),
+                      onTap: () async => handleResetClick(context),
                     ),
                     _CustomListTile(
                       title: 'Log out',
                       icon: Icons.lock,
-                      onTap: () => showLogoutDialog(context),
+                      onTap: () async => showLogoutDialog(context),
                     ),
                     _CustomListTile(
                       title: 'Delete account',
                       icon: Icons.delete,
-                      onTap: () => showDeleteDialog(context, userService, user),
+                      onTap: () async => showDeleteDialog(context, userService, user),
                     ),
                   ],
                 ),
@@ -290,12 +291,12 @@ class _SectionCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       color: const Color.fromARGB(255, 39, 39, 39),
-      elevation: 4.0,
+      elevation: 4,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10.0),
+        borderRadius: BorderRadius.circular(10),
       ),
       child: Padding(
-        padding: const EdgeInsets.all(12.0),
+        padding: const EdgeInsets.all(12),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
@@ -308,7 +309,7 @@ class _SectionCard extends StatelessWidget {
                     .white, // Choisis une couleur qui correspond à ton thème
               ),
             ),
-            const SizedBox(height: 12.0),
+            const SizedBox(height: 12),
             ...children,
           ],
         ),
@@ -329,13 +330,13 @@ class _SingleSection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.all(8),
           child: Text(
             title,
             style: const TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
-                fontFamily: 'Raleway'),
+                fontFamily: 'Raleway',),
           ),
         ),
         ...children,
@@ -345,12 +346,12 @@ class _SingleSection extends StatelessWidget {
 }
 
 class _CustomListTile extends StatelessWidget {
+
+  const _CustomListTile(
+      {required this.title, required this.icon, required this.onTap,});
   final String title;
   final IconData icon;
   final VoidCallback onTap;
-
-  _CustomListTile(
-      {required this.title, required this.icon, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -359,7 +360,6 @@ class _CustomListTile extends StatelessWidget {
       decoration: BoxDecoration(
         border: Border.all(
           color: Colors.white, // Couleur de la bordure
-          width: 1, // Épaisseur de la bordure
         ),
         borderRadius: BorderRadius.circular(12),
       ),

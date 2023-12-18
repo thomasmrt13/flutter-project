@@ -76,14 +76,14 @@ class Login extends StatelessWidget {
                       ElevatedButton(
                         onPressed: () async {
                           if (_formKey.currentState!.validate()) {
-                            // ignore: always_specify_types
-                            final Result result =
+                            final Result<dynamic> result =
                                 await authService.signInWithEmailAndPassword(
                               _emailInput.getInputText(),
                               _passwordInput.getInputText(),
                             );
 
                             if (result.success) {
+                              if (!context.mounted) return;
                               // Registration successful, navigate to another screen or perform actions accordingly
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
@@ -91,10 +91,11 @@ class Login extends StatelessWidget {
                                 ),
                               );
                               Provider.of<ProviderListener>(context,
-                                      listen: false)
+                                      listen: false,)
                                   .updateUser(result.message);
                               await Navigator.pushNamed(context, '/');
                             } else {
+                              if (!context.mounted) return;
                               // Registration failed, show error message
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(

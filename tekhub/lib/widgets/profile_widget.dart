@@ -9,17 +9,17 @@ import 'package:tekhub/Firebase/models/users.dart';
 import 'package:tekhub/provider/provider_listener.dart';
 
 class ProfilePage extends StatefulWidget {
-  const ProfilePage({Key? key}) : super(key: key);
+  const ProfilePage({super.key});
 
   @override
   _ProfilePageState createState() => _ProfilePageState();
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  late String _username = "";
-  late String _phoneNumber = "";
-  late String _adress = "";
-  final _formKey = GlobalKey<FormState>();
+  late String _username = '';
+  late String _phoneNumber = '';
+  late String _adress = '';
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   @override
   void dispose() {
@@ -33,7 +33,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
     return Scaffold(
       body: Column(
-        children: [
+        children: <Widget>[
           const Expanded(flex: 2, child: _TopPortion()),
           Expanded(
             flex: 3,
@@ -130,6 +130,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                       _adress,
                                     );
                                     if (result.success) {
+                                      if (!context.mounted) return;
                                       final MyUser newUserInfo = MyUser(
                                         uid: user.uid,
                                         email: user.email,
@@ -152,10 +153,11 @@ class _ProfilePageState extends State<ProfilePage> {
                                         ),
                                       );
                                       Provider.of<ProviderListener>(context,
-                                              listen: false)
+                                              listen: false,)
                                           .updateUser(newUserInfo);
                                       Navigator.pop(context);
                                     } else {
+                                      if (!context.mounted) return;
                                       // Registration failed, show error message
                                       ScaffoldMessenger.of(context)
                                           .showSnackBar(
@@ -255,7 +257,7 @@ class _ProfilePageState extends State<ProfilePage> {
 }
 
 class _TopPortion extends StatefulWidget {
-  const _TopPortion({Key? key}) : super(key: key);
+  const _TopPortion();
 
   @override
   __TopPortionState createState() => __TopPortionState();
@@ -265,14 +267,13 @@ class __TopPortionState extends State<_TopPortion> {
   File? _selectedImage; // Store the selected image file
 
   Future<void> _getImage() async {
-    final pickedFile =
+    final XFile? pickedFile =
         await ImagePicker().pickImage(source: ImageSource.gallery);
 
     setState(() {
       if (pickedFile != null) {
         _selectedImage = File(pickedFile.path);
       } else {
-        print('No image selected.');
       }
     });
   }
@@ -281,14 +282,14 @@ class __TopPortionState extends State<_TopPortion> {
   Widget build(BuildContext context) {
     return Stack(
       fit: StackFit.expand,
-      children: [
+      children: <Widget>[
         Container(
           margin: const EdgeInsets.only(bottom: 50),
           decoration: const BoxDecoration(
             gradient: LinearGradient(
               begin: Alignment.bottomCenter,
               end: Alignment.topCenter,
-              colors: [
+              colors: <Color>[
                 Color.fromARGB(255, 39, 39, 39),
                 Color.fromARGB(255, 39, 39, 39),
               ],
