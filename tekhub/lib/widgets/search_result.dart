@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:provider/provider.dart';
@@ -28,18 +29,21 @@ class SearchResultState extends State<SearchResult> {
     bool isAdmin = false;
 
     return Consumer<ProviderListener>(
-      builder: (BuildContext context, ProviderListener providerListener, Widget? child) {
+      builder: (BuildContext context, ProviderListener providerListener,
+          Widget? child) {
         if (providerListener.searchtext.isNotEmpty) {
           filteredArticles = widget.articles
               .where(
-                (Article article) => article.name.toLowerCase().contains(providerListener.searchtext.toLowerCase()),
+                (Article article) => article.name
+                    .toLowerCase()
+                    .contains(providerListener.searchtext.toLowerCase()),
               )
               .toList();
           return Expanded(
             child: Column(
               children: <Widget>[
                 Padding(
-                  padding: const EdgeInsets.only(top: 20),
+                  padding: const EdgeInsets.only(top: 10),
                   child: TextResult(
                     articlesLength: filteredArticles.length,
                     searchtext: providerListener.searchtext,
@@ -48,17 +52,18 @@ class SearchResultState extends State<SearchResult> {
                 Expanded(
                   child: SingleChildScrollView(
                     child: Padding(
-                      padding: const EdgeInsets.only(left: 32, right: 34, top: 20),
+                      padding: const EdgeInsets.only(left: 32, right: 34),
                       child: StaggeredGrid.count(
                         crossAxisCount: 4,
-                        mainAxisSpacing: 4,
-                        crossAxisSpacing: 4,
+                        mainAxisSpacing: kIsWeb ? 1 : 4,
+                        crossAxisSpacing: kIsWeb ? 1 : 4,
                         children: List.generate(
                           filteredArticles.length,
                           (int index) => StaggeredGridTile.count(
                             crossAxisCellCount: 2,
-                            mainAxisCellCount: 4,
-                            child: SingleArticle(article: filteredArticles[index]),
+                            mainAxisCellCount: kIsWeb ? 0.8 : 3.5,
+                            child:
+                                SingleArticle(article: filteredArticles[index]),
                           ),
                         ),
                       ),
@@ -71,7 +76,9 @@ class SearchResultState extends State<SearchResult> {
         } else {
           filteredBarArticles = widget.articles
               .where(
-                (Article article) => article.type.toString().contains(providerListener.activeType),
+                (Article article) => article.type
+                    .toString()
+                    .contains(providerListener.activeType),
               )
               .toList();
           return Expanded(
@@ -94,21 +101,28 @@ class SearchResultState extends State<SearchResult> {
                   padding: EdgeInsets.only(top: 10),
                   child: FilterBar(),
                 ),
+                SizedBox(
+                  height: 20,
+                ),
                 Expanded(
                   child: SingleChildScrollView(
                     child: Padding(
-                      padding: const EdgeInsets.only(left: 32, right: 34, top: 20),
+                      padding: const EdgeInsets.only(left: 32, right: 34),
                       child: StaggeredGrid.count(
                         crossAxisCount: 4,
-                        mainAxisSpacing: 4,
-                        crossAxisSpacing: 4,
+                        mainAxisSpacing: kIsWeb ? 1 : 4,
+                        crossAxisSpacing: kIsWeb ? 1 : 4,
                         children: List.generate(
-                          providerListener.activeType == 'all' ? widget.articles.length : filteredBarArticles.length,
+                          providerListener.activeType == 'all'
+                              ? widget.articles.length
+                              : filteredBarArticles.length,
                           (int index) => StaggeredGridTile.count(
                             crossAxisCellCount: 2,
-                            mainAxisCellCount: 4,
+                            mainAxisCellCount: kIsWeb ? 0.8 : 3.5,
                             child: SingleArticle(
-                              article: providerListener.activeType == 'all' ? widget.articles[index] : filteredBarArticles[index],
+                              article: providerListener.activeType == 'all'
+                                  ? widget.articles[index]
+                                  : filteredBarArticles[index],
                             ),
                           ),
                         ),

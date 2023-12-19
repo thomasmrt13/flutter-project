@@ -23,7 +23,7 @@ class HomeWidgetState extends State<HomeWidget> {
         price: 525,
         description: 'Iphone 12',
         type: ArticleType.phone,
-        imageUrl: 'assets/images/logo.png',
+        imageUrl: 'assets/images/ipad.png',
       ),
       Article(
         id: '2',
@@ -31,7 +31,7 @@ class HomeWidgetState extends State<HomeWidget> {
         price: 790,
         description: 'Ipad Pro 2021',
         type: ArticleType.tablet,
-        imageUrl: 'assets/images/logo.png',
+        imageUrl: 'assets/images/ipad.png',
       ),
       Article(
         id: '3',
@@ -39,7 +39,7 @@ class HomeWidgetState extends State<HomeWidget> {
         price: 950,
         description: 'Iphone 14 Pro Max',
         type: ArticleType.phone,
-        imageUrl: 'assets/images/logo.png',
+        imageUrl: 'assets/images/ipad.png',
       ),
       Article(
         id: '4',
@@ -47,7 +47,7 @@ class HomeWidgetState extends State<HomeWidget> {
         price: 359,
         description: 'Macbook Pro 2022',
         type: ArticleType.laptop,
-        imageUrl: 'assets/images/logo.png',
+        imageUrl: 'assets/images/ipad.png',
       ),
     ];
     Provider.of<ProviderListener>(context, listen: false)
@@ -56,6 +56,8 @@ class HomeWidgetState extends State<HomeWidget> {
 
   @override
   Widget build(BuildContext context) {
+    Provider.of<ProviderListener>(context, listen: false)
+        .updateActiveType('all');
     const int cartItems = 0;
     getArticles();
     return Consumer<ProviderListener>(

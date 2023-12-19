@@ -33,8 +33,12 @@ class _CartState extends State<Cart> {
 
   @override
   Widget build(BuildContext context) {
-    final List<Article> articles = Provider.of<ProviderListener>(context).articles;
-    final double total = articles.fold(0, (double previousValue, Article article) => previousValue + article.price);
+    final List<Article> articles =
+        Provider.of<ProviderListener>(context).articles;
+    final double total = articles.fold(
+        0,
+        (double previousValue, Article article) =>
+            previousValue + article.price);
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 39, 39, 39),
       body: SingleChildScrollView(

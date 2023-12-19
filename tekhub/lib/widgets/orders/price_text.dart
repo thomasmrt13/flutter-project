@@ -16,19 +16,11 @@ class PriceText extends StatelessWidget {
     return Row(
       children: [
         Text(
-          '\$$price',
+          price.toString() + '€',
           style: Theme.of(context)
               .textTheme
               .displaySmall!
               .copyWith(color: colorToUse),
-        ),
-        Container(
-          margin: EdgeInsets.only(bottom: 12, left: 0),
-          child: Text('.30',
-              style: Theme.of(context)
-                  .textTheme
-                  .displaySmall!
-                  .copyWith(color: colorToUse, fontSize: 16)),
         ),
       ],
     );

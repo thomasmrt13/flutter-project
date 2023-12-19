@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tekhub/Firebase/models/articles.dart';
 import 'package:tekhub/screens/product_detail_screen.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 class SingleArticle extends StatelessWidget {
   const SingleArticle({required this.article, super.key});
@@ -25,8 +26,8 @@ class SingleArticle extends StatelessWidget {
             );
           },
           child: SizedBox(
-            width: 156,
-            height: 252,
+            width: MediaQuery.of(context).size.width * 0.4,
+            height: MediaQuery.of(context).size.height * 0.3,
             child: Stack(
               children: <Widget>[
                 Container(
@@ -38,28 +39,34 @@ class SingleArticle extends StatelessWidget {
                     ),
                   ),
                 ),
-                Center(
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 50, bottom: 31),
+                Positioned(
+                  bottom:
+                      kIsWeb ? MediaQuery.of(context).size.height * 0.15 : 25,
+                  left: kIsWeb ? MediaQuery.of(context).size.width * 0.14 : 0,
+                  right: 0,
+                  child: Center(
                     child: Text(
                       article.name,
                       style: const TextStyle(
-                        fontSize: 22,
-                        fontWeight: FontWeight.w600,
+                        fontSize: kIsWeb ? 25 : 22,
+                        fontWeight: kIsWeb ? FontWeight.w800 : FontWeight.w600,
                         fontFamily: 'Raleway',
                       ),
                     ),
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 98, bottom: 31),
+                Positioned(
+                  bottom:
+                      kIsWeb ? MediaQuery.of(context).size.height * 0.13 : 8,
+                  left: kIsWeb ? MediaQuery.of(context).size.width * 0.14 : 0,
+                  right: 0,
                   child: Center(
                     child: Text(
                       '${article.price}€',
                       style: const TextStyle(
                         color: Color.fromARGB(255, 126, 217, 87),
                         fontWeight: FontWeight.bold,
-                        fontSize: 17,
+                        fontSize: kIsWeb ? 20 : 17,
                       ),
                     ),
                   ),
