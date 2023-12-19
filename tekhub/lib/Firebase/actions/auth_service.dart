@@ -143,6 +143,9 @@ class AuthService {
       case 'invalid-credential':
         errorMessage = 'Invalid credentials.';
         break;
+      case 'invalid-login-credentials':
+        errorMessage = 'Invalid credentials.';
+        break;
       case 'user-disabled':
         errorMessage = 'This user account has been disabled.';
         break;
@@ -205,12 +208,14 @@ class AuthService {
     } on FirebaseAuthException catch (e) {
       return Result<dynamic>.failure(_handleLoginError(e));
     } catch (e) {
-      return Result<dynamic>.failure('An unexpected error occurred during login. $e');
+      return Result<dynamic>.failure(
+          'An unexpected error occurred during login. $e');
     }
   }
 
   Future<List<UserArticle>> _fetchUserArticles(
-      List<dynamic>? articleData,) async {
+    List<dynamic>? articleData,
+  ) async {
     if (articleData == null || articleData.isEmpty) {
       return <UserArticle>[]; // Return an empty list if no articles are present
     }
@@ -244,13 +249,15 @@ class AuthService {
   }
 
   Future<List<UserHistoryArticles>> _fetchUserHistoryArticles(
-      List<dynamic>? articleData,) async {
+    List<dynamic>? articleData,
+  ) async {
     if (articleData == null || articleData.isEmpty) {
       return <UserHistoryArticles>[]; // Return an empty list if no articles are present
     }
 
     try {
-      final List<UserHistoryArticles> userHistoryArticles = <UserHistoryArticles>[];
+      final List<UserHistoryArticles> userHistoryArticles =
+          <UserHistoryArticles>[];
 
       for (final Map<String, dynamic> articleInfo
           in List<Map<String, dynamic>>.from(articleData)) {
@@ -303,7 +310,8 @@ class AuthService {
       }
 
       await _auth.sendPasswordResetEmail(email: email);
-      return Result<dynamic>.success('Password reset email sent. Check your inbox.');
+      return Result<dynamic>.success(
+          'Password reset email sent. Check your inbox.');
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
         // Handle case where the email doesn't exist
