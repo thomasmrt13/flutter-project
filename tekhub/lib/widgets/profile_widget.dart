@@ -1,7 +1,9 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:tekhub/screens/setting_screen.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({Key? key}) : super(key: key);
@@ -48,168 +50,193 @@ class _ProfilePageState extends State<ProfilePage> {
                     ),
                     const SizedBox(height: 16),
                     if (isAdmin == false)
-                      Form(
-                        child: Column(
-                          children: [
-                            TextFormField(
-                              controller: _userNameController,
-                              decoration: const InputDecoration(
-                                labelStyle: TextStyle(fontFamily: 'Raleway'),
-                                labelText: 'User Name',
-                                prefixIcon: Icon(Icons.account_circle),
-                              ),
-                            ),
-                            const SizedBox(height: 20),
-                            TextFormField(
-                              controller: _emailController,
-                              decoration: const InputDecoration(
-                                labelStyle: TextStyle(fontFamily: 'Raleway'),
-                                labelText: 'Email',
-                                prefixIcon: Icon(Icons.mail),
-                              ),
-                            ),
-                            const SizedBox(height: 20),
-                            TextFormField(
-                              controller: _phoneNumberController,
-                              decoration: const InputDecoration(
-                                labelStyle: TextStyle(fontFamily: 'Raleway'),
-                                labelText: 'Phone Number',
-                                prefixIcon: Icon(Icons.phone),
-                              ),
-                            ),
-                            const SizedBox(height: 20),
-                            TextFormField(
-                              controller: _addressController,
-                              decoration: InputDecoration(
-                                labelStyle: TextStyle(fontFamily: 'Raleway'),
-                                labelText: 'Address',
-                                prefixIcon: const Icon(Icons.house),
-                                suffixIcon: IconButton(
-                                  color:
-                                      const Color.fromARGB(255, 126, 217, 87),
-                                  icon: const Icon(Icons.add_location),
-                                  onPressed: () {},
+                      Padding(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: kIsWeb == true
+                                ? MediaQuery.of(context).size.width * 0.2
+                                : 10,
+                          ),
+                          child: Form(
+                            child: Column(
+                              children: [
+                                TextFormField(
+                                  controller: _userNameController,
+                                  decoration: const InputDecoration(
+                                    labelStyle:
+                                        TextStyle(fontFamily: 'Raleway'),
+                                    labelText: 'User Name',
+                                    prefixIcon: Icon(Icons.account_circle),
+                                  ),
                                 ),
-                              ),
-                            ),
-                            const SizedBox(height: 20),
-                            SizedBox(
-                              width: double.infinity,
-                              child: ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                  foregroundColor: Colors.white,
-                                  backgroundColor:
-                                      const Color.fromARGB(255, 39, 39, 39),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(15),
-                                    side: const BorderSide(
-                                      color: Color.fromARGB(255, 126, 217, 87),
-                                      width: 2,
+                                const SizedBox(height: 20),
+                                TextFormField(
+                                  controller: _emailController,
+                                  decoration: const InputDecoration(
+                                    labelStyle:
+                                        TextStyle(fontFamily: 'Raleway'),
+                                    labelText: 'Email',
+                                    prefixIcon: Icon(Icons.mail),
+                                  ),
+                                ),
+                                const SizedBox(height: 20),
+                                TextFormField(
+                                  controller: _phoneNumberController,
+                                  decoration: const InputDecoration(
+                                    labelStyle:
+                                        TextStyle(fontFamily: 'Raleway'),
+                                    labelText: 'Phone Number',
+                                    prefixIcon: Icon(Icons.phone),
+                                  ),
+                                ),
+                                const SizedBox(height: 20),
+                                TextFormField(
+                                  controller: _addressController,
+                                  decoration: InputDecoration(
+                                    labelStyle:
+                                        TextStyle(fontFamily: 'Raleway'),
+                                    labelText: 'Address',
+                                    prefixIcon: const Icon(Icons.house),
+                                    suffixIcon: IconButton(
+                                      color: const Color.fromARGB(
+                                          255, 126, 217, 87),
+                                      icon: const Icon(Icons.add_location),
+                                      onPressed: () {},
                                     ),
                                   ),
-                                  minimumSize: Size(
-                                    MediaQuery.of(context).size.width / 1.12,
-                                    55,
+                                ),
+                                const SizedBox(height: 20),
+                                SizedBox(
+                                  width: double.infinity,
+                                  child: ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      foregroundColor: Colors.white,
+                                      backgroundColor:
+                                          const Color.fromARGB(255, 39, 39, 39),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(15),
+                                        side: const BorderSide(
+                                          color:
+                                              Color.fromARGB(255, 126, 217, 87),
+                                          width: 2,
+                                        ),
+                                      ),
+                                      minimumSize: Size(
+                                        MediaQuery.of(context).size.width /
+                                            1.12,
+                                        55,
+                                      ),
+                                    ),
+                                    onPressed: () {
+                                      String userName =
+                                          _userNameController.text;
+                                      String email = _emailController.text;
+                                      String phoneNumber =
+                                          _phoneNumberController.text;
+                                      String address = _addressController.text;
+
+                                      // Use the captured values as needed
+                                      print('Username: $userName');
+                                      print('Email: $email');
+                                      print('Phone Number: $phoneNumber');
+                                      print('Address: $address');
+
+                                      Navigator.pop(context);
+                                    },
+                                    child: Text(
+                                      'Save'.toUpperCase(),
+                                      style: const TextStyle(
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.w800,
+                                        color:
+                                            Color.fromARGB(255, 126, 217, 87),
+                                      ),
+                                    ),
                                   ),
                                 ),
-                                onPressed: () {
-                                  String userName = _userNameController.text;
-                                  String email = _emailController.text;
-                                  String phoneNumber =
-                                      _phoneNumberController.text;
-                                  String address = _addressController.text;
-
-                                  // Use the captured values as needed
-                                  print('Username: $userName');
-                                  print('Email: $email');
-                                  print('Phone Number: $phoneNumber');
-                                  print('Address: $address');
-
-                                  Navigator.pop(context);
-                                },
-                                child: Text(
-                                  'Save'.toUpperCase(),
-                                  style: const TextStyle(
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w800,
-                                    color: Color.fromARGB(255, 126, 217, 87),
-                                  ),
-                                ),
-                              ),
+                              ],
                             ),
-                          ],
-                        ),
-                      )
+                          ))
                     else
-                      Form(
-                        child: Column(
-                          children: [
-                            TextFormField(
-                              controller: _userNameController,
-                              decoration: const InputDecoration(
-                                labelStyle: TextStyle(fontFamily: 'Raleway'),
-                                labelText: 'User Name',
-                                prefixIcon: Icon(Icons.account_circle),
-                              ),
-                            ),
-                            const SizedBox(height: 20),
-                            TextFormField(
-                              controller: _emailController,
-                              decoration: const InputDecoration(
-                                labelStyle: TextStyle(fontFamily: 'Raleway'),
-                                labelText: 'Email',
-                                prefixIcon: Icon(Icons.mail),
-                              ),
-                            ),
-                            const SizedBox(height: 20),
-                            TextFormField(
-                              controller: _phoneNumberController,
-                              decoration: const InputDecoration(
-                                labelStyle: TextStyle(fontFamily: 'Raleway'),
-                                labelText: 'Phone Number',
-                                prefixIcon: Icon(Icons.phone),
-                              ),
-                            ),
-                            const SizedBox(height: 50),
-                            SizedBox(
-                              width: double.infinity,
-                              child: ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                  foregroundColor: Colors.white,
-                                  backgroundColor:
-                                      Color.fromARGB(255, 126, 217, 87),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(15),
-                                  ),
-                                  minimumSize: Size(
-                                    MediaQuery.of(context).size.width / 1.12,
-                                    55,
-                                  ),
-                                ),
-                                onPressed: () {
-                                  String userName = _userNameController.text;
-                                  String email = _emailController.text;
-                                  String phoneNumber =
-                                      _phoneNumberController.text;
-
-                                  // Use the captured values as needed
-                                  print('Username: $userName');
-                                  print('Email: $email');
-                                  print('Phone Number: $phoneNumber');
-
-                                  Navigator.pop(context);
-                                },
-                                child: Text(
-                                  'Save'.toUpperCase(),
-                                  style: const TextStyle(
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w800,
-                                    color: Colors.white,
-                                  ),
+                      Padding(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: kIsWeb == true
+                              ? MediaQuery.of(context).size.width * 0.2
+                              : 10,
+                        ),
+                        child: Form(
+                          child: Column(
+                            children: [
+                              TextFormField(
+                                controller: _userNameController,
+                                decoration: const InputDecoration(
+                                  labelStyle: TextStyle(fontFamily: 'Raleway'),
+                                  labelText: 'User Name',
+                                  prefixIcon: Icon(Icons.account_circle),
                                 ),
                               ),
-                            ),
-                          ],
+                              const SizedBox(height: 20),
+                              TextFormField(
+                                controller: _emailController,
+                                decoration: const InputDecoration(
+                                  labelStyle: TextStyle(fontFamily: 'Raleway'),
+                                  labelText: 'Email',
+                                  prefixIcon: Icon(Icons.mail),
+                                ),
+                              ),
+                              const SizedBox(height: 20),
+                              TextFormField(
+                                controller: _phoneNumberController,
+                                decoration: const InputDecoration(
+                                  labelStyle: TextStyle(fontFamily: 'Raleway'),
+                                  labelText: 'Phone Number',
+                                  prefixIcon: Icon(Icons.phone),
+                                ),
+                              ),
+                              const SizedBox(height: 50),
+                              SizedBox(
+                                width: double.infinity,
+                                child: ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    foregroundColor: Colors.white,
+                                    backgroundColor:
+                                        Color.fromARGB(255, 126, 217, 87),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(15),
+                                    ),
+                                    minimumSize: Size(
+                                      MediaQuery.of(context).size.width / 1.12,
+                                      55,
+                                    ),
+                                  ),
+                                  onPressed: () {
+                                    String userName = _userNameController.text;
+                                    String email = _emailController.text;
+                                    String phoneNumber =
+                                        _phoneNumberController.text;
+
+                                    // Use the captured values as needed
+                                    print('Username: $userName');
+                                    print('Email: $email');
+                                    print('Phone Number: $phoneNumber');
+
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                SettingsPage()));
+                                  },
+                                  child: Text(
+                                    'Save'.toUpperCase(),
+                                    style: const TextStyle(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w800,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                   ],

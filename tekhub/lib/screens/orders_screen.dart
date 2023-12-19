@@ -62,7 +62,7 @@ class OrdersScreen extends StatelessWidget {
                   ),
                 ),
                 height: 150,
-                padding: EdgeInsets.only(left: 36, top: 12),
+                padding: EdgeInsets.only(left: 36, top: 1),
                 width: double.infinity,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -87,17 +87,32 @@ class OrdersScreen extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       Container(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        child: Column(
                           children: [
-                            Text(
-                              'TOTAL',
-                              style: TextStyle(color: Colors.white),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  'TOTAL',
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w600),
+                                ),
+                                SizedBox(width: 32),
+                                PriceText(
+                                  price: totalPrice.toInt(),
+                                  color: Color.fromARGB(255, 255, 255, 255),
+                                ),
+                              ],
                             ),
-                            SizedBox(width: 32),
-                            PriceText(
-                              price: totalPrice.toInt(),
-                              color: Color.fromARGB(255, 255, 255, 255),
+                            SizedBox(height: 8),
+                            Text(
+                              articles.length.toString() + " SELLS",
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600),
                             ),
                           ],
                         ),

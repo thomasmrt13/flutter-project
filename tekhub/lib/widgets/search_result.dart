@@ -43,7 +43,7 @@ class SearchResultState extends State<SearchResult> {
             child: Column(
               children: <Widget>[
                 Padding(
-                  padding: const EdgeInsets.only(top: 20),
+                  padding: const EdgeInsets.only(top: 10),
                   child: TextResult(
                     articlesLength: filteredArticles.length,
                     searchtext: providerListener.searchtext,
@@ -100,6 +100,9 @@ class SearchResultState extends State<SearchResult> {
                 const Padding(
                   padding: EdgeInsets.only(top: 10),
                   child: FilterBar(),
+                ),
+                SizedBox(
+                  height: 20,
                 ),
                 Expanded(
                   child: SingleChildScrollView(

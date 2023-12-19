@@ -16,6 +16,8 @@ class SearchBarComponentState extends State<SearchBarComponent> {
 
   @override
   Widget build(BuildContext context) {
+    Provider.of<ProviderListener>(context, listen: false)
+        .updateActiveType('all');
     return SizedBox(
       width: kIsWeb
           ? MediaQuery.of(context).size.width * 0.8

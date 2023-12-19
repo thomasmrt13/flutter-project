@@ -1,7 +1,11 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:tekhub/Firebase/models/articles.dart';
 import 'package:tekhub/provider/provider_listener.dart';
+import 'package:tekhub/widgets/check_animation.dart';
 import 'package:tekhub/widgets/search/search_bar.dart';
 import 'package:tekhub/widgets/search_result.dart';
 
@@ -60,14 +64,15 @@ class HomeAdminWidgetState extends State<HomeAdminWidget> {
     void _showModal() {
       final List<bool> _selectedType = <bool>[true, false, false];
       int _selectedTypeIndex = 0;
-      TextEditingController titleController = TextEditingController();
-      TextEditingController priceController = TextEditingController();
-      TextEditingController descriptionController = TextEditingController();
+      final TextEditingController titleController = TextEditingController();
+      final TextEditingController priceController = TextEditingController();
+      final TextEditingController descriptionController =
+          TextEditingController();
 
       const List<Widget> type = <Widget>[
         Text('Iphone'),
         Text('Laptop'),
-        Text('Tablet')
+        Text('Tablet'),
       ];
 
       String _getSelectedType() {
@@ -83,6 +88,39 @@ class HomeAdminWidgetState extends State<HomeAdminWidget> {
         }
       }
 
+      File? _selectedImage; // Store the selected image file
+
+      Future<void> _getImage() async {
+        final pickedFile =
+            await ImagePicker().pickImage(source: ImageSource.gallery);
+
+        setState(() {
+          if (pickedFile != null) {
+            _selectedImage = File(pickedFile.path);
+          } else {
+            print('No image selected.');
+          }
+        });
+      }
+
+      // Afficher l'animation de vérification
+      void onValidationButtonPressed() {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return Dialog(
+              backgroundColor: const Color.fromARGB(0, 255, 255, 255),
+              // Utilisation d'un Container pour définir la taille du Dialog
+              // Hauteur souhaitée du Dialog
+              child: AnimatedCheckMark(),
+            );
+          },
+        );
+        Future.delayed(const Duration(milliseconds: 1250), () {
+          Navigator.of(context).pop(); // Ferme le Dialog
+        });
+      }
+
       showModalBottomSheet(
         context: context,
         builder: (BuildContext context) {
@@ -95,11 +133,11 @@ class HomeAdminWidgetState extends State<HomeAdminWidget> {
                     SizedBox(
                       height: MediaQuery.of(context).size.height * 0.03,
                     ),
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 10),
+                    const Padding(
+                      padding: EdgeInsets.only(bottom: 10),
                       child: Text(
                         'Add a product',
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontFamily: 'Raleway',
                           fontSize: 20,
@@ -112,13 +150,15 @@ class HomeAdminWidgetState extends State<HomeAdminWidget> {
                       ),
                       padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
                       decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(25),
-                          border: Border.all(
-                              width: 2,
-                              color: Color.fromARGB(255, 126, 217, 87))),
+                        borderRadius: BorderRadius.circular(25),
+                        border: Border.all(
+                          width: 2,
+                          color: const Color.fromARGB(255, 126, 217, 87),
+                        ),
+                      ),
                       child: TextField(
                         controller: titleController,
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           border: InputBorder.none,
                           labelText: "Title",
                         ),
@@ -127,7 +167,7 @@ class HomeAdminWidgetState extends State<HomeAdminWidget> {
                     SizedBox(
                       height: MediaQuery.of(context).size.height * 0.02,
                     ),
-                    Text('Device Type'),
+                    const Text('Device Type'),
                     const SizedBox(height: 5),
                     ToggleButtons(
                       direction: Axis.horizontal,
@@ -144,11 +184,12 @@ class HomeAdminWidgetState extends State<HomeAdminWidget> {
                         });
                       },
                       borderRadius: const BorderRadius.all(Radius.circular(8)),
-                      selectedBorderColor: Color.fromARGB(255, 126, 217, 87),
+                      selectedBorderColor:
+                          const Color.fromARGB(255, 126, 217, 87),
                       borderWidth: 2,
                       selectedColor: Colors.white,
-                      fillColor: Color(0xFF272727),
-                      color: Color(0xFF272727),
+                      fillColor: const Color(0xFF272727),
+                      color: const Color(0xFF272727),
                       constraints: const BoxConstraints(
                         minHeight: 40.0,
                         minWidth: 80.0,
@@ -161,16 +202,19 @@ class HomeAdminWidgetState extends State<HomeAdminWidget> {
                     ),
                     Container(
                       constraints: BoxConstraints(
-                          maxWidth: MediaQuery.of(context).size.height * 0.45),
+                        maxWidth: MediaQuery.of(context).size.height * 0.45,
+                      ),
                       padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
                       decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(25),
-                          border: Border.all(
-                              width: 2,
-                              color: Color.fromARGB(255, 126, 217, 87))),
+                        borderRadius: BorderRadius.circular(25),
+                        border: Border.all(
+                          width: 2,
+                          color: const Color.fromARGB(255, 126, 217, 87),
+                        ),
+                      ),
                       child: TextField(
                         controller: priceController,
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           border: InputBorder.none,
                           labelText: "Price",
                         ),
@@ -189,7 +233,7 @@ class HomeAdminWidgetState extends State<HomeAdminWidget> {
                         borderRadius: BorderRadius.circular(25),
                         border: Border.all(
                           width: 2,
-                          color: Color.fromARGB(255, 126, 217, 87),
+                          color: const Color.fromARGB(255, 126, 217, 87),
                         ),
                       ),
                       child: SizedBox(
@@ -198,11 +242,12 @@ class HomeAdminWidgetState extends State<HomeAdminWidget> {
                         child: TextField(
                           controller: descriptionController,
                           keyboardType: TextInputType.multiline,
-                          maxLines: 4,
-                          decoration: InputDecoration(
-                              border: InputBorder.none,
-                              hintText: "Description",
-                              focusedBorder: OutlineInputBorder()),
+                          maxLines: 6,
+                          decoration: const InputDecoration(
+                            border: InputBorder.none,
+                            hintText: "Description",
+                            focusedBorder: OutlineInputBorder(),
+                          ),
                         ),
                       ),
                     ),
@@ -216,7 +261,9 @@ class HomeAdminWidgetState extends State<HomeAdminWidget> {
                             .center, // Aligns buttons at the center horizontally
                         children: [
                           ElevatedButton(
-                            onPressed: () {},
+                            onPressed: () async {
+                              await _getImage(); // Call getImage() when CircleAvatar is tapped
+                            },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: const Color(0xFF272727),
                               fixedSize: Size(
@@ -236,27 +283,31 @@ class HomeAdminWidgetState extends State<HomeAdminWidget> {
                                 fontWeight: FontWeight.w700,
                               ),
                             ),
-                            child: Row(
+                            child: const Row(
                               mainAxisAlignment: MainAxisAlignment.center,
-                              children: const <Widget>[
-                                Icon(Icons.add_photo_alternate,
-                                    size: 24), // Replace with your icon
+                              children: <Widget>[
+                                Icon(
+                                  Icons.add_photo_alternate,
+                                  size: 24,
+                                ), // Replace with your icon
                                 SizedBox(
-                                    width:
-                                        8), // Adjust spacing between icon and text
+                                  width: 8,
+                                ), // Adjust spacing between icon and text
                                 Text('Add pictures'),
                               ],
                             ),
                           ),
 
-                          SizedBox(
-                              width: 10), // Adding some space between buttons
+                          const SizedBox(
+                            width: 10,
+                          ), // Adding some space between buttons
                           ElevatedButton(
                             onPressed: () {
                               // Retrieve values from controllers
-                              String title = titleController.text;
-                              String price = priceController.text;
-                              String description = descriptionController.text;
+                              final String title = titleController.text;
+                              final String price = priceController.text;
+                              final String description =
+                                  descriptionController.text;
 
                               // Use these values as needed
                               // For example, you can print them
@@ -267,11 +318,14 @@ class HomeAdminWidgetState extends State<HomeAdminWidget> {
 
                               // Close the modal bottom sheet
                               Navigator.pop(context);
+                              onValidationButtonPressed();
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: const Color(0xFF272727),
                               fixedSize: Size(
-                                  MediaQuery.of(context).size.height * 0.2, 30),
+                                MediaQuery.of(context).size.height * 0.2,
+                                30,
+                              ),
                               foregroundColor: Colors.white,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10),
@@ -301,6 +355,8 @@ class HomeAdminWidgetState extends State<HomeAdminWidget> {
       );
     }
 
+    Provider.of<ProviderListener>(context, listen: false)
+        .updateActiveType('all');
     return Consumer<ProviderListener>(
       builder: (
         BuildContext context,
@@ -311,7 +367,7 @@ class HomeAdminWidgetState extends State<HomeAdminWidget> {
           body: Column(
             children: <Widget>[
               const Padding(
-                padding: EdgeInsets.only(top: 62),
+                padding: EdgeInsets.only(top: 20),
                 child: Center(
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -320,6 +376,10 @@ class HomeAdminWidgetState extends State<HomeAdminWidget> {
                     ],
                   ),
                 ),
+              ),
+              SizedBox(
+                height: MediaQuery.of(context).size.height * 0.01,
+                width: MediaQuery.of(context).size.width,
               ),
               SearchResult(
                 searchtext: providerListener.searchtext,
