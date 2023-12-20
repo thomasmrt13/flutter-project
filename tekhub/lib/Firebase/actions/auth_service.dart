@@ -1,5 +1,3 @@
-// ignore_for_file: always_specify_types
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:tekhub/Firebase/actions/result.dart';
@@ -42,25 +40,24 @@ class AuthService {
   }
 
   // Register with email and password
-  Future<Result> registerWithEmailAndPassword(
+  Future<Result<dynamic>> registerWithEmailAndPassword(
     String email,
     String password,
     String confirmPassword,
     String username,
   ) async {
     if (!_isEmailValid(email)) {
-      return Result(false, 'Invalid email format.');
+      return Result<dynamic>.failure('Invalid email format.');
     }
 
     if (!_isPasswordValid(password)) {
-      return Result(
-          false,
+      return Result<dynamic>.failure(
           'The password is too weak. It must contain at least 8 characters, '
           'including 1 uppercase letter, 1 number, and 1 special character.');
     }
 
     if (password != confirmPassword) {
-      return Result(false, 'The passwords do not match.');
+      return Result<dynamic>.failure('The passwords do not match.');
     }
 
     try {
@@ -72,7 +69,7 @@ class AuthService {
 
       if (usernameCheck.docs.isNotEmpty) {
         // Username is already in use
-        return Result(false, 'The username is already in use.');
+        return Result<dynamic>.failure('The username is already in use.');
       }
 
       final UserCredential authResult =
@@ -85,17 +82,19 @@ class AuthService {
       await FirebaseFirestore.instance
           .collection('users')
           .doc(authResult.user!.uid)
-          .set({
+          .set(<String, dynamic>{
         'email': email,
         'username': username,
         'phoneNumber': '',
         'address': '',
-        'firstName': '',
-        'lastName': '',
-        'cart': [],
-        'purchaseHistory': [],
+        'cart': <dynamic>[],
+        'purchaseHistory': <dynamic>[],
         'role': 'user',
         'profilePictureUrl': '',
+        'cardNumber': '',
+        'creditCardName': '',
+        'expirationDate': '',
+        'cvv': '',
       });
 
       final User? user = authResult.user;
@@ -107,11 +106,11 @@ class AuthService {
 
       final List<UserArticle> cart = userDoc['cart'] != null
           ? await _fetchUserArticles(userDoc['cart'])
-          : [];
+          : <UserArticle>[];
       final List<UserHistoryArticles> purchaseHistory =
           userDoc['purchaseHistory'] != null
               ? await _fetchUserHistoryArticles(userDoc['purchaseHistory'])
-              : [];
+              : <UserHistoryArticles>[];
 
       final MyUser fetchedUser = MyUser(
         uid: user!.uid,
@@ -119,29 +118,32 @@ class AuthService {
         username: userDoc['username'] ?? '',
         phoneNumber: userDoc['phoneNumber'] ?? '',
         address: userDoc['address'] ?? '',
-        firstName: userDoc['firstName'] ?? '',
-        lastName: userDoc['lastName'] ?? '',
         cart: cart,
         purchaseHistory: purchaseHistory,
         role: userDoc['role'] ?? '',
         profilePictureUrl: userDoc['profilePictureUrl'] ?? '',
+        cardNumber: userDoc['cardNumber'] ?? '',
+        creditCardName: userDoc['creditCardName'] ?? '',
+        expirationDate: userDoc['expirationDate'] ?? '',
+        cvv: userDoc['cvv'] ?? '',
       );
 
-      return Result(
-        true,
+      return Result<dynamic>.success(
         fetchedUser,
       );
     } catch (e) {
-      return Result(false, _handleRegistrationError(e));
+      return Result<dynamic>.failure(_handleRegistrationError(e));
     }
   }
 
   String _handleLoginError(FirebaseAuthException error) {
     String errorMessage = 'An error occurred during login.';
 
-    print(error.code);
     switch (error.code) {
       case 'invalid-credential':
+        errorMessage = 'Invalid credentials.';
+        break;
+      case 'invalid-login-credentials':
         errorMessage = 'Invalid credentials.';
         break;
       case 'user-disabled':
@@ -158,7 +160,7 @@ class AuthService {
   }
 
   // Sign in with email and password
-  Future<Result> signInWithEmailAndPassword(
+  Future<Result<dynamic>> signInWithEmailAndPassword(
     String email,
     String password,
   ) async {
@@ -178,11 +180,11 @@ class AuthService {
 
       final List<UserArticle> cart = userDoc['cart'] != null
           ? await _fetchUserArticles(userDoc['cart'])
-          : [];
+          : <UserArticle>[];
       final List<UserHistoryArticles> purchaseHistory =
           userDoc['purchaseHistory'] != null
               ? await _fetchUserHistoryArticles(userDoc['purchaseHistory'])
-              : [];
+              : <UserHistoryArticles>[];
 
       final MyUser fetchedUser = MyUser(
         uid: user!.uid,
@@ -190,33 +192,36 @@ class AuthService {
         username: userDoc['username'] ?? '',
         phoneNumber: userDoc['phoneNumber'] ?? '',
         address: userDoc['address'] ?? '',
-        firstName: userDoc['firstName'] ?? '',
-        lastName: userDoc['lastName'] ?? '',
         cart: cart,
         purchaseHistory: purchaseHistory,
         role: userDoc['role'] ?? '',
         profilePictureUrl: userDoc['profilePictureUrl'] ?? '',
+        cardNumber: userDoc['cardNumber'] ?? '',
+        creditCardName: userDoc['creditCardName'] ?? '',
+        expirationDate: userDoc['expirationDate'] ?? '',
+        cvv: userDoc['cvv'] ?? '',
       );
 
-      return Result(
-        true,
+      return Result<dynamic>.success(
         fetchedUser,
       );
     } on FirebaseAuthException catch (e) {
-      return Result(false, _handleLoginError(e));
+      return Result<dynamic>.failure(_handleLoginError(e));
     } catch (e) {
-      return Result(false, 'An unexpected error occurred during login. $e');
+      return Result<dynamic>.failure(
+          'An unexpected error occurred during login. $e');
     }
   }
 
   Future<List<UserArticle>> _fetchUserArticles(
-      List<dynamic>? articleData) async {
+    List<dynamic>? articleData,
+  ) async {
     if (articleData == null || articleData.isEmpty) {
-      return []; // Return an empty list if no articles are present
+      return <UserArticle>[]; // Return an empty list if no articles are present
     }
 
     try {
-      final List<UserArticle> userArticles = [];
+      final List<UserArticle> userArticles = <UserArticle>[];
 
       for (final Map<String, dynamic> articleInfo
           in List<Map<String, dynamic>>.from(articleData)) {
@@ -239,18 +244,20 @@ class AuthService {
 
       return userArticles;
     } catch (e) {
-      return []; // Return an empty list in case of an error
+      return <UserArticle>[]; // Return an empty list in case of an error
     }
   }
 
   Future<List<UserHistoryArticles>> _fetchUserHistoryArticles(
-      List<dynamic>? articleData) async {
+    List<dynamic>? articleData,
+  ) async {
     if (articleData == null || articleData.isEmpty) {
-      return []; // Return an empty list if no articles are present
+      return <UserHistoryArticles>[]; // Return an empty list if no articles are present
     }
 
     try {
-      final List<UserHistoryArticles> userHistoryArticles = [];
+      final List<UserHistoryArticles> userHistoryArticles =
+          <UserHistoryArticles>[];
 
       for (final Map<String, dynamic> articleInfo
           in List<Map<String, dynamic>>.from(articleData)) {
@@ -274,7 +281,7 @@ class AuthService {
 
       return userHistoryArticles;
     } catch (e) {
-      return []; // Return an empty list in case of an error
+      return <UserHistoryArticles>[]; // Return an empty list in case of an error
     }
   }
 
@@ -296,29 +303,28 @@ class AuthService {
     await _auth.signOut();
   }
 
-  Future<Result> sendPasswordResetEmail(String email) async {
+  Future<Result<dynamic>> sendPasswordResetEmail(String email) async {
     try {
       if (!_isEmailValid(email)) {
-        return Result(false, 'Invalid email format.');
+        return Result<dynamic>.failure('Invalid email format.');
       }
 
       await _auth.sendPasswordResetEmail(email: email);
-      return Result(true, 'Password reset email sent. Check your inbox.');
+      return Result<dynamic>.success(
+          'Password reset email sent. Check your inbox.');
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
         // Handle case where the email doesn't exist
-        return Result(false, 'Email address not found.');
+        return Result<dynamic>.failure('Email address not found.');
       } else {
         // Handle other FirebaseAuthException cases
-        return Result(
-          false,
+        return Result<dynamic>.failure(
           'An unexpected error occurred during reset password.',
         );
       }
     } catch (e) {
       // Handle non-FirebaseAuthException errors
-      return Result(
-        false,
+      return Result<dynamic>.failure(
         'An unexpected error occurred during reset password.',
       );
     }

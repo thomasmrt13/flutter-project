@@ -7,15 +7,15 @@ class CardInputFormatter extends TextInputFormatter {
     if (newValue.selection.baseOffset == 0) {
       return newValue;
     }
-    String inputData = newValue.text;
-    StringBuffer buffer = StringBuffer();
+    final String inputData = newValue.text;
+    final StringBuffer buffer = StringBuffer();
 
-    for (var i = 0; i < inputData.length; i++) {
+    for (int i = 0; i < inputData.length; i++) {
       buffer.write(inputData[i]);
-      int index = i + 1;
+      final int index = i + 1;
 
       if (index % 4 == 0 && inputData.length != index) {
-        buffer.write("  ");
+        buffer.write('  ');
       }
     }
     return TextEditingValue(

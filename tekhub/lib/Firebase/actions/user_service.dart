@@ -1,5 +1,3 @@
-// ignore_for_file: always_specify_types
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:tekhub/Firebase/actions/result.dart';
@@ -11,14 +9,11 @@ class UserService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  Future<Result> updateUserInformation(
+  Future<Result<dynamic>> updateUserInformation(
     String userId,
     String username,
     String phoneNumber,
     String address,
-    String firstName,
-    String lastName,
-    String profilePictureUrl,
   ) async {
     try {
       // Check if the username is already in use by another user
@@ -29,35 +24,78 @@ class UserService {
               .get();
 
       // Exclude the current user from the check
-      final QuerySnapshot<Map<String, dynamic>> currentUserCheck =
+      final DocumentSnapshot<Map<String, dynamic>> userDoc =
           await FirebaseFirestore.instance
               .collection('users')
-              .where('uid', isEqualTo: userId)
+              .doc(userId)
               .get();
 
-      if (usernameCheck.docs.isNotEmpty &&
-          usernameCheck.docs.first.id != currentUserCheck.docs.first.id) {
+      if (usernameCheck.docs.isNotEmpty && userDoc['username'] != username) {
         // Username is already in use by another user
-        return Result(false, 'The username is already in use.');
+        return Result<dynamic>.failure('The username is already in use.');
       }
 
       // Update user information in Firestore
-      await FirebaseFirestore.instance.collection('users').doc(userId).update({
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userId)
+          .update(<Object, Object?>{
         'username': username,
         'phoneNumber': phoneNumber,
         'address': address,
-        'firstName': firstName,
-        'lastName': lastName,
-        'profilePictureUrl': profilePictureUrl,
       });
 
-      return Result(true, 'User information updated successfully.');
+      return Result<dynamic>.success('User information updated successfully.');
     } catch (e) {
-      return Result(false, 'An unexpected error occurred.');
+      return Result<dynamic>.failure('An unexpected error occurred. $e');
     }
   }
 
-  Future<Result> deleteUser(String userId) async {
+  Future<Result<dynamic>> updateCardInformation(
+    String userId,
+    String? cardNumber,
+    String? creditCardName,
+    String? expirationDate,
+    String? cvv,
+  ) async {
+    try {
+      if (cardNumber == '' ||
+          creditCardName == '' ||
+          expirationDate == '' ||
+          cvv == '') {
+        return Result<dynamic>.failure('All parameters must be provided.');
+      }
+
+      if (cardNumber?.length != 19) {
+        return Result<dynamic>.failure('Card number must be 16 digits.');
+      }
+
+      if (expirationDate?.length != 5) {
+        return Result<dynamic>.failure('Invalid expiration date format.');
+      }
+
+      if (cvv?.length != 3) {
+        return Result<dynamic>.failure('CVV must be 3 digits.');
+      }
+
+      // Update user information in Firestore
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userId)
+          .update(<Object, Object?>{
+        'cardNumber': cardNumber,
+        'creditCardName': creditCardName,
+        'expirationDate': expirationDate,
+        'cvv': cvv,
+      });
+
+      return Result<dynamic>.success('User information updated successfully.');
+    } catch (e) {
+      return Result<dynamic>.failure('An unexpected error occurred. $e');
+    }
+  }
+
+  Future<Result<dynamic>> deleteUser(String userId) async {
     try {
       // Delete the user's authentication credentials
       await _auth.currentUser?.delete();
@@ -65,13 +103,14 @@ class UserService {
       // Delete the user's information from Firestore
       await _firestore.collection('users').doc(userId).delete();
 
-      return Result(true, 'User deleted successfully.');
+      return Result<dynamic>.success('User deleted successfully.');
     } catch (e) {
-      return Result(false, 'An unexpected error occurred.');
+      return Result<dynamic>.failure('An unexpected error occurred.');
     }
   }
 
-  Future<Result> addToCart(String userId, UserArticle userArticle) async {
+  Future<Result<dynamic>> addToCart(
+      String userId, UserArticle userArticle,) async {
     try {
       // Retrieve the user's current cart
       final DocumentSnapshot<Map<String, dynamic>> userSnapshot =
@@ -95,7 +134,7 @@ class UserService {
                   userArticle.quantity;
         } else {
           // Add the article to the cart with quantity
-          cartData.add({
+          cartData.add(<String, dynamic>{
             'id': userArticle.article.id,
             'name': userArticle.article.name,
             'price': userArticle.article.price,
@@ -107,22 +146,22 @@ class UserService {
         }
 
         // Update the user's cart in Firestore
-        await _firestore.collection('users').doc(userId).update({
+        await _firestore
+            .collection('users')
+            .doc(userId)
+            .update(<Object, Object?>{
           'cart': cartData,
         });
-        return Result(
-          true,
+        return Result<dynamic>.success(
           'Article added to cart.',
         );
       } else {
-        return Result(
-          false,
+        return Result<dynamic>.failure(
           'User not found.',
         );
       }
     } catch (e) {
-      return Result(
-        false,
+      return Result<dynamic>.failure(
         'An unexpected error occurred during reset password.',
       );
     }
@@ -140,7 +179,7 @@ class UserService {
     }
   }
 
-  Future<Result> getCartProducts(String userId) async {
+  Future<Result<dynamic>> getCartProducts(String userId) async {
     try {
       // Retrieve the user's current cart
       final DocumentSnapshot<Map<String, dynamic>> userSnapshot =
@@ -152,7 +191,8 @@ class UserService {
             List<Map<String, dynamic>>.from(userSnapshot.data()!['cart']);
 
         // Convert cartData to a List of UserArticle objects
-        final List<UserArticle> cartProducts = cartData.map((item) {
+        final List<UserArticle> cartProducts =
+            cartData.map((Map<String, dynamic> item) {
           return UserArticle(
             article: Article(
               id: item['id'],
@@ -166,12 +206,12 @@ class UserService {
           );
         }).toList();
 
-        return Result(true, cartProducts);
+        return Result<dynamic>.success(cartProducts);
       } else {
-        return Result(true, []);
+        return Result<dynamic>.success(<dynamic>[]);
       }
     } catch (e) {
-      return Result(false, 'Error getting cart products');
+      return Result<dynamic>.failure('Error getting cart products');
     }
   }
 
@@ -189,7 +229,8 @@ class UserService {
     }
   }
 
-  Future<Result> deleteProductFromCart(String userId, String productId) async {
+  Future<Result<dynamic>> deleteProductFromCart(
+      String userId, String productId,) async {
     try {
       // Retrieve the user's current cart
       final DocumentSnapshot<Map<String, dynamic>> userSnapshot =
@@ -202,7 +243,7 @@ class UserService {
 
         // Find the index of the product with the specified productId
         final int indexToDelete = cartData.indexWhere(
-          (item) => item['id'] == productId,
+          (Map<String, dynamic> item) => item['id'] == productId,
         );
 
         if (indexToDelete != -1) {
@@ -210,23 +251,27 @@ class UserService {
           cartData.removeAt(indexToDelete);
 
           // Update the user's cart in Firestore
-          await _firestore.collection('users').doc(userId).update({
+          await _firestore
+              .collection('users')
+              .doc(userId)
+              .update(<Object, Object?>{
             'cart': cartData,
           });
 
-          return Result(true, 'Product removed from cart successfully.');
+          return Result<dynamic>.success(
+              'Product removed from cart successfully.',);
         } else {
-          return Result(false, 'Product not found in cart.');
+          return Result<dynamic>.failure('Product not found in cart.');
         }
       } else {
-        return Result(false, 'User not found.');
+        return Result<dynamic>.failure('User not found.');
       }
     } catch (e) {
-      return Result(false, 'An unexpected error occurred.');
+      return Result<dynamic>.failure('An unexpected error occurred.');
     }
   }
 
-  Future<Result> addToPurchaseHistory(
+  Future<Result<dynamic>> addToPurchaseHistory(
     String userId,
     List<UserArticle> userArticles,
   ) async {
@@ -244,7 +289,7 @@ class UserService {
 
         // Add the userArticles to the purchase history
         for (final UserArticle userArticle in userArticles) {
-          purchaseHistoryData.add({
+          purchaseHistoryData.add(<String, dynamic>{
             'id': userArticle.article.id,
             'name': userArticle.article.name,
             'price': userArticle.article.price,
@@ -257,26 +302,27 @@ class UserService {
         }
 
         // Update the user's purchase history in Firestore
-        await _firestore.collection('users').doc(userId).update({
+        await _firestore
+            .collection('users')
+            .doc(userId)
+            .update(<Object, Object?>{
           'purchaseHistory': purchaseHistoryData,
         });
 
-        return Result(true, 'Articles added to purchase history.');
+        return Result<dynamic>.success('Articles added to purchase history.');
       } else {
-        return Result(
-          false,
+        return Result<dynamic>.failure(
           'User not found.',
         );
       }
     } catch (e) {
-      return Result(
-        false,
+      return Result<dynamic>.failure(
         'An unexpected error occurred.',
       );
     }
   }
 
-  Future<Result> getHistoryProducts(String userId) async {
+  Future<Result<dynamic>> getHistoryProducts(String userId) async {
     try {
       // Retrieve the user's current cart
       final DocumentSnapshot<Map<String, dynamic>> userSnapshot =
@@ -291,7 +337,7 @@ class UserService {
 
         // Convert historyData to a List of UserArticle objects
         final List<UserHistoryArticles> historyProducts =
-            historyData.map((item) {
+            historyData.map((Map<String, dynamic> item) {
           return UserHistoryArticles(
             article: Article(
               id: item['id'],
@@ -306,16 +352,16 @@ class UserService {
           );
         }).toList();
 
-        return Result(true, historyProducts);
+        return Result<dynamic>.success(historyProducts);
       } else {
-        return Result(true, []);
+        return Result<dynamic>.success(<dynamic>[]);
       }
     } catch (e) {
-      return Result(false, 'Error getting history products');
+      return Result<dynamic>.failure('Error getting history products');
     }
   }
 
-  Future<Result> getOneProductFromHistory(
+  Future<Result<dynamic>> getOneProductFromHistory(
     String userId,
     String articleId,
   ) async {
@@ -328,13 +374,13 @@ class UserService {
         // Convert the user's purchase history data to a List<Map<String, dynamic>>
         final List<Map<String, dynamic>> purchaseHistoryData =
             List<Map<String, dynamic>>.from(
-          userSnapshot.data()!['purchaseHistory'] ?? [],
+          userSnapshot.data()!['purchaseHistory'] ?? <dynamic>[],
         );
 
         // Find the entry with the specified articleId
         final Map<String, dynamic> productEntry =
             purchaseHistoryData.firstWhere(
-          (entry) => entry['article']['id'] == articleId,
+          (Map<String, dynamic> entry) => entry['article']['id'] == articleId,
         );
 
         final Article article = Article(
@@ -352,17 +398,19 @@ class UserService {
           purchaseDate: productEntry['purchaseDate'].toDate(),
         );
 
-        return Result(true, userHistoryArticle);
+        return Result<dynamic>.success(userHistoryArticle);
       } else {
-        return Result(false, 'User not found.');
+        return Result<dynamic>.failure('User not found.');
       }
     } catch (e) {
-      return Result(false, 'An unexpected error occurred.');
+      return Result<dynamic>.failure('An unexpected error occurred.');
     }
   }
 
-  Future<Result> deleteProductFromHistory(
-      String userId, String articleId) async {
+  Future<Result<dynamic>> deleteProductFromHistory(
+    String userId,
+    String articleId,
+  ) async {
     try {
       // Retrieve the user's current purchase history
       final DocumentSnapshot<Map<String, dynamic>> userSnapshot =
@@ -372,11 +420,12 @@ class UserService {
         // Convert the user's purchase history data to a List<Map<String, dynamic>>
         final List<Map<String, dynamic>> purchaseHistoryData =
             List<Map<String, dynamic>>.from(
-                userSnapshot.data()!['purchaseHistory'] ?? []);
+          userSnapshot.data()!['purchaseHistory'] ?? <dynamic>[],
+        );
 
         // Find the index of the product with the specified articleId
         final int indexToDelete = purchaseHistoryData.indexWhere(
-          (entry) => entry['article']['id'] == articleId,
+          (Map<String, dynamic> entry) => entry['article']['id'] == articleId,
         );
 
         if (indexToDelete != -1) {
@@ -384,20 +433,25 @@ class UserService {
           purchaseHistoryData.removeAt(indexToDelete);
 
           // Update the user's purchase history in Firestore
-          await _firestore.collection('users').doc(userId).update({
+          await _firestore
+              .collection('users')
+              .doc(userId)
+              .update(<Object, Object?>{
             'purchaseHistory': purchaseHistoryData,
           });
 
-          return Result(
-              true, 'Product removed from purchase history successfully.');
+          return Result<dynamic>.success(
+            'Product removed from purchase history successfully.',
+          );
         } else {
-          return Result(false, 'Product not found in purchase history.');
+          return Result<dynamic>.failure(
+              'Product not found in purchase history.',);
         }
       } else {
-        return Result(false, 'User not found.');
+        return Result<dynamic>.failure('User not found.');
       }
     } catch (e) {
-      return Result(false, 'An unexpected error occurred.');
+      return Result<dynamic>.failure('An unexpected error occurred.');
     }
   }
 }
