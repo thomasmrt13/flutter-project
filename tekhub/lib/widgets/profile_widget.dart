@@ -1,242 +1,249 @@
 import 'dart:io';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:tekhub/screens/setting_screen.dart';
+import 'package:provider/provider.dart';
+import 'package:tekhub/Firebase/actions/image_service.dart';
+import 'package:tekhub/Firebase/actions/result.dart';
+import 'package:tekhub/Firebase/actions/user_service.dart';
+import 'package:tekhub/Firebase/models/users.dart';
+import 'package:tekhub/provider/provider_listener.dart';
 
 class ProfilePage extends StatefulWidget {
-  const ProfilePage({Key? key}) : super(key: key);
+  const ProfilePage({super.key});
 
   @override
   _ProfilePageState createState() => _ProfilePageState();
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  TextEditingController _userNameController = TextEditingController();
-  TextEditingController _emailController = TextEditingController();
-  TextEditingController _phoneNumberController = TextEditingController();
-  TextEditingController _addressController = TextEditingController();
+  late String _username = '';
+  late String _phoneNumber = '';
+  late String _adress = '';
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   @override
   void dispose() {
-    _userNameController.dispose();
-    _emailController.dispose();
-    _phoneNumberController.dispose();
-    _addressController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final bool isAdmin = true;
+    final UserService userService = UserService();
+    final MyUser user = Provider.of<ProviderListener>(context).user;
+
     return Scaffold(
       body: Column(
-        children: [
+        children: <Widget>[
           const Expanded(flex: 2, child: _TopPortion()),
           Expanded(
             flex: 3,
             child: Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.all(8),
               child: SingleChildScrollView(
                 child: Column(
-                  children: [
+                  children: <Widget>[
                     Text(
-                      'User Name',
+                      user.username,
                       style: Theme.of(context).textTheme.titleLarge?.copyWith(
                             fontWeight: FontWeight.bold,
                             fontFamily: 'Raleway',
                           ),
                     ),
                     const SizedBox(height: 16),
-                    if (isAdmin == false)
-                      Padding(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: kIsWeb == true
-                                ? MediaQuery.of(context).size.width * 0.2
-                                : 10,
-                          ),
-                          child: Form(
-                            child: Column(
-                              children: [
-                                TextFormField(
-                                  controller: _userNameController,
-                                  decoration: const InputDecoration(
-                                    labelStyle:
-                                        TextStyle(fontFamily: 'Raleway'),
-                                    labelText: 'User Name',
-                                    prefixIcon: Icon(Icons.account_circle),
-                                  ),
-                                ),
-                                const SizedBox(height: 20),
-                                TextFormField(
-                                  controller: _emailController,
-                                  decoration: const InputDecoration(
-                                    labelStyle:
-                                        TextStyle(fontFamily: 'Raleway'),
-                                    labelText: 'Email',
-                                    prefixIcon: Icon(Icons.mail),
-                                  ),
-                                ),
-                                const SizedBox(height: 20),
-                                TextFormField(
-                                  controller: _phoneNumberController,
-                                  decoration: const InputDecoration(
-                                    labelStyle:
-                                        TextStyle(fontFamily: 'Raleway'),
-                                    labelText: 'Phone Number',
-                                    prefixIcon: Icon(Icons.phone),
-                                  ),
-                                ),
-                                const SizedBox(height: 20),
-                                TextFormField(
-                                  controller: _addressController,
-                                  decoration: InputDecoration(
-                                    labelStyle:
-                                        TextStyle(fontFamily: 'Raleway'),
-                                    labelText: 'Address',
-                                    prefixIcon: const Icon(Icons.house),
-                                    suffixIcon: IconButton(
-                                      color: const Color.fromARGB(
-                                          255, 126, 217, 87),
-                                      icon: const Icon(Icons.add_location),
-                                      onPressed: () {},
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(height: 20),
-                                SizedBox(
-                                  width: double.infinity,
-                                  child: ElevatedButton(
-                                    style: ElevatedButton.styleFrom(
-                                      foregroundColor: Colors.white,
-                                      backgroundColor:
-                                          const Color.fromARGB(255, 39, 39, 39),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(15),
-                                        side: const BorderSide(
-                                          color:
-                                              Color.fromARGB(255, 126, 217, 87),
-                                          width: 2,
-                                        ),
-                                      ),
-                                      minimumSize: Size(
-                                        MediaQuery.of(context).size.width /
-                                            1.12,
-                                        55,
-                                      ),
-                                    ),
-                                    onPressed: () {
-                                      String userName =
-                                          _userNameController.text;
-                                      String email = _emailController.text;
-                                      String phoneNumber =
-                                          _phoneNumberController.text;
-                                      String address = _addressController.text;
-
-                                      // Use the captured values as needed
-                                      print('Username: $userName');
-                                      print('Email: $email');
-                                      print('Phone Number: $phoneNumber');
-                                      print('Address: $address');
-
-                                      Navigator.pop(context);
-                                    },
-                                    child: Text(
-                                      'Save'.toUpperCase(),
-                                      style: const TextStyle(
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.w800,
-                                        color:
-                                            Color.fromARGB(255, 126, 217, 87),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
+                    if (user.role == 'user')
+                      Form(
+                        key: _formKey,
+                        child: Column(
+                          children: <Widget>[
+                            TextFormField(
+                              initialValue: user.username,
+                              decoration: const InputDecoration(
+                                labelStyle: TextStyle(fontFamily: 'Raleway'),
+                                labelText: 'User Name',
+                                prefixIcon: Icon(Icons.account_circle),
+                              ),
+                              onSaved: (String? value) => _username = value!,
                             ),
-                          ))
-                    else
-                      Padding(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: kIsWeb == true
-                              ? MediaQuery.of(context).size.width * 0.2
-                              : 10,
+                            const SizedBox(height: 20),
+                            TextFormField(
+                              initialValue: user.phoneNumber,
+                              decoration: const InputDecoration(
+                                labelStyle: TextStyle(fontFamily: 'Raleway'),
+                                labelText: 'Phone Number',
+                                prefixIcon: Icon(Icons.phone),
+                              ),
+                              keyboardType: TextInputType.phone,
+                              validator: (String? value) {
+                                final RegExp regex = RegExp(r'^\+?\d{9,15}$');
+                                if (value != '' && !regex.hasMatch(value!)) {
+                                  return 'Le numéro de téléphone doit être un format valide';
+                                }
+                                return null;
+                              },
+                              onSaved: (String? value) => _phoneNumber = value!,
+                            ),
+                            const SizedBox(height: 20),
+                            TextFormField(
+                              initialValue: user.address,
+                              decoration: InputDecoration(
+                                labelStyle: const TextStyle(fontFamily: 'Raleway'),
+                                labelText: 'Address',
+                                prefixIcon: const Icon(Icons.house),
+                                suffixIcon: IconButton(
+                                  color:
+                                      const Color.fromARGB(255, 126, 217, 87),
+                                  icon: const Icon(Icons.add_location),
+                                  onPressed: () {},
+                                ),
+                              ),
+                              onSaved: (String? value) => _adress = value!,
+                            ),
+                            const SizedBox(height: 20),
+                            SizedBox(
+                              width: double.infinity,
+                              child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  foregroundColor: Colors.white,
+                                  backgroundColor:
+                                      const Color.fromARGB(255, 39, 39, 39),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(15),
+                                    side: const BorderSide(
+                                      color: Color.fromARGB(255, 126, 217, 87),
+                                      width: 2,
+                                    ),
+                                  ),
+                                  minimumSize: Size(
+                                    MediaQuery.of(context).size.width / 1.12,
+                                    55,
+                                  ),
+                                ),
+                                onPressed: () async {
+                                  if (_formKey.currentState != null &&
+                                      _formKey.currentState!.validate()) {
+                                    _formKey.currentState!.save();
+                                    final Result<dynamic> result =
+                                        await userService.updateUserInformation(
+                                      user.uid,
+                                      _username,
+                                      _phoneNumber,
+                                      _adress,
+                                    );
+                                    if (result.success) {
+                                      if (!context.mounted) return;
+                                      final MyUser newUserInfo = MyUser(
+                                        uid: user.uid,
+                                        email: user.email,
+                                        username: _username,
+                                        phoneNumber: _phoneNumber,
+                                        address: _adress,
+                                        cart: user.cart,
+                                        purchaseHistory: user.purchaseHistory,
+                                        role: user.role,
+                                        cardNumber: user.cardNumber,
+                                        creditCardName: user.creditCardName,
+                                        expirationDate: user.expirationDate,
+                                        cvv: user.cvv,
+                                      );
+                                      // Registration successful, navigate to another screen or perform actions accordingly
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        const SnackBar(
+                                          content: Text('Settings changed!'),
+                                        ),
+                                      );
+                                      Provider.of<ProviderListener>(context,
+                                              listen: false,)
+                                          .updateUser(newUserInfo);
+                                      Navigator.pop(context);
+                                    } else {
+                                      if (!context.mounted) return;
+                                      // Registration failed, show error message
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        SnackBar(
+                                          content:
+                                              Text(result.message.toString()),
+                                        ),
+                                      );
+                                    }
+                                  }
+                                },
+                                child: Text(
+                                  'Save'.toUpperCase(),
+                                  style: const TextStyle(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w800,
+                                    color: Color.fromARGB(255, 126, 217, 87),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
-                        child: Form(
-                          child: Column(
-                            children: [
-                              TextFormField(
-                                controller: _userNameController,
-                                decoration: const InputDecoration(
-                                  labelStyle: TextStyle(fontFamily: 'Raleway'),
-                                  labelText: 'User Name',
-                                  prefixIcon: Icon(Icons.account_circle),
-                                ),
+                      )
+                    else
+                      Form(
+                        child: Column(
+                          children: <Widget>[
+                            TextFormField(
+                              initialValue: user.username,
+                              decoration: const InputDecoration(
+                                labelStyle: TextStyle(fontFamily: 'Raleway'),
+                                labelText: 'User Name',
+                                prefixIcon: Icon(Icons.account_circle),
                               ),
-                              const SizedBox(height: 20),
-                              TextFormField(
-                                controller: _emailController,
-                                decoration: const InputDecoration(
-                                  labelStyle: TextStyle(fontFamily: 'Raleway'),
-                                  labelText: 'Email',
-                                  prefixIcon: Icon(Icons.mail),
-                                ),
+                              onSaved: (String? value) => _username = value!,
+                            ),
+                            const SizedBox(height: 20),
+                            TextFormField(
+                              initialValue: user.phoneNumber,
+                              decoration: const InputDecoration(
+                                labelStyle: TextStyle(fontFamily: 'Raleway'),
+                                labelText: 'Phone Number',
+                                prefixIcon: Icon(Icons.phone),
                               ),
-                              const SizedBox(height: 20),
-                              TextFormField(
-                                controller: _phoneNumberController,
-                                decoration: const InputDecoration(
-                                  labelStyle: TextStyle(fontFamily: 'Raleway'),
-                                  labelText: 'Phone Number',
-                                  prefixIcon: Icon(Icons.phone),
-                                ),
-                              ),
-                              const SizedBox(height: 50),
-                              SizedBox(
-                                width: double.infinity,
-                                child: ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                    foregroundColor: Colors.white,
-                                    backgroundColor:
-                                        Color.fromARGB(255, 126, 217, 87),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(15),
-                                    ),
-                                    minimumSize: Size(
-                                      MediaQuery.of(context).size.width / 1.12,
-                                      55,
-                                    ),
+                              keyboardType: TextInputType.phone,
+                              validator: (String? value) {
+                                final RegExp regex = RegExp(r'^\+?\d{9,15}$');
+                                if (!regex.hasMatch(value!)) {
+                                  return 'Le numéro de téléphone doit être un format valide';
+                                }
+                                return null;
+                              },
+                              onSaved: (String? value) => _phoneNumber = value!,
+                            ),
+                            const SizedBox(height: 50),
+                            SizedBox(
+                              width: double.infinity,
+                              child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  foregroundColor: Colors.white,
+                                  backgroundColor:
+                                      const Color.fromARGB(255, 126, 217, 87),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(15),
                                   ),
-                                  onPressed: () {
-                                    String userName = _userNameController.text;
-                                    String email = _emailController.text;
-                                    String phoneNumber =
-                                        _phoneNumberController.text;
-
-                                    // Use the captured values as needed
-                                    print('Username: $userName');
-                                    print('Email: $email');
-                                    print('Phone Number: $phoneNumber');
-
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                SettingsPage()));
-                                  },
-                                  child: Text(
-                                    'Save'.toUpperCase(),
-                                    style: const TextStyle(
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.w800,
-                                      color: Colors.white,
-                                    ),
+                                  minimumSize: Size(
+                                    MediaQuery.of(context).size.width / 1.12,
+                                    55,
+                                  ),
+                                ),
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                                child: Text(
+                                  'Save'.toUpperCase(),
+                                  style: const TextStyle(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w800,
+                                    color: Colors.white,
                                   ),
                                 ),
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
                       ),
                   ],
@@ -251,7 +258,7 @@ class _ProfilePageState extends State<ProfilePage> {
 }
 
 class _TopPortion extends StatefulWidget {
-  const _TopPortion({Key? key}) : super(key: key);
+  const _TopPortion();
 
   @override
   __TopPortionState createState() => __TopPortionState();
@@ -259,32 +266,97 @@ class _TopPortion extends StatefulWidget {
 
 class __TopPortionState extends State<_TopPortion> {
   File? _selectedImage; // Store the selected image file
-
-  Future<void> _getImage() async {
-    final pickedFile =
-        await ImagePicker().pickImage(source: ImageSource.gallery);
-
-    setState(() {
-      if (pickedFile != null) {
-        _selectedImage = File(pickedFile.path);
-      } else {
-        print('No image selected.');
-      }
-    });
+String _profileImageUrl = '';
+    @override
+  void initState() {
+    super.initState();
+    _loadProfileImage();
   }
+
+  Future<void> _loadProfileImage() async {
+    final MyUser user = Provider.of<ProviderListener>(context, listen: false).user;
+
+    // Fetch user's profile picture URL from Firebase
+    final Result<dynamic> result = await ImageService().getUserProfileImageUrl(user.uid);
+
+    if (result.success) {
+      setState(() {
+        _profileImageUrl = result.message;
+      });
+    } else {
+      // If fetching fails, use a default image URL
+      setState(() {
+        _profileImageUrl =
+            'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80';
+      });
+    }
+  }
+Future<void> _getImage() async {
+  final XFile? pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
+
+  if (pickedFile != null) {
+    final File imageFile = File(pickedFile.path);
+
+    // Upload the image to Firebase Storage
+    final Result<String> uploadResult = await ImageService().uploadImageToStorage(imageFile, 'profile_pictures');
+
+    if (uploadResult.success) {
+      if (!context.mounted) return;
+      // Update the user's profile picture URL in the database
+      final MyUser user = Provider.of<ProviderListener>(context, listen: false).user;
+      final Result<dynamic> updateResult = await ImageService().getUserProfileImageUrl(user.uid);
+
+      if (updateResult.success) {
+        if (!context.mounted) return;
+        // Update the local state with the new profile picture URL
+        if (context.mounted) {
+          setState(() {
+            _profileImageUrl = uploadResult.message;
+          });
+        }
+
+        // Show a success message or perform additional actions if needed
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Profile picture updated successfully!'),
+          ),
+        );
+      } else {
+        // Show an error message if updating the profile picture URL fails
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(updateResult.message.toString()),
+            ),
+          );
+        }
+      }
+    } else {
+      // Show an error message if uploading the image fails
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(uploadResult.message.toString()),
+          ),
+        );
+      }
+    }
+  }
+}
+
 
   @override
   Widget build(BuildContext context) {
     return Stack(
       fit: StackFit.expand,
-      children: [
+      children: <Widget>[
         Container(
           margin: const EdgeInsets.only(bottom: 50),
           decoration: const BoxDecoration(
             gradient: LinearGradient(
               begin: Alignment.bottomCenter,
               end: Alignment.topCenter,
-              colors: [
+              colors: <Color>[
                 Color.fromARGB(255, 39, 39, 39),
                 Color.fromARGB(255, 39, 39, 39),
               ],
@@ -318,7 +390,7 @@ class __TopPortionState extends State<_TopPortion> {
             height: 150,
             child: Stack(
               fit: StackFit.expand,
-              children: [
+              children: <Widget>[
                 Container(
                   decoration: BoxDecoration(
                     color: Colors.black,
@@ -330,10 +402,10 @@ class __TopPortionState extends State<_TopPortion> {
                               _selectedImage!,
                             ), // Display selected image
                           )
-                        : const DecorationImage(
+                        : DecorationImage(
                             fit: BoxFit.cover,
                             image: NetworkImage(
-                              'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80',
+                              _profileImageUrl,
                             ),
                           ),
                   ),

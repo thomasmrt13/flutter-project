@@ -1,6 +1,6 @@
 class Result<T> {
-  // ignore: avoid_positional_boolean_parameters
-  Result(this.success, this.message);
+  Result.success(this.message) : success = true;
+  Result.failure(this.message) : success = false;
   
   final bool success;
   final T message;

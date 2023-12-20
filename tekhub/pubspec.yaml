@@ -23,7 +23,8 @@ dependencies:
   carousel_slider: ^4.2.1
   patterns_canvas: ^0.4.0
   flip_card: ^0.7.0
-  shared_preferences: ^2.2.2
+  location: ^5.0.3
+  geocoding: ^2.1.1
 
 dev_dependencies:
   blackfoot_flutter_lint: ^1.1.0

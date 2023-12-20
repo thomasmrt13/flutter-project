@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:sidebarx/sidebarx.dart';
+import 'package:tekhub/Firebase/models/users.dart';
+import 'package:tekhub/provider/provider_listener.dart';
 import 'package:tekhub/screens/cart_screen.dart';
 import 'package:tekhub/screens/orders_screen.dart';
 import 'package:tekhub/screens/setting_screen.dart';
@@ -41,7 +44,7 @@ class HomeState extends State<Home> {
   }
 
   Widget buildSmallScreenBody(BuildContext context) {
-    bool isAdmin = true;
+    final MyUser user = Provider.of<ProviderListener>(context).user;
 
     return Row(
       children: <Widget>[
@@ -53,13 +56,13 @@ class HomeState extends State<Home> {
                 switch (_controller.selectedIndex) {
                   case 0:
                     _key.currentState?.closeDrawer();
-                    return isAdmin != true
+                    return user.role == 'user'
                         ? HomeWidget(
                             scaffoldKey: _key,
                           )
                         : const HomeAdminWidget();
                   case 1:
-                    _key.currentState?.closeDrawer();
+                    //_key.currentState?.closeDrawer();
                     return Center(
                       child: Cart(
                         scaffoldKey: _key,
