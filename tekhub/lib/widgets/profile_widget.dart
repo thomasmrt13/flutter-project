@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
@@ -9,7 +8,6 @@ import 'package:tekhub/Firebase/actions/result.dart';
 import 'package:tekhub/Firebase/actions/user_service.dart';
 import 'package:tekhub/Firebase/models/users.dart';
 import 'package:tekhub/provider/provider_listener.dart';
-import 'package:tekhub/screens/setting_screen.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -116,15 +114,9 @@ class _ProfilePageState extends State<ProfilePage> {
                                       width: 2,
                                     ),
                                   ),
-                                ),
-                                const SizedBox(height: 20),
-                                TextFormField(
-                                  controller: _phoneNumberController,
-                                  decoration: const InputDecoration(
-                                    labelStyle:
-                                        TextStyle(fontFamily: 'Raleway'),
-                                    labelText: 'Phone Number',
-                                    prefixIcon: Icon(Icons.phone),
+                                  minimumSize: Size(
+                                    MediaQuery.of(context).size.width / 1.12,
+                                    55,
                                   ),
                                 ),
                                 onPressed: () async {
@@ -186,15 +178,9 @@ class _ProfilePageState extends State<ProfilePage> {
                                     color: Color.fromARGB(255, 126, 217, 87),
                                   ),
                                 ),
-                              ],
+                              ),
                             ),
-                          ))
-                    else
-                      Padding(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: kIsWeb == true
-                              ? MediaQuery.of(context).size.width * 0.2
-                              : 10,
+                          ],
                         ),
                       )
                     else
@@ -256,8 +242,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                   ),
                                 ),
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
                       ),
                   ],
