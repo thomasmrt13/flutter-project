@@ -47,14 +47,14 @@ class OrdersScreen extends StatelessWidget {
     final List<Article> articles = getArticles();
     double totalPrice = articles.fold(0, (sum, article) => sum + article.price);
     return Container(
-      color: Color.fromARGB(255, 39, 39, 39),
+      color: const Color.fromARGB(255, 39, 39, 39),
       child: Column(
-        children: [
-          Container(
+        children: <Widget>[
+          SizedBox(
             height: 180,
-            child: Stack(children: [
+            child: Stack(children: <Widget>[
               Container(
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.only(
                     bottomLeft: Radius.circular(50),
@@ -64,16 +64,16 @@ class OrdersScreen extends StatelessWidget {
                 height: 150,
                 padding: EdgeInsets.only(left: 36, top: 1),
                 width: double.infinity,
-                child: Column(
+                child: const Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
+                  children: <Widget>[
                     Text(
                       'Orders',
                       style: TextStyle(
                           color: Colors.black,
                           fontWeight: FontWeight.w700,
                           fontFamily: 'Raleway',
-                          fontSize: 50),
+                          fontSize: 50,),
                     ),
                   ],
                 ),
@@ -85,7 +85,7 @@ class OrdersScreen extends StatelessWidget {
                 child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
+                    children: <Widget>[
                       Container(
                         child: Column(
                           children: [
@@ -116,18 +116,13 @@ class OrdersScreen extends StatelessWidget {
                             ),
                           ],
                         ),
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-                        decoration: BoxDecoration(
-                            color: Color.fromARGB(255, 126, 217, 87),
-                            borderRadius: BorderRadius.circular(32)),
                       ),
-                    ]),
-              )
-            ]),
+                    ],),
+              ),
+            ],),
           ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 36.0, vertical: 24),
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 36, vertical: 24),
             child: SearchBar(),
           ),
           Expanded(
@@ -135,9 +130,9 @@ class OrdersScreen extends StatelessWidget {
               for (var model in articles)
                 Padding(
                     padding: const EdgeInsets.symmetric(
-                        horizontal: 36.0, vertical: 16),
-                    child: SpendingCategory(model))
-            ]),
+                        horizontal: 36, vertical: 16,),
+                    child: SpendingCategory(model),),
+            ],),
           ),
         ],
       ),

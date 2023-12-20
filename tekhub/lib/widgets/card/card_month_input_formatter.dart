@@ -19,6 +19,6 @@ class CardDateInputFormatter extends TextInputFormatter {
     final String string = buffer.toString();
     return newValue.copyWith(
         text: string,
-        selection: TextSelection.collapsed(offset: string.length));
+        selection: TextSelection.collapsed(offset: string.length),);
   }
 }

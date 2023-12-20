@@ -282,10 +282,10 @@ class SettingsPage extends StatelessWidget {
 }
 
 class _SectionCard extends StatelessWidget {
+
+  const _SectionCard({required this.title, required this.children});
   final String title;
   final List<Widget> children;
-
-  _SectionCard({required this.title, required this.children});
 
   @override
   Widget build(BuildContext context) {
@@ -319,10 +319,10 @@ class _SectionCard extends StatelessWidget {
 }
 
 class _SingleSection extends StatelessWidget {
+
+  const _SingleSection({required this.title, required this.children});
   final String title;
   final List<Widget> children;
-
-  _SingleSection({required this.title, required this.children});
 
   @override
   Widget build(BuildContext context) {

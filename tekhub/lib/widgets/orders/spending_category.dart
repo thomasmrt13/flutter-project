@@ -6,25 +6,27 @@ import 'package:tekhub/widgets/orders/price_text.dart';
 class SpendingCategory extends StatelessWidget {
   final Article data;
 
-  SpendingCategory(this.data);
-
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       height: 120,
       child: Stack(
-        children: [
+        children: <Widget>[
           Container(
             height: 100,
-            margin: EdgeInsets.only(top: 12),
-            padding: EdgeInsets.all(8),
+            margin: const EdgeInsets.only(top: 12),
+            padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-                color: Colors.white,
-                boxShadow: [
-                  BoxShadow(
-                      blurRadius: 32, color: Colors.black45, spreadRadius: -8)
-                ],
-                borderRadius: BorderRadius.circular(16)),
+              color: Colors.white,
+              boxShadow: const <BoxShadow>[
+                BoxShadow(
+                  blurRadius: 32,
+                  color: Colors.black45,
+                  spreadRadius: -8,
+                ),
+              ],
+              borderRadius: BorderRadius.circular(16),
+            ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
@@ -41,8 +43,8 @@ class SpendingCategory extends StatelessWidget {
             width: 132,
             height: 24,
             alignment: Alignment.center,
-            margin: EdgeInsets.only(left: 16),
-            padding: EdgeInsets.symmetric(vertical: 4, horizontal: 24),
+            margin: const EdgeInsets.only(left: 16),
+            padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 24),
             decoration: BoxDecoration(
               color: Color.fromARGB(255, 126, 217, 87),
               borderRadius: BorderRadius.circular(36),

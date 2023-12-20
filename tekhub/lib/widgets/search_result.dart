@@ -26,7 +26,7 @@ class SearchResultState extends State<SearchResult> {
   Widget build(BuildContext context) {
     List<Article> filteredArticles = <Article>[];
     List<Article> filteredBarArticles = <Article>[];
-    bool isAdmin = false;
+    const bool isAdmin = false;
 
     return Consumer<ProviderListener>(
       builder: (BuildContext context, ProviderListener providerListener,
@@ -84,13 +84,13 @@ class SearchResultState extends State<SearchResult> {
           return Expanded(
             child: Column(
               children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.only(top: 10),
+                const Padding(
+                  padding: EdgeInsets.only(top: 10),
                   child: Text(
                     isAdmin == true
                         ? 'Manage your products'
                         : 'Find your product',
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontFamily: 'Raleway',
                       fontSize: 20,

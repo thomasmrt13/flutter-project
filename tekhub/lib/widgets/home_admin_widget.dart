@@ -75,8 +75,8 @@ class HomeAdminWidgetState extends State<HomeAdminWidget> {
         Text('Tablet'),
       ];
 
-      String _getSelectedType() {
-        switch (_selectedTypeIndex) {
+      String getSelectedType() {
+        switch (selectedTypeIndex) {
           case 0:
             return 'phone';
           case 1:
@@ -160,7 +160,7 @@ class HomeAdminWidgetState extends State<HomeAdminWidget> {
                         controller: titleController,
                         decoration: const InputDecoration(
                           border: InputBorder.none,
-                          labelText: "Title",
+                          labelText: 'Title',
                         ),
                       ),
                     ),
@@ -170,15 +170,14 @@ class HomeAdminWidgetState extends State<HomeAdminWidget> {
                     const Text('Device Type'),
                     const SizedBox(height: 5),
                     ToggleButtons(
-                      direction: Axis.horizontal,
                       onPressed: (int index) {
                         setState(() {
-                          for (int i = 0; i < _selectedType.length; i++) {
-                            _selectedType[i] = i == index;
+                          for (int i = 0; i < selectedType.length; i++) {
+                            selectedType[i] = i == index;
                           }
                           // Update the selected type index
-                          _selectedTypeIndex = index;
-                          print(_getSelectedType());
+                          selectedTypeIndex = index;
+                          print(getSelectedType());
                           // TODO: Modify UI based on the selected type
                           // For example, update Text or other widgets
                         });
@@ -191,10 +190,10 @@ class HomeAdminWidgetState extends State<HomeAdminWidget> {
                       fillColor: const Color(0xFF272727),
                       color: const Color(0xFF272727),
                       constraints: const BoxConstraints(
-                        minHeight: 40.0,
-                        minWidth: 80.0,
+                        minHeight: 40,
+                        minWidth: 80,
                       ),
-                      isSelected: _selectedType,
+                      isSelected: selectedType,
                       children: type,
                     ),
                     SizedBox(
@@ -216,7 +215,7 @@ class HomeAdminWidgetState extends State<HomeAdminWidget> {
                         controller: priceController,
                         decoration: const InputDecoration(
                           border: InputBorder.none,
-                          labelText: "Price",
+                          labelText: 'Price',
                         ),
                       ),
                     ),
@@ -259,7 +258,7 @@ class HomeAdminWidgetState extends State<HomeAdminWidget> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment
                             .center, // Aligns buttons at the center horizontally
-                        children: [
+                        children: <Widget>[
                           ElevatedButton(
                             onPressed: () async {
                               await _getImage(); // Call getImage() when CircleAvatar is tapped
@@ -312,8 +311,7 @@ class HomeAdminWidgetState extends State<HomeAdminWidget> {
                               // Use these values as needed
                               // For example, you can print them
                               print(
-                                'Title: $title, Price: $price, Description: $description, type: ' +
-                                    _getSelectedType(),
+                                'Title: $title, Price: $price, Description: $description, type: ${getSelectedType()}',
                               );
 
                               // Close the modal bottom sheet
@@ -389,7 +387,7 @@ class HomeAdminWidgetState extends State<HomeAdminWidget> {
           ),
           floatingActionButton: FloatingActionButton(
             backgroundColor: const Color(0xFF272727),
-            onPressed: _showModal,
+            onPressed: showModal,
             child: const Icon(
               Icons.add,
               color: Color.fromARGB(255, 126, 217, 87),

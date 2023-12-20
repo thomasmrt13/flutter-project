@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tekhub/screens/card_screen.dart';
+import 'package:tekhub/screens/checkout_screen.dart';
 import 'package:tekhub/screens/forget_password_screen.dart';
 import 'package:tekhub/screens/home_screen.dart';
 import 'package:tekhub/screens/login_screen.dart';
