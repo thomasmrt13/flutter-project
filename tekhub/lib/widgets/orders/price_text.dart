@@ -15,7 +15,7 @@ class PriceText extends StatelessWidget {
     return Row(
       children: <Widget>[
         Text(
-          price.toString() + '€',
+          '$price€',
           style: Theme.of(context)
               .textTheme
               .displaySmall!

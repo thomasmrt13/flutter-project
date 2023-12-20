@@ -30,7 +30,7 @@ class SearchResultState extends State<SearchResult> {
 
     return Consumer<ProviderListener>(
       builder: (BuildContext context, ProviderListener providerListener,
-          Widget? child) {
+          Widget? child,) {
         if (providerListener.searchtext.isNotEmpty) {
           filteredArticles = widget.articles
               .where(
@@ -101,7 +101,7 @@ class SearchResultState extends State<SearchResult> {
                   padding: EdgeInsets.only(top: 10),
                   child: FilterBar(),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 20,
                 ),
                 Expanded(

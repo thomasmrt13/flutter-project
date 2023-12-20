@@ -209,7 +209,7 @@ class AuthService {
       return Result<dynamic>.failure(_handleLoginError(e));
     } catch (e) {
       return Result<dynamic>.failure(
-          'An unexpected error occurred during login. $e');
+          'An unexpected error occurred during login. $e',);
     }
   }
 
@@ -311,7 +311,7 @@ class AuthService {
 
       await _auth.sendPasswordResetEmail(email: email);
       return Result<dynamic>.success(
-          'Password reset email sent. Check your inbox.');
+          'Password reset email sent. Check your inbox.',);
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
         // Handle case where the email doesn't exist

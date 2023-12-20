@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class AnimatedCheckMark extends StatefulWidget {
+  const AnimatedCheckMark({super.key});
+
   @override
   AnimatedCheckMarkState createState() => AnimatedCheckMarkState();
 }
@@ -52,10 +53,10 @@ class AnimatedCheckMarkState extends State<AnimatedCheckMark>
             scale: _scaleAnimation.value,
             child: Transform.rotate(
               angle: _rotationAnimation.value,
-              child: Icon(
+              child: const Icon(
                 Icons.check_circle,
                 color: Colors.green,
-                size: 50.0,
+                size: 50,
               ),
             ),
           ),

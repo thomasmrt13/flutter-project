@@ -38,7 +38,7 @@ class _CartState extends State<Cart> {
     final double total = articles.fold(
         0,
         (double previousValue, Article article) =>
-            previousValue + article.price);
+            previousValue + article.price,);
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 39, 39, 39),
       body: SingleChildScrollView(

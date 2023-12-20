@@ -25,16 +25,16 @@ class ImageService {
     Future<Result<String>> uploadImageToStorage(File imageFile, String folderName) async {
     try {
       // Generate a unique filename for the image
-      String fileName = DateTime.now().millisecondsSinceEpoch.toString() + '_' + imageFile.path.split('/').last;
+      final String fileName = '${DateTime.now().millisecondsSinceEpoch}_${imageFile.path.split('/').last}';
 
       // Create a reference to the specified folder in Firebase Storage
-      Reference storageReference = _storage.ref().child(folderName).child(fileName);
+      final Reference storageReference = _storage.ref().child(folderName).child(fileName);
 
       // Upload the image file to the specified folder
       await storageReference.putFile(imageFile);
 
       // Get the download URL of the uploaded image
-      String downloadUrl = await storageReference.getDownloadURL();
+      final String downloadUrl = await storageReference.getDownloadURL();
 
       // Return the download URL as a success result
       return Result<String>.success(downloadUrl);

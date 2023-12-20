@@ -38,7 +38,7 @@ class SplashState extends State<Splash> with SingleTickerProviderStateMixin {
     _animationController.forward();
 
     // Navigating to another page after animation completes
-    _animationController.addStatusListener((status) {
+    _animationController.addStatusListener((AnimationStatus status) {
       if (status == AnimationStatus.completed) {
         _navigateToNextScreen();
       }

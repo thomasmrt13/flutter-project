@@ -4,6 +4,8 @@ import 'package:tekhub/widgets/orders/price_text.dart';
 import 'package:tekhub/widgets/orders/spending_category.dart';
 
 class OrdersScreen extends StatelessWidget {
+  const OrdersScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     List<Article> getArticles() {
@@ -45,7 +47,7 @@ class OrdersScreen extends StatelessWidget {
     }
 
     final List<Article> articles = getArticles();
-    double totalPrice = articles.fold(0, (sum, article) => sum + article.price);
+    final double totalPrice = articles.fold(0, (double sum, Article article) => sum + article.price);
     return Container(
       color: const Color.fromARGB(255, 39, 39, 39),
       child: Column(
@@ -62,7 +64,7 @@ class OrdersScreen extends StatelessWidget {
                   ),
                 ),
                 height: 150,
-                padding: EdgeInsets.only(left: 36, top: 1),
+                padding: const EdgeInsets.only(left: 36, top: 1),
                 width: double.infinity,
                 child: const Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -87,32 +89,37 @@ class OrdersScreen extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: <Widget>[
                       Container(
+                        padding:
+                            const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                        decoration: BoxDecoration(
+                            color: const Color.fromARGB(255, 126, 217, 87),
+                            borderRadius: BorderRadius.circular(32),),
                         child: Column(
-                          children: [
+                          children: <Widget>[
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
+                              children: <Widget>[
+                                const Text(
                                   'TOTAL',
                                   style: TextStyle(
                                       color: Colors.white,
                                       fontSize: 16,
-                                      fontWeight: FontWeight.w600),
+                                      fontWeight: FontWeight.w600,),
                                 ),
-                                SizedBox(width: 32),
+                                const SizedBox(width: 32),
                                 PriceText(
                                   price: totalPrice.toInt(),
-                                  color: Color.fromARGB(255, 255, 255, 255),
+                                  color: const Color.fromARGB(255, 255, 255, 255),
                                 ),
                               ],
                             ),
-                            SizedBox(height: 8),
+                            const SizedBox(height: 8),
                             Text(
-                              articles.length.toString() + " SELLS",
-                              style: TextStyle(
+                              '${articles.length} SELLS',
+                              style: const TextStyle(
                                   color: Colors.white,
                                   fontSize: 16,
-                                  fontWeight: FontWeight.w600),
+                                  fontWeight: FontWeight.w600,),
                             ),
                           ],
                         ),
@@ -126,8 +133,8 @@ class OrdersScreen extends StatelessWidget {
             child: SearchBar(),
           ),
           Expanded(
-            child: ListView(children: [
-              for (var model in articles)
+            child: ListView(children: <Widget>[
+              for (final Article model in articles)
                 Padding(
                     padding: const EdgeInsets.symmetric(
                         horizontal: 36, vertical: 16,),

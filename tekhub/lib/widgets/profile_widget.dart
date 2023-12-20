@@ -16,7 +16,7 @@ class ProfilePage extends StatefulWidget {
   ProfilePageState createState() => ProfilePageState();
 }
 
-class _ProfilePageState extends State<ProfilePage> {
+class ProfilePageState extends State<ProfilePage> {
   late String _username = '';
   late String _phoneNumber = '';
   late String _adress = '';
@@ -87,7 +87,8 @@ class _ProfilePageState extends State<ProfilePage> {
                             TextFormField(
                               initialValue: user.address,
                               decoration: InputDecoration(
-                                labelStyle: const TextStyle(fontFamily: 'Raleway'),
+                                labelStyle:
+                                    const TextStyle(fontFamily: 'Raleway'),
                                 labelText: 'Address',
                                 prefixIcon: const Icon(Icons.house),
                                 suffixIcon: IconButton(
@@ -153,9 +154,10 @@ class _ProfilePageState extends State<ProfilePage> {
                                           content: Text('Settings changed!'),
                                         ),
                                       );
-                                      Provider.of<ProviderListener>(context,
-                                              listen: false,)
-                                          .updateUser(newUserInfo);
+                                      Provider.of<ProviderListener>(
+                                        context,
+                                        listen: false,
+                                      ).updateUser(newUserInfo);
                                       Navigator.pop(context);
                                     } else {
                                       if (!context.mounted) return;
@@ -266,18 +268,20 @@ class _TopPortion extends StatefulWidget {
 
 class __TopPortionState extends State<_TopPortion> {
   File? _selectedImage; // Store the selected image file
-String _profileImageUrl = '';
-    @override
+  String _profileImageUrl = '';
+  @override
   void initState() {
     super.initState();
     _loadProfileImage();
   }
 
   Future<void> _loadProfileImage() async {
-    final MyUser user = Provider.of<ProviderListener>(context, listen: false).user;
+    final MyUser user =
+        Provider.of<ProviderListener>(context, listen: false).user;
 
     // Fetch user's profile picture URL from Firebase
-    final Result<dynamic> result = await ImageService().getUserProfileImageUrl(user.uid);
+    final Result<dynamic> result =
+        await ImageService().getUserProfileImageUrl(user.uid);
 
     if (result.success) {
       setState(() {
@@ -291,59 +295,63 @@ String _profileImageUrl = '';
       });
     }
   }
-Future<void> _getImage() async {
-  final XFile? pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
 
-  if (pickedFile != null) {
-    final File imageFile = File(pickedFile.path);
+  Future<void> _getImage() async {
+    final XFile? pickedFile =
+        await ImagePicker().pickImage(source: ImageSource.gallery);
 
-    // Upload the image to Firebase Storage
-    final Result<String> uploadResult = await ImageService().uploadImageToStorage(imageFile, 'profile_pictures');
+    if (pickedFile != null) {
+      final File imageFile = File(pickedFile.path);
 
-    if (uploadResult.success) {
-      if (!context.mounted) return;
-      // Update the user's profile picture URL in the database
-      final MyUser user = Provider.of<ProviderListener>(context, listen: false).user;
-      final Result<dynamic> updateResult = await ImageService().getUserProfileImageUrl(user.uid);
+      // Upload the image to Firebase Storage
+      final Result<String> uploadResult = await ImageService()
+          .uploadImageToStorage(imageFile, 'profile_pictures');
 
-      if (updateResult.success) {
+      if (uploadResult.success) {
         if (!context.mounted) return;
-        // Update the local state with the new profile picture URL
-        if (context.mounted) {
-          setState(() {
-            _profileImageUrl = uploadResult.message;
-          });
-        }
+        // Update the user's profile picture URL in the database
+        final MyUser user =
+            Provider.of<ProviderListener>(context, listen: false).user;
+        final Result<dynamic> updateResult =
+            await ImageService().getUserProfileImageUrl(user.uid);
 
-        // Show a success message or perform additional actions if needed
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Profile picture updated successfully!'),
-          ),
-        );
+        if (updateResult.success) {
+          if (!context.mounted) return;
+          // Update the local state with the new profile picture URL
+          if (context.mounted) {
+            setState(() {
+              _profileImageUrl = uploadResult.message;
+            });
+          }
+
+          // Show a success message or perform additional actions if needed
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Profile picture updated successfully!'),
+            ),
+          );
+        } else {
+          // Show an error message if updating the profile picture URL fails
+          if (context.mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(updateResult.message.toString()),
+              ),
+            );
+          }
+        }
       } else {
-        // Show an error message if updating the profile picture URL fails
+        // Show an error message if uploading the image fails
         if (context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(updateResult.message.toString()),
+              content: Text(uploadResult.message.toString()),
             ),
           );
         }
       }
-    } else {
-      // Show an error message if uploading the image fails
-      if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(uploadResult.message.toString()),
-          ),
-        );
-      }
     }
   }
-}
-
 
   @override
   Widget build(BuildContext context) {

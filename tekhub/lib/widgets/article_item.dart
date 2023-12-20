@@ -1,7 +1,7 @@
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:tekhub/Firebase/models/articles.dart';
 import 'package:tekhub/screens/product_detail_screen.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
 
 class SingleArticle extends StatelessWidget {
   const SingleArticle({required this.article, super.key});

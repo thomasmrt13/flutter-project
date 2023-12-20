@@ -61,9 +61,9 @@ class HomeAdminWidgetState extends State<HomeAdminWidget> {
     getArticles();
 
     // Function to show the modal
-    void _showModal() {
-      final List<bool> _selectedType = <bool>[true, false, false];
-      int _selectedTypeIndex = 0;
+    void showModal() {
+      final List<bool> selectedType = <bool>[true, false, false];
+      int selectedTypeIndex = 0;
       final TextEditingController titleController = TextEditingController();
       final TextEditingController priceController = TextEditingController();
       final TextEditingController descriptionController =
@@ -88,15 +88,15 @@ class HomeAdminWidgetState extends State<HomeAdminWidget> {
         }
       }
 
-      File? _selectedImage; // Store the selected image file
+      File? selectedImage; // Store the selected image file
 
-      Future<void> _getImage() async {
-        final pickedFile =
+      Future<void> getImage() async {
+        final XFile? pickedFile =
             await ImagePicker().pickImage(source: ImageSource.gallery);
 
         setState(() {
           if (pickedFile != null) {
-            _selectedImage = File(pickedFile.path);
+            selectedImage = File(pickedFile.path);
           } else {
             print('No image selected.');
           }
@@ -108,8 +108,8 @@ class HomeAdminWidgetState extends State<HomeAdminWidget> {
         showDialog(
           context: context,
           builder: (BuildContext context) {
-            return Dialog(
-              backgroundColor: const Color.fromARGB(0, 255, 255, 255),
+            return const Dialog(
+              backgroundColor: Color.fromARGB(0, 255, 255, 255),
               // Utilisation d'un Container pour définir la taille du Dialog
               // Hauteur souhaitée du Dialog
               child: AnimatedCheckMark(),
@@ -244,7 +244,7 @@ class HomeAdminWidgetState extends State<HomeAdminWidget> {
                           maxLines: 6,
                           decoration: const InputDecoration(
                             border: InputBorder.none,
-                            hintText: "Description",
+                            hintText: 'Description',
                             focusedBorder: OutlineInputBorder(),
                           ),
                         ),
@@ -261,7 +261,7 @@ class HomeAdminWidgetState extends State<HomeAdminWidget> {
                         children: <Widget>[
                           ElevatedButton(
                             onPressed: () async {
-                              await _getImage(); // Call getImage() when CircleAvatar is tapped
+                              await getImage(); // Call getImage() when CircleAvatar is tapped
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: const Color(0xFF272727),

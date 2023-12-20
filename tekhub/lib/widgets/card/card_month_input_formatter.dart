@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 class CardDateInputFormatter extends TextInputFormatter {
   @override
   TextEditingValue formatEditUpdate(
-      TextEditingValue oldValue, TextEditingValue newValue) {
+      TextEditingValue oldValue, TextEditingValue newValue,) {
     final String newText = newValue.text;
     if (newValue.selection.baseOffset == 0) {
       return newValue;

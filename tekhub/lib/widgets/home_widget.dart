@@ -56,8 +56,6 @@ class HomeWidgetState extends State<HomeWidget> {
 
   @override
   Widget build(BuildContext context) {
-    Provider.of<ProviderListener>(context, listen: false)
-        .updateActiveType('all');
     const int cartItems = 0;
     getArticles();
     return Consumer<ProviderListener>(
