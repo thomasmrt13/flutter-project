@@ -20,7 +20,7 @@ class SingleArticle extends StatelessWidget {
           onTap: () async {
             await Navigator.push(
               context,
-              MaterialPageRoute(
+              MaterialPageRoute<dynamic>(
                 builder: (BuildContext context) => SingleItem(article: article),
               ),
             );

@@ -16,11 +16,14 @@ class SettingsPage extends StatelessWidget {
       builder: (BuildContext context) {
         return AlertDialog(
           backgroundColor: const Color.fromARGB(255, 39, 39, 39),
-          title: const Text('Logout',
-              style: TextStyle(
-                  color: Colors.white,
-                  fontFamily: 'Raleway',
-                  fontWeight: FontWeight.bold,),),
+          title: const Text(
+            'Logout',
+            style: TextStyle(
+              color: Colors.white,
+              fontFamily: 'Raleway',
+              fontWeight: FontWeight.bold,
+            ),
+          ),
           content: const Text(
             'Are you sure you want to logout?',
             style: TextStyle(fontFamily: 'Raleway', color: Colors.white),
@@ -44,8 +47,9 @@ class SettingsPage extends StatelessWidget {
               child: const Text(
                 'Confirm',
                 style: TextStyle(
-                    color: Color.fromARGB(255, 126, 217, 87),
-                    fontWeight: FontWeight.bold,),
+                  color: Color.fromARGB(255, 126, 217, 87),
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
           ],
@@ -55,17 +59,23 @@ class SettingsPage extends StatelessWidget {
   }
 
   Future<void> showDeleteDialog(
-      BuildContext context, UserService userService, MyUser user,) async {
+    BuildContext context,
+    UserService userService,
+    MyUser user,
+  ) async {
     return showDialog<void>(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
           backgroundColor: const Color.fromARGB(255, 39, 39, 39),
-          title: const Text('Delete account',
-              style: TextStyle(
-                  color: Colors.white,
-                  fontFamily: 'Raleway',
-                  fontWeight: FontWeight.bold,),),
+          title: const Text(
+            'Delete account',
+            style: TextStyle(
+              color: Colors.white,
+              fontFamily: 'Raleway',
+              fontWeight: FontWeight.bold,
+            ),
+          ),
           content: const Text(
             'Are you sure you want to delete your account?',
             style: TextStyle(fontFamily: 'Raleway', color: Colors.white),
@@ -94,8 +104,8 @@ class SettingsPage extends StatelessWidget {
                       content: Text('Account deleted!'),
                     ),
                   );
-                Navigator.of(context).pop(); // Ferme le dialogue
-                await Navigator.pushNamed(context, 'login');
+                  Navigator.of(context).pop(); // Ferme le dialogue
+                  await Navigator.pushNamed(context, 'login');
                 } else {
                   if (!context.mounted) return;
                   // Registration failed, show error message
@@ -109,8 +119,9 @@ class SettingsPage extends StatelessWidget {
               child: const Text(
                 'Confirm',
                 style: TextStyle(
-                    color: Color.fromARGB(255, 126, 217, 87),
-                    fontWeight: FontWeight.bold,),
+                  color: Color.fromARGB(255, 126, 217, 87),
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
           ],
@@ -167,8 +178,9 @@ class SettingsPage extends StatelessWidget {
                                 color: Colors.black,
                                 shape: BoxShape.circle,
                                 image: DecorationImage(
-                                    fit: BoxFit.cover,
-                                    image: AssetImage('assets/images/avatar.png'),),
+                                  fit: BoxFit.cover,
+                                  image: AssetImage('assets/images/avatar.png'),
+                                ),
                               ),
                             ),
                           ],
@@ -210,7 +222,8 @@ class SettingsPage extends StatelessWidget {
                     _CustomListTile(
                       title: 'Delete account',
                       icon: Icons.delete,
-                      onTap: () async => showDeleteDialog(context, userService, user),
+                      onTap: () async =>
+                          showDeleteDialog(context, userService, user),
                     ),
                   ],
                 ),
@@ -232,9 +245,11 @@ class SettingsPage extends StatelessWidget {
                                 color: Colors.black,
                                 shape: BoxShape.circle,
                                 image: DecorationImage(
-                                    fit: BoxFit.cover,
-                                    image: NetworkImage(
-                                        'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80',),),
+                                  fit: BoxFit.cover,
+                                  image: NetworkImage(
+                                    'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80',
+                                  ),
+                                ),
                               ),
                             ),
                           ],
@@ -271,7 +286,8 @@ class SettingsPage extends StatelessWidget {
                     _CustomListTile(
                       title: 'Delete account',
                       icon: Icons.delete,
-                      onTap: () async => showDeleteDialog(context, userService, user),
+                      onTap: () async =>
+                          showDeleteDialog(context, userService, user),
                     ),
                   ],
                 ),
@@ -282,7 +298,6 @@ class SettingsPage extends StatelessWidget {
 }
 
 class _SectionCard extends StatelessWidget {
-
   const _SectionCard({required this.title, required this.children});
   final String title;
   final List<Widget> children;
@@ -318,9 +333,8 @@ class _SectionCard extends StatelessWidget {
   }
 }
 
-class _SingleSection extends StatelessWidget {
-
-  const _SingleSection({required this.title, required this.children});
+class SingleSection extends StatelessWidget {
+  const SingleSection({required this.title, required this.children, super.key});
   final String title;
   final List<Widget> children;
 
@@ -334,9 +348,10 @@ class _SingleSection extends StatelessWidget {
           child: Text(
             title,
             style: const TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                fontFamily: 'Raleway',),
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              fontFamily: 'Raleway',
+            ),
           ),
         ),
         ...children,
@@ -346,9 +361,11 @@ class _SingleSection extends StatelessWidget {
 }
 
 class _CustomListTile extends StatelessWidget {
-
-  const _CustomListTile(
-      {required this.title, required this.icon, required this.onTap,});
+  const _CustomListTile({
+    required this.title,
+    required this.icon,
+    required this.onTap,
+  });
   final String title;
   final IconData icon;
   final VoidCallback onTap;

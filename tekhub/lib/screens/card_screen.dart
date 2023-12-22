@@ -60,8 +60,9 @@ class _CardPageState extends State<CardPage> {
                   ), // Ajustez la largeur ici
                   child: buildCreditCard(
                     color: const Color.fromARGB(255, 39, 39, 39),
-                    cardExpiration:
-                        _expirationDate == '' ? user.expirationDate : _expirationDate,
+                    cardExpiration: _expirationDate == ''
+                        ? user.expirationDate
+                        : _expirationDate,
                     cardHolder: _creditCardName == ''
                         ? user.creditCardName
                         : _creditCardName.toUpperCase(),
@@ -168,7 +169,8 @@ class _CardPageState extends State<CardPage> {
                     CardInputFormatter(),
                   ],
                   onChanged: (String value) {
-                    final String text = value.replaceAll(RegExp(r'\s+\b|\b\s'), ' ');
+                    final String text =
+                        value.replaceAll(RegExp(r'\s+\b|\b\s'), ' ');
                     setState(() {
                       _cardNumber = text; // Update the _cardNumber variable
                     });
@@ -280,7 +282,9 @@ class _CardPageState extends State<CardPage> {
                       ],
                       onTap: () {
                         setState(() {
-                          Future<void>.delayed(const Duration(milliseconds: 300), flipCardController.toggleCard);
+                          Future<void>.delayed(
+                              const Duration(milliseconds: 300),
+                              flipCardController.toggleCard,);
                         });
                       },
                       onChanged: (String value) {
@@ -308,9 +312,15 @@ class _CardPageState extends State<CardPage> {
                       Size(MediaQuery.of(context).size.width / 1.12, 55),
                 ),
                 onPressed: () async {
-                  _cardNumber == '' ? _cardNumber = user.cardNumber! : _cardNumber = _cardNumber;
-                  _creditCardName == '' ? _creditCardName = user.creditCardName! : _creditCardName = _creditCardName;
-                  _expirationDate == '' ? _expirationDate = user.expirationDate! : _expirationDate = _expirationDate;
+                  _cardNumber == ''
+                      ? _cardNumber = user.cardNumber!
+                      : _cardNumber = _cardNumber;
+                  _creditCardName == ''
+                      ? _creditCardName = user.creditCardName!
+                      : _creditCardName = _creditCardName;
+                  _expirationDate == ''
+                      ? _expirationDate = user.expirationDate!
+                      : _expirationDate = _expirationDate;
                   _cvv == '' ? _cvv = user.cvv! : _cvv = _cvv;
                   final Result<dynamic> result =
                       await userService.updateCardInformation(
@@ -340,8 +350,10 @@ class _CardPageState extends State<CardPage> {
                         .updateUser(newUserInfo);
                     Future<void>.delayed(const Duration(milliseconds: 300), () {
                       showDialog(
-                          context: context,
-                          builder: (BuildContext context) => const CardAlertDialog(),);
+                        context: context,
+                        builder: (BuildContext context) =>
+                            const CardAlertDialog(),
+                      );
                       cardCvvController.clear();
                       cardExpiryDateController.clear();
                       cardHolderNameController.clear();
@@ -352,8 +364,8 @@ class _CardPageState extends State<CardPage> {
                     if (!context.mounted) return;
                     // Registration failed, show error message
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(result.message.toString()),
+                      const SnackBar(
+                        content: Text('All fields are required!'),
                       ),
                     );
                   }
@@ -384,9 +396,10 @@ class _CardPageState extends State<CardPage> {
                 child: Text(
                   'Cancel'.toUpperCase(),
                   style: const TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.w500,
-                      color: Colors.white,),
+                    fontSize: 15,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.white,
+                  ),
                 ),
               ),
             ],

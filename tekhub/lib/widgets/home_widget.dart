@@ -109,8 +109,8 @@ class HomeWidgetState extends State<HomeWidget> {
             children: <Widget>[
               FloatingActionButton(
                 backgroundColor: const Color(0xFF272727),
-                onPressed: () {
-                  Navigator.pushNamed(context, 'cart');
+                onPressed: () async {
+                  await Navigator.pushNamed(context, 'cart');
                 },
                 child: const Icon(
                   Icons.shopping_cart,

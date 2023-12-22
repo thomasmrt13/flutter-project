@@ -6,10 +6,10 @@ class MyPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final Rect rect = Rect.fromLTWH(0, 0, size.width, size.height + 15);
 
-    const Pattern pattern = DiagonalStripesThick(
-        bgColor: Color(0xffE6E0D2), fgColor: Color(0xffCAD9E0),);
-
-    pattern.paintOnRect(canvas, size, rect);
+    const DiagonalStripesThick(
+      bgColor: Color(0xffE6E0D2),
+      fgColor: Color(0xffCAD9E0),
+    ).paintOnRect(canvas, size, rect);
   }
 
   @override

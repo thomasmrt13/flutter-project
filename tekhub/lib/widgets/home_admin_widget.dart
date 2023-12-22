@@ -1,10 +1,12 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:tekhub/Firebase/models/articles.dart';
 import 'package:tekhub/provider/provider_listener.dart';
+import 'package:tekhub/widgets/add_item_alert_dialog.dart';
 import 'package:tekhub/widgets/check_animation.dart';
 import 'package:tekhub/widgets/search/search_bar.dart';
 import 'package:tekhub/widgets/search_result.dart';
@@ -61,13 +63,14 @@ class HomeAdminWidgetState extends State<HomeAdminWidget> {
     getArticles();
 
     // Function to show the modal
-    void showModal() {
+    Future<void> showModal() async {
       final List<bool> selectedType = <bool>[true, false, false];
       int selectedTypeIndex = 0;
       final TextEditingController titleController = TextEditingController();
       final TextEditingController priceController = TextEditingController();
       final TextEditingController descriptionController =
           TextEditingController();
+      final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
       const List<Widget> type = <Widget>[
         Text('Iphone'),
@@ -97,15 +100,13 @@ class HomeAdminWidgetState extends State<HomeAdminWidget> {
         setState(() {
           if (pickedFile != null) {
             selectedImage = File(pickedFile.path);
-          } else {
-            print('No image selected.');
-          }
+          } else {}
         });
       }
 
       // Afficher l'animation de vérification
-      void onValidationButtonPressed() {
-        showDialog(
+      Future<void> onValidationButtonPressed() async {
+        await showDialog(
           context: context,
           builder: (BuildContext context) {
             return const Dialog(
@@ -116,237 +117,257 @@ class HomeAdminWidgetState extends State<HomeAdminWidget> {
             );
           },
         );
-        Future.delayed(const Duration(milliseconds: 1250), () {
+        Future<void>.delayed(const Duration(milliseconds: 1250), () {
           Navigator.of(context).pop(); // Ferme le Dialog
         });
       }
 
-      showModalBottomSheet(
+      await showModalBottomSheet(
         context: context,
         builder: (BuildContext context) {
-          return SingleChildScrollView(
-            child: StatefulBuilder(
-              builder: (BuildContext context, StateSetter setState) {
-                return Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    SizedBox(
-                      height: MediaQuery.of(context).size.height * 0.03,
-                    ),
-                    const Padding(
-                      padding: EdgeInsets.only(bottom: 10),
-                      child: Text(
-                        'Add a product',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontFamily: 'Raleway',
-                          fontSize: 20,
+          return Form(
+            key: formKey,
+            child: SingleChildScrollView(
+              child: SizedBox(
+                height: MediaQuery.of(context).size.height * 0.7,
+                child: StatefulBuilder(
+                  builder: (BuildContext context, StateSetter setState) {
+                    return Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.03,
                         ),
-                      ),
-                    ),
-                    Container(
-                      constraints: BoxConstraints(
-                        maxWidth: MediaQuery.of(context).size.height * 0.45,
-                      ),
-                      padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(25),
-                        border: Border.all(
-                          width: 2,
-                          color: const Color.fromARGB(255, 126, 217, 87),
-                        ),
-                      ),
-                      child: TextField(
-                        controller: titleController,
-                        decoration: const InputDecoration(
-                          border: InputBorder.none,
-                          labelText: 'Title',
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      height: MediaQuery.of(context).size.height * 0.02,
-                    ),
-                    const Text('Device Type'),
-                    const SizedBox(height: 5),
-                    ToggleButtons(
-                      onPressed: (int index) {
-                        setState(() {
-                          for (int i = 0; i < selectedType.length; i++) {
-                            selectedType[i] = i == index;
-                          }
-                          // Update the selected type index
-                          selectedTypeIndex = index;
-                          print(getSelectedType());
-                          // TODO: Modify UI based on the selected type
-                          // For example, update Text or other widgets
-                        });
-                      },
-                      borderRadius: const BorderRadius.all(Radius.circular(8)),
-                      selectedBorderColor:
-                          const Color.fromARGB(255, 126, 217, 87),
-                      borderWidth: 2,
-                      selectedColor: Colors.white,
-                      fillColor: const Color(0xFF272727),
-                      color: const Color(0xFF272727),
-                      constraints: const BoxConstraints(
-                        minHeight: 40,
-                        minWidth: 80,
-                      ),
-                      isSelected: selectedType,
-                      children: type,
-                    ),
-                    SizedBox(
-                      height: MediaQuery.of(context).size.height * 0.02,
-                    ),
-                    Container(
-                      constraints: BoxConstraints(
-                        maxWidth: MediaQuery.of(context).size.height * 0.45,
-                      ),
-                      padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(25),
-                        border: Border.all(
-                          width: 2,
-                          color: const Color.fromARGB(255, 126, 217, 87),
-                        ),
-                      ),
-                      child: TextField(
-                        controller: priceController,
-                        decoration: const InputDecoration(
-                          border: InputBorder.none,
-                          labelText: 'Price',
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      height: MediaQuery.of(context).size.height * 0.02,
-                    ),
-                    Container(
-                      constraints: BoxConstraints(
-                        maxWidth: MediaQuery.of(context).size.height * 0.45,
-                        maxHeight: MediaQuery.of(context).size.height * 0.3,
-                      ),
-                      padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(25),
-                        border: Border.all(
-                          width: 2,
-                          color: const Color.fromARGB(255, 126, 217, 87),
-                        ),
-                      ),
-                      child: SizedBox(
-                        height: MediaQuery.of(context).size.height *
-                            0.2, // Adjust the height according to your needs
-                        child: TextField(
-                          controller: descriptionController,
-                          keyboardType: TextInputType.multiline,
-                          maxLines: 6,
-                          decoration: const InputDecoration(
-                            border: InputBorder.none,
-                            hintText: 'Description',
-                            focusedBorder: OutlineInputBorder(),
+                        const Padding(
+                          padding: EdgeInsets.only(bottom: 10),
+                          child: Text(
+                            'Add a product',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontFamily: 'Raleway',
+                              fontSize: 20,
+                            ),
                           ),
                         ),
-                      ),
-                    ),
-
-                    SizedBox(
-                      height: MediaQuery.of(context).size.height * 0.02,
-                    ),
-                    Center(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment
-                            .center, // Aligns buttons at the center horizontally
-                        children: <Widget>[
-                          ElevatedButton(
-                            onPressed: () async {
-                              await getImage(); // Call getImage() when CircleAvatar is tapped
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0xFF272727),
-                              fixedSize: Size(
-                                MediaQuery.of(context).size.height * 0.25,
-                                MediaQuery.of(context).size.height * 0.01,
+                        Container(
+                          constraints: BoxConstraints(
+                            maxWidth: kIsWeb
+                                ? MediaQuery.of(context).size.width * 0.4
+                                : MediaQuery.of(context).size.width * 0.9,
+                          ),
+                          padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(25),
+                            border: Border.all(
+                              width: 2,
+                              color: const Color.fromARGB(255, 126, 217, 87),
+                            ),
+                          ),
+                          child: TextField(
+                            controller: titleController,
+                            decoration: const InputDecoration(
+                              border: InputBorder.none,
+                              labelText: 'Title',
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.02,
+                        ),
+                        const Text('Device Type'),
+                        const SizedBox(height: 5),
+                        ToggleButtons(
+                          onPressed: (int index) {
+                            setState(() {
+                              for (int i = 0; i < selectedType.length; i++) {
+                                selectedType[i] = i == index;
+                              }
+                              // Update the selected type index
+                              selectedTypeIndex = index;
+                              // For example, update Text or other widgets
+                            });
+                          },
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(8)),
+                          selectedBorderColor:
+                              const Color.fromARGB(255, 126, 217, 87),
+                          borderWidth: 2,
+                          selectedColor: Colors.white,
+                          fillColor: const Color(0xFF272727),
+                          color: const Color(0xFF272727),
+                          constraints: const BoxConstraints(
+                            minHeight: 40,
+                            minWidth: 80,
+                          ),
+                          isSelected: selectedType,
+                          children: type,
+                        ),
+                        SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.02,
+                        ),
+                        Container(
+                          constraints: BoxConstraints(
+                            maxWidth: kIsWeb
+                                ? MediaQuery.of(context).size.width * 0.4
+                                : MediaQuery.of(context).size.width * 0.9,
+                          ),
+                          padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(25),
+                            border: Border.all(
+                              width: 2,
+                              color: const Color.fromARGB(255, 126, 217, 87),
+                            ),
+                          ),
+                          child: TextField(
+                            controller: priceController,
+                            decoration: const InputDecoration(
+                              border: InputBorder.none,
+                              labelText: 'Price',
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.02,
+                        ),
+                        Container(
+                          constraints: BoxConstraints(
+                            maxWidth: kIsWeb
+                                ? MediaQuery.of(context).size.width * 0.4
+                                : MediaQuery.of(context).size.width * 0.9,
+                            maxHeight: MediaQuery.of(context).size.height * 0.3,
+                          ),
+                          padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(25),
+                            border: Border.all(
+                              width: 2,
+                              color: const Color.fromARGB(255, 126, 217, 87),
+                            ),
+                          ),
+                          child: SizedBox(
+                            height: MediaQuery.of(context).size.height *
+                                0.2, // Adjust the height according to your needs
+                            child: TextField(
+                              controller: descriptionController,
+                              keyboardType: TextInputType.multiline,
+                              maxLines: 6,
+                              decoration: const InputDecoration(
+                                border: InputBorder.none,
+                                hintText: 'Description',
+                                focusedBorder: OutlineInputBorder(),
                               ),
-                              foregroundColor: Colors.white,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10),
-                                side: const BorderSide(
-                                  width: 2,
-                                  color: Color.fromARGB(255, 126, 217, 87),
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.02,
+                        ),
+                        Center(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment
+                                .center, // Aligns buttons at the center horizontally
+                            children: <Widget>[
+                              ElevatedButton(
+                                onPressed: () async {
+                                  await getImage(); // Call getImage() when CircleAvatar is tapped
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: const Color(0xFF272727),
+                                  fixedSize: Size(
+                                    MediaQuery.of(context).size.height * 0.25,
+                                    MediaQuery.of(context).size.height * 0.01,
+                                  ),
+                                  foregroundColor: Colors.white,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                    side: const BorderSide(
+                                      width: 2,
+                                      color: Color.fromARGB(255, 126, 217, 87),
+                                    ),
+                                  ),
+                                  textStyle: const TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                ),
+                                child: const Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: <Widget>[
+                                    Icon(
+                                      Icons.add_photo_alternate,
+                                      size: 24,
+                                    ), // Replace with your icon
+                                    SizedBox(
+                                      width: 8,
+                                    ), // Adjust spacing between icon and text
+                                    Text('Add pictures'),
+                                  ],
                                 ),
                               ),
-                              textStyle: const TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
-                            child: const Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
-                                Icon(
-                                  Icons.add_photo_alternate,
-                                  size: 24,
-                                ), // Replace with your icon
-                                SizedBox(
-                                  width: 8,
-                                ), // Adjust spacing between icon and text
-                                Text('Add pictures'),
-                              ],
-                            ),
-                          ),
 
-                          const SizedBox(
-                            width: 10,
-                          ), // Adding some space between buttons
-                          ElevatedButton(
-                            onPressed: () {
-                              // Retrieve values from controllers
-                              final String title = titleController.text;
-                              final String price = priceController.text;
-                              final String description =
-                                  descriptionController.text;
+                              const SizedBox(
+                                width: 10,
+                              ), // Adding some space between buttons
+                              ElevatedButton(
+                                onPressed: () {
+                                  // Retrieve values from controllers
+                                  final String title = titleController.text;
+                                  final String price = priceController.text;
+                                  final String description =
+                                      descriptionController.text;
 
-                              // Use these values as needed
-                              // For example, you can print them
-                              print(
-                                'Title: $title, Price: $price, Description: $description, type: ${getSelectedType()}',
-                              );
+                                  // Use these values as needed
+                                  // For example, you can print them
+                                  if (title.isEmpty ||
+                                      price.isEmpty ||
+                                      description.isEmpty) {
+                                    // Show modal error message if any field is missing
+                                    Future<void>.delayed(
+                                        const Duration(milliseconds: 300),
+                                        () async {
+                                      await showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) =>
+                                            const AddItemAlertDialog(),
+                                      );
+                                    });
+                                  } else {
+                                    // All fields are filled, you can proceed with your action
 
-                              // Close the modal bottom sheet
-                              Navigator.pop(context);
-                              onValidationButtonPressed();
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0xFF272727),
-                              fixedSize: Size(
-                                MediaQuery.of(context).size.height * 0.2,
-                                30,
-                              ),
-                              foregroundColor: Colors.white,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10),
-                                side: const BorderSide(
-                                  width: 2,
-                                  color: Color.fromARGB(255, 126, 217, 87),
+                                    Navigator.pop(context);
+                                    onValidationButtonPressed(); // Close the modal bottom sheet
+                                  }
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: const Color(0xFF272727),
+                                  fixedSize: Size(
+                                    MediaQuery.of(context).size.height * 0.2,
+                                    30,
+                                  ),
+                                  foregroundColor: Colors.white,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                    side: const BorderSide(
+                                      width: 2,
+                                      color: Color.fromARGB(255, 126, 217, 87),
+                                    ),
+                                  ),
+                                  textStyle: const TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w700,
+                                  ),
                                 ),
+                                child: const Text('Confirm'),
                               ),
-                              textStyle: const TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
-                            child: const Text('Confirm'),
+                            ],
                           ),
-                        ],
-                      ),
-                    ),
-
-                    // Add more ListTile widgets or customize as needed
-                  ],
-                );
-              },
+                        ),
+                      ],
+                    );
+                  },
+                ),
+              ),
             ),
           );
         },

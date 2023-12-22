@@ -29,8 +29,11 @@ class SearchResultState extends State<SearchResult> {
     const bool isAdmin = false;
 
     return Consumer<ProviderListener>(
-      builder: (BuildContext context, ProviderListener providerListener,
-          Widget? child,) {
+      builder: (
+        BuildContext context,
+        ProviderListener providerListener,
+        Widget? child,
+      ) {
         if (providerListener.searchtext.isNotEmpty) {
           filteredArticles = widget.articles
               .where(
@@ -57,7 +60,7 @@ class SearchResultState extends State<SearchResult> {
                         crossAxisCount: 4,
                         mainAxisSpacing: kIsWeb ? 1 : 4,
                         crossAxisSpacing: kIsWeb ? 1 : 4,
-                        children: List.generate(
+                        children: List<Widget>.generate(
                           filteredArticles.length,
                           (int index) => StaggeredGridTile.count(
                             crossAxisCellCount: 2,
@@ -112,7 +115,7 @@ class SearchResultState extends State<SearchResult> {
                         crossAxisCount: 4,
                         mainAxisSpacing: kIsWeb ? 1 : 4,
                         crossAxisSpacing: kIsWeb ? 1 : 4,
-                        children: List.generate(
+                        children: List<Widget>.generate(
                           providerListener.activeType == 'all'
                               ? widget.articles.length
                               : filteredBarArticles.length,
