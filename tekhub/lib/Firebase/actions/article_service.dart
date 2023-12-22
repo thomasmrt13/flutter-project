@@ -11,7 +11,8 @@ class ArticleService {
       final QuerySnapshot<Map<String, dynamic>> articlesSnapshot =
           await FirebaseFirestore.instance.collection('articles').get();
 
-      final List<Article> articles = articlesSnapshot.docs.map((QueryDocumentSnapshot<Map<String, dynamic>> doc) {
+      final List<Article> articles = articlesSnapshot.docs
+          .map((QueryDocumentSnapshot<Map<String, dynamic>> doc) {
         final Map<String, dynamic> data = doc.data();
         return Article(
           id: doc.id,
@@ -23,7 +24,8 @@ class ArticleService {
         );
       }).toList();
 
-      return Result<dynamic>.success(articles); // Return successful result with articles
+      return Result<dynamic>.success(
+          articles); // Return successful result with articles
     } catch (e) {
       return Result<dynamic>.failure(
         'Error getting articles',
@@ -79,7 +81,8 @@ class ArticleService {
         imageUrl: data['imageUrl'] ?? '',
       );
 
-      return Result<dynamic>.success(article); // Return successful result with the article
+      return Result<dynamic>.success(
+          article); // Return successful result with the article
     } catch (e) {
       return Result<dynamic>.failure(
         'Error getting article',
@@ -105,7 +108,8 @@ class ArticleService {
               .where('searchKeywords', arrayContainsAny: querySubstrings)
               .get();
 
-      final List<Article> articles = articlesSnapshot.docs.map((QueryDocumentSnapshot<Map<String, dynamic>> doc) {
+      final List<Article> articles = articlesSnapshot.docs
+          .map((QueryDocumentSnapshot<Map<String, dynamic>> doc) {
         final Map<String, dynamic> data = doc.data();
         return Article(
           id: doc.id,
@@ -135,7 +139,8 @@ class ArticleService {
               .where('type', isEqualTo: _mapArticleTypeToString(filterType))
               .get();
 
-      final List<Article> articles = articlesSnapshot.docs.map((QueryDocumentSnapshot<Map<String, dynamic>> doc) {
+      final List<Article> articles = articlesSnapshot.docs
+          .map((QueryDocumentSnapshot<Map<String, dynamic>> doc) {
         final Map<String, dynamic> data = doc.data();
         return Article(
           id: doc.id,
@@ -157,39 +162,52 @@ class ArticleService {
     }
   }
 
-  Future<Result<dynamic>> addArticle(Article article, File imageFile) async {
+  Future<Result<dynamic>> addArticle(String? name, double price,  String? description, String ?type, String? imageUrl) async {
+    // get all parameters in add article with string...
     try {
-      if (article.name.isEmpty) {
-        return Result<dynamic>.failure('Invalid article data. Name is required.');
+      if (name == null) {
+        return Result<dynamic>.failure(
+            'Invalid article data. Name is required.');
       }
 
-      if (article.price <= 0) {
-        return Result<dynamic>.failure('Invalid article data. Price is required.');
+      if (price <= 0) {
+        return Result<dynamic>.failure(
+            'Invalid article data. Price is required.');
       }
 
       // ignore: unnecessary_null_comparison
-      if (article.type == null) {
-        return Result<dynamic>.failure('Invalid article data. Type is required.');
+      if (type == null) {
+        return Result<dynamic>.failure(
+            'Invalid article data. Type is required.');
       }
 
       // Convert the ArticleType enum to its corresponding string value
-      final String typeString = _mapArticleTypeToString(article.type);
+      // final String typeString = _mapArticleTypeToString(type);
 
       // Upload image to Firebase Storage and get the image URL
-      final Result<dynamic> result =
-          await ImageService().addImageToStorage(imageFile);
+      // final Result<dynamic> result =
+      //     await ImageService().addImageToStorage(imageFile);
 
-      if (result.success == true) {
-        return Result<dynamic>.failure('Error uploading image.');
-      }
+      // if (result.success == true) {
+      //   return Result<dynamic>.failure('Error uploading image.');
+      // }
 
       // Add the article information to Firestore with the image URL
-      await FirebaseFirestore.instance.collection('articles').add(<String, dynamic>{
-        'name': article.name,
-        'price': article.price,
-        'description': article.description,
-        'type': typeString,
-        'imageUrl': result.message,
+      // await FirebaseFirestore.instance.collection('articles').add(<String, dynamic>{
+      //   'name': article.name,
+      //   'price': article.price,
+      //   'description': article.description,
+      //   'type': typeString,
+      //   'imageUrl': result.message,
+      // });
+      await FirebaseFirestore.instance
+          .collection('articles')
+          .add(<String, dynamic>{
+        'name': name,
+        'price': price,
+        'description': description,
+        'type': type,
+        'imageUrl': imageUrl,
       });
 
       return Result<dynamic>.success('Article added successfully');

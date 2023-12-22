@@ -3,7 +3,9 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
+import 'package:tekhub/Firebase/actions/result.dart';
 import 'package:tekhub/Firebase/models/articles.dart';
+import 'package:tekhub/firebase/actions/article_service.dart';
 import 'package:tekhub/provider/provider_listener.dart';
 import 'package:tekhub/widgets/check_animation.dart';
 import 'package:tekhub/widgets/search/search_bar.dart';
@@ -17,51 +19,13 @@ class HomeAdminWidget extends StatefulWidget {
 }
 
 class HomeAdminWidgetState extends State<HomeAdminWidget> {
-  Future<void> getArticles() async {
-    final List<Article> articles = <Article>[
-      Article(
-        id: '1',
-        name: 'Iphone 12',
-        price: 525,
-        description: 'Iphone 12',
-        type: ArticleType.phone,
-        imageUrl: 'assets/images/logo.png',
-      ),
-      Article(
-        id: '2',
-        name: 'Ipad Pro',
-        price: 790,
-        description: 'Ipad Pro 2021',
-        type: ArticleType.tablet,
-        imageUrl: 'assets/images/logo.png',
-      ),
-      Article(
-        id: '3',
-        name: 'Iphone 14 Pro',
-        price: 950,
-        description: 'Iphone 14 Pro Max',
-        type: ArticleType.phone,
-        imageUrl: 'assets/images/logo.png',
-      ),
-      Article(
-        id: '4',
-        name: 'Macbook Pro',
-        price: 359,
-        description: 'Macbook Pro 2022',
-        type: ArticleType.laptop,
-        imageUrl: 'assets/images/logo.png',
-      ),
-    ];
-    Provider.of<ProviderListener>(context, listen: false)
-        .updateArticles(articles);
-  }
-
   @override
   Widget build(BuildContext context) {
-    getArticles();
+    final ArticleService articleService = ArticleService();
+    // getArticles();
 
     // Function to show the modal
-    void showModal() {
+    Future<void> showModal() async {
       final List<bool> selectedType = <bool>[true, false, false];
       int selectedTypeIndex = 0;
       final TextEditingController titleController = TextEditingController();
@@ -104,8 +68,8 @@ class HomeAdminWidgetState extends State<HomeAdminWidget> {
       }
 
       // Afficher l'animation de vérification
-      void onValidationButtonPressed() {
-        showDialog(
+      Future<void> onValidationButtonPressed() async {
+        await showDialog(
           context: context,
           builder: (BuildContext context) {
             return const Dialog(
@@ -116,12 +80,12 @@ class HomeAdminWidgetState extends State<HomeAdminWidget> {
             );
           },
         );
-        Future.delayed(const Duration(milliseconds: 1250), () {
+        Future<void>.delayed(const Duration(milliseconds: 1250), () {
           Navigator.of(context).pop(); // Ferme le Dialog
         });
       }
 
-      showModalBottomSheet(
+      await showModalBottomSheet(
         context: context,
         builder: (BuildContext context) {
           return SingleChildScrollView(
@@ -301,13 +265,35 @@ class HomeAdminWidgetState extends State<HomeAdminWidget> {
                             width: 10,
                           ), // Adding some space between buttons
                           ElevatedButton(
-                            onPressed: () {
+                            onPressed: () async {
                               // Retrieve values from controllers
                               final String title = titleController.text;
                               final String price = priceController.text;
                               final String description =
                                   descriptionController.text;
 
+                              final Result<dynamic> result =
+                                  await articleService.addArticle(
+                                      title,
+                                      double.parse(price),
+                                      description,
+                                      getSelectedType(),
+                                      'assets/images/logo.png');
+                              if (result.success) {
+                                if (!context.mounted) return;
+                                Navigator.pop(context);
+                                await onValidationButtonPressed();
+                                if (!context.mounted) return;
+                                await Navigator.pushNamed(context, '/');
+                              } else {
+                                if (!context.mounted) return;
+                                // Registration failed, show error message
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(result.message.toString()),
+                                  ),
+                                );
+                              }
                               // Use these values as needed
                               // For example, you can print them
                               print(
@@ -315,8 +301,8 @@ class HomeAdminWidgetState extends State<HomeAdminWidget> {
                               );
 
                               // Close the modal bottom sheet
-                              Navigator.pop(context);
-                              onValidationButtonPressed();
+                              // Navigator.pop(context);
+                              // await onValidationButtonPressed();
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: const Color(0xFF272727),
