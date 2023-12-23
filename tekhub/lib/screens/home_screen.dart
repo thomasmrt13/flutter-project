@@ -70,7 +70,7 @@ class HomeState extends State<Home> {
                     );
                   case 2:
                     //_key.currentState?.closeDrawer();
-                    return const OrdersScreen();
+                    return OrdersScreen(scaffoldKey: _key);
                   case 3:
                     //_key.currentState?.closeDrawer();
                     return const SettingsPage();

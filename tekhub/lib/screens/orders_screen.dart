@@ -3,9 +3,16 @@ import 'package:tekhub/Firebase/models/articles.dart';
 import 'package:tekhub/widgets/orders/price_text.dart';
 import 'package:tekhub/widgets/orders/spending_category.dart';
 
-class OrdersScreen extends StatelessWidget {
-  const OrdersScreen({super.key});
+class OrdersScreen extends StatefulWidget {
+  const OrdersScreen({required this.scaffoldKey, super.key});
 
+  final GlobalKey<ScaffoldState> scaffoldKey;
+
+  @override
+  OrdersScreenState createState() => OrdersScreenState();
+}
+
+class OrdersScreenState extends State<OrdersScreen> {
   @override
   Widget build(BuildContext context) {
     List<Article> getArticles() {
@@ -47,99 +54,85 @@ class OrdersScreen extends StatelessWidget {
     }
 
     final List<Article> articles = getArticles();
-    final double totalPrice = articles.fold(0, (double sum, Article article) => sum + article.price);
-    return Container(
+    return ColoredBox(
       color: const Color.fromARGB(255, 39, 39, 39),
       child: Column(
         children: <Widget>[
-          SizedBox(
-            height: 180,
-            child: Stack(children: <Widget>[
-              Container(
-                decoration: const BoxDecoration(
+          Align(
+            alignment: Alignment.topLeft,
+            child: Padding(
+              padding: const EdgeInsets.only(left: 10, top: 12),
+              child: IconButton(
+                icon: const Icon(
+                  Icons.menu,
                   color: Colors.white,
-                  borderRadius: BorderRadius.only(
-                    bottomLeft: Radius.circular(50),
-                    bottomRight: Radius.circular(50),
+                ),
+                onPressed: () {
+                  widget.scaffoldKey.currentState?.openDrawer();
+                },
+              ),
+            ),
+          ),
+          SizedBox(
+            height: MediaQuery.of(context).size.height * 0.11,
+            width: MediaQuery.of(context).size.width,
+            child: const Padding(
+              padding: EdgeInsets.all(10),
+              child: Text(
+                'My orders',
+                style: TextStyle(fontFamily: 'Raleway', fontSize: 50, fontWeight: FontWeight.bold, color: Colors.white),
+              ),
+            ),
+          ),
+          Positioned(
+            bottom: 0,
+            left: 0,
+            right: 0,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                  decoration: BoxDecoration(
+                    color: const Color.fromARGB(255, 126, 217, 87),
+                    borderRadius: BorderRadius.circular(32),
+                  ),
+                  child: const Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Text(
+                        'TOTAL',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      SizedBox(width: 32),
+                      PriceText(
+                        price: 100,
+                        color: Color.fromARGB(255, 255, 255, 255),
+                      ),
+                    ],
                   ),
                 ),
-                height: 150,
-                padding: const EdgeInsets.only(left: 36, top: 1),
-                width: double.infinity,
-                child: const Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Text(
-                      'Orders',
-                      style: TextStyle(
-                          color: Colors.black,
-                          fontWeight: FontWeight.w700,
-                          fontFamily: 'Raleway',
-                          fontSize: 50,),
-                    ),
-                  ],
-                ),
-              ),
-              Positioned(
-                bottom: 0,
-                left: 0,
-                right: 0,
-                child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: <Widget>[
-                      Container(
-                        padding:
-                            const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-                        decoration: BoxDecoration(
-                            color: const Color.fromARGB(255, 126, 217, 87),
-                            borderRadius: BorderRadius.circular(32),),
-                        child: Column(
-                          children: <Widget>[
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: <Widget>[
-                                const Text(
-                                  'TOTAL',
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w600,),
-                                ),
-                                const SizedBox(width: 32),
-                                PriceText(
-                                  price: totalPrice.toInt(),
-                                  color: const Color.fromARGB(255, 255, 255, 255),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 8),
-                            Text(
-                              '${articles.length} SELLS',
-                              style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w600,),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],),
-              ),
-            ],),
+              ],
+            ),
           ),
           const Padding(
             padding: EdgeInsets.symmetric(horizontal: 36, vertical: 24),
             child: SearchBar(),
           ),
           Expanded(
-            child: ListView(children: <Widget>[
-              for (final Article model in articles)
-                Padding(
+            child: ListView(
+              children: <Widget>[
+                for (final Article model in articles)
+                  Padding(
                     padding: const EdgeInsets.symmetric(
-                        horizontal: 36, vertical: 16,),
-                    child: SpendingCategory(model),),
-            ],),
+                      horizontal: 36,
+                      vertical: 16,
+                    ),
+                    child: SpendingCategory(model),
+                  ),
+              ],
+            ),
           ),
         ],
       ),
