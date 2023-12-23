@@ -18,8 +18,7 @@ class Home extends StatefulWidget {
 }
 
 class HomeState extends State<Home> {
-  final SidebarXController _controller =
-      SidebarXController(selectedIndex: 0, extended: false);
+  final SidebarXController _controller = SidebarXController(selectedIndex: 0, extended: false);
   final GlobalKey<ScaffoldState> _key = GlobalKey<ScaffoldState>();
 
   @override
@@ -31,12 +30,8 @@ class HomeState extends State<Home> {
           return Scaffold(
             key: _key,
             backgroundColor: Colors.white,
-            drawer: MediaQuery.of(context).size.width < 600
-                ? SideBar(_controller)
-                : SideBar(_controller),
-            body: isSmallScreen
-                ? buildSmallScreenBody(context)
-                : buildSmallScreenBody(context),
+            drawer: MediaQuery.of(context).size.width < 600 ? SideBar(_controller) : SideBar(_controller),
+            body: isSmallScreen ? buildSmallScreenBody(context) : buildSmallScreenBody(context),
           );
         },
       ),

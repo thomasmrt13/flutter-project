@@ -1,146 +1,224 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:tekhub/Firebase/models/articles.dart';
+import 'package:tekhub/Firebase/models/users.dart';
+import 'package:tekhub/provider/provider_listener.dart';
 import 'package:tekhub/widgets/button.dart';
+import 'package:tekhub/widgets/edit_dialog.dart';
 
-class SingleItem extends StatelessWidget {
+class SingleItem extends StatefulWidget {
   const SingleItem({required this.article, super.key});
   final Article article;
 
   @override
+  SingleItemState createState() => SingleItemState();
+}
+
+class SingleItemState extends State<SingleItem> {
+  late TextEditingController nameController;
+  late TextEditingController priceController;
+  late TextEditingController descriptionController;
+
+  @override
+  void initState() {
+    super.initState();
+    nameController = TextEditingController(text: widget.article.name);
+    priceController = TextEditingController(text: widget.article.price.toString());
+    descriptionController = TextEditingController(text: widget.article.description);
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final MyUser user = Provider.of<ProviderListener>(context).user;
+
     return SafeArea(
       child: Scaffold(
         backgroundColor: const Color.fromARGB(255, 39, 39, 39),
-        body: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.only(top: 10),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  IconButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    icon: const Icon(CupertinoIcons.back),
-                    color: Colors.white,
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(
-              width: 300,
-              height: 280,
-              child: ClipRRect(
-                borderRadius: BorderRadius.all(Radius.circular(20)),
-                child: CarouselWithIndicatorDemo(),
-              ),
-            ),
-            Container(
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.all(Radius.circular(20)),
-              ),
-              height: MediaQuery.of(context).size.height * 0.51,
-              width: MediaQuery.of(context).size.width,
-              child: Center(
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: <Widget>[
-                      Padding(
-                        padding: const EdgeInsets.only(top: 20),
-                        child: Text(
-                          article.name,
-                          style: const TextStyle(
-                            fontSize: 28,
-                            fontFamily: 'Raleway',
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ),
-                      Container(
-                        alignment: Alignment.centerLeft,
-                        child: const Padding(
-                          padding: EdgeInsets.only(left: 39, top: 12, bottom: 5),
-                          child: Text(
-                            'Price',
-                            style: TextStyle(
-                              fontWeight: FontWeight.w700,
-                              fontSize: 17,
-                              fontFamily: 'Raleway',
+        body: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.only(top: 10),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    IconButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      icon: const Icon(CupertinoIcons.back),
+                      color: Colors.white,
+                    ),
+                    if (user.role != 'user')
+                      Row(
+                        children: <Widget>[
+                          IconButton(
+                            onPressed: () async {
+                              await showEditDialog(context, nameController, priceController, descriptionController, widget.article);
+                            },
+                            icon: const Icon(
+                              CupertinoIcons.pencil_ellipsis_rectangle,
                             ),
-                            textAlign: TextAlign.left,
+                            color: const Color.fromARGB(255, 126, 217, 87),
                           ),
-                        ),
+                          IconButton(
+                            onPressed: () async {
+                              await showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return AlertDialog(
+                                    backgroundColor: Colors.white,
+                                    surfaceTintColor: Colors.white,
+                                    title: const Text(
+                                      'Alert',
+                                      style: TextStyle(fontFamily: 'Raleway', fontWeight: FontWeight.bold),
+                                    ),
+                                    content: const Text(
+                                      'Are you sure you want to delete this item ?',
+                                      style: TextStyle(fontFamily: 'Raleway'),
+                                    ),
+                                    actions: <Widget>[
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                        child: const Text(
+                                          'Cancel',
+                                          style: TextStyle(fontFamily: 'Raleway', fontWeight: FontWeight.bold, color: Colors.red),
+                                        ),
+                                      ),
+                                      TextButton(
+                                        onPressed: () async {
+                                          await Navigator.pushNamed(context, '/');
+                                        },
+                                        child: const Text(
+                                          'Delete',
+                                          style: TextStyle(fontFamily: 'Raleway', fontWeight: FontWeight.bold, color: Colors.green),
+                                        ),
+                                      ),
+                                    ],
+                                  );
+                                },
+                              );
+                            },
+                            icon: const Icon(
+                              CupertinoIcons.trash,
+                            ),
+                            color: const Color.fromARGB(255, 126, 217, 87),
+                          ),
+                        ],
                       ),
-                      Container(
-                        alignment: Alignment.topLeft,
-                        child: Padding(
-                          padding: const EdgeInsets.only(left: 39, bottom: 10),
+                  ],
+                ),
+              ),
+              const SizedBox(
+                width: 300,
+                height: 280,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.all(Radius.circular(20)),
+                  child: CarouselWithIndicatorDemo(),
+                ),
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              Container(
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.all(Radius.circular(20)),
+                ),
+                height: MediaQuery.of(context).size.height * 0.51,
+                width: MediaQuery.of(context).size.width,
+                child: Center(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: <Widget>[
+                        Padding(
+                          padding: const EdgeInsets.only(top: 20),
                           child: Text(
-                            '${article.price}€',
-                            style: const TextStyle(color: Color.fromARGB(255, 126, 217, 87), fontSize: 22, fontWeight: FontWeight.w700, fontFamily: 'Raleway'),
+                            widget.article.name,
+                            style: const TextStyle(
+                              fontSize: 28,
+                              fontFamily: 'Raleway',
+                              fontWeight: FontWeight.w600,
+                            ),
                           ),
                         ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 10, left: 45),
-                        child: Container(
+                        Container(
                           alignment: Alignment.centerLeft,
-                          child: const Text(
-                            'Get Apple TV+ free for a year',
-                            style: TextStyle(
-                              fontFamily: 'Raleway',
-                              fontWeight: FontWeight.w700,
-                              fontSize: 17,
+                          child: const Padding(
+                            padding: EdgeInsets.only(left: 39, top: 12, bottom: 5),
+                            child: Text(
+                              'Price',
+                              style: TextStyle(
+                                fontWeight: FontWeight.w700,
+                                fontSize: 17,
+                                fontFamily: 'Raleway',
+                              ),
+                              textAlign: TextAlign.left,
                             ),
                           ),
                         ),
-                      ),
-                      const Padding(
-                        padding: EdgeInsets.only(top: 5, left: 45, right: 10),
-                        child: Text(
-                          'Available when you purchase any new iPhone, iPad, iPod Touch, Mac or Apple TV, £4.99/',
-                          style: TextStyle(
-                            fontFamily: 'Raleway',
-                            fontWeight: FontWeight.w400,
-                            fontSize: 17,
-                            color: Colors.black38,
+                        Container(
+                          alignment: Alignment.topLeft,
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 39, bottom: 10),
+                            child: Text(
+                              '${widget.article.price}€',
+                              style: const TextStyle(color: Color.fromARGB(255, 126, 217, 87), fontSize: 22, fontWeight: FontWeight.w700, fontFamily: 'Raleway'),
+                            ),
                           ),
                         ),
-                      ),
-                      Container(
-                        alignment: Alignment.topLeft,
-                        padding: const EdgeInsets.only(left: 45),
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(backgroundColor: Colors.white, padding: const EdgeInsets.all(0), elevation: 0),
-                          onPressed: () {},
-                          child: const Text(
-                            'Full description ->',
-                            style: TextStyle(color: Color.fromARGB(255, 126, 217, 87), fontSize: 15, fontWeight: FontWeight.w700, fontFamily: 'Raleway'),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 10, left: 45),
+                          child: Container(
+                            alignment: Alignment.centerLeft,
+                            child: const Text(
+                              'Get Apple TV+ free for a year',
+                              style: TextStyle(
+                                fontFamily: 'Raleway',
+                                fontWeight: FontWeight.w700,
+                                fontSize: 17,
+                              ),
+                            ),
                           ),
                         ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 20),
-                        child: Button(
-                          text: 'Add to cart',
-                          color: const Color.fromARGB(255, 39, 39, 39),
-                          width: MediaQuery.of(context).size.width * 0.7,
-                          onClick: () {},
-                          height: 60,
-                          fontSize: 20,
+                        const Padding(
+                          padding: EdgeInsets.only(top: 5, left: 45, right: 10),
+                          child: Text(
+                            'Available when you purchase any new iPhone, iPad, iPod Touch, Mac or Apple TV, £4.99/',
+                            style: TextStyle(
+                              fontFamily: 'Raleway',
+                              fontWeight: FontWeight.w400,
+                              fontSize: 17,
+                              color: Colors.black38,
+                            ),
+                          ),
                         ),
-                      ),
-                    ],
+                        const SizedBox(
+                          height: 30,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 20),
+                          child: Button(
+                            text: 'Add to cart',
+                            color: const Color.fromARGB(255, 39, 39, 39),
+                            width: MediaQuery.of(context).size.width * 0.7,
+                            onClick: () {},
+                            height: 60,
+                            fontSize: 20,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
