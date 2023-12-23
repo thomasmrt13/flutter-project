@@ -11,7 +11,7 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   ); // Initialize Firebase
   runApp(
-    ChangeNotifierProvider(
+    ChangeNotifierProvider<ProviderListener>(
       create: (BuildContext context) => ProviderListener(),
       child: const MyApp(),
     ),

@@ -15,49 +15,10 @@ class HomeWidget extends StatefulWidget {
 }
 
 class HomeWidgetState extends State<HomeWidget> {
-  Future<void> getArticles() async {
-    final List<Article> articles = <Article>[
-      Article(
-        id: '1',
-        name: 'Iphone 12',
-        price: 525,
-        description: 'Iphone 12',
-        type: ArticleType.phone,
-        imageUrl: 'assets/images/ipad.png',
-      ),
-      Article(
-        id: '2',
-        name: 'Ipad Pro',
-        price: 790,
-        description: 'Ipad Pro 2021',
-        type: ArticleType.tablet,
-        imageUrl: 'assets/images/ipad.png',
-      ),
-      Article(
-        id: '3',
-        name: 'Iphone 14 Pro',
-        price: 950,
-        description: 'Iphone 14 Pro Max',
-        type: ArticleType.phone,
-        imageUrl: 'assets/images/ipad.png',
-      ),
-      Article(
-        id: '4',
-        name: 'Macbook Pro',
-        price: 359,
-        description: 'Macbook Pro 2022',
-        type: ArticleType.laptop,
-        imageUrl: 'assets/images/ipad.png',
-      ),
-    ];
-    Provider.of<ProviderListener>(context, listen: false)
-        .updateArticles(articles);
-  }
 
   @override
   Widget build(BuildContext context) {
     const int cartItems = 0;
-    getArticles();
     return Consumer<ProviderListener>(
       builder: (
         BuildContext context,
@@ -109,8 +70,8 @@ class HomeWidgetState extends State<HomeWidget> {
             children: <Widget>[
               FloatingActionButton(
                 backgroundColor: const Color(0xFF272727),
-                onPressed: () {
-                  Navigator.pushNamed(context, 'cart');
+                onPressed: () async {
+                  await Navigator.pushNamed(context, 'cart');
                 },
                 child: const Icon(
                   Icons.shopping_cart,

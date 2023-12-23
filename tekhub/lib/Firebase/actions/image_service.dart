@@ -22,6 +22,18 @@ class ImageService {
     }
   }
 
+  Future<Result<dynamic>> getArticleImageUrl(String articleId) async {
+    try {
+      final firebase_storage.Reference reference =
+          _storage.ref().child('articles/$articleId.jpg');
+
+      final String imageUrl = await reference.getDownloadURL();
+      return Result<dynamic>.success(imageUrl);
+    } catch (e) {
+      return Result<dynamic>.failure('An unexpected error occurred.');
+    }
+  }
+
     Future<Result<String>> uploadImageToStorage(File imageFile, String folderName) async {
     try {
       // Generate a unique filename for the image

@@ -22,7 +22,6 @@ class HomeAdminWidgetState extends State<HomeAdminWidget> {
   @override
   Widget build(BuildContext context) {
     final ArticleService articleService = ArticleService();
-    // getArticles();
 
     // Function to show the modal
     Future<void> showModal() async {
@@ -141,7 +140,6 @@ class HomeAdminWidgetState extends State<HomeAdminWidget> {
                           }
                           // Update the selected type index
                           selectedTypeIndex = index;
-                          print(getSelectedType());
                           // TODO: Modify UI based on the selected type
                           // For example, update Text or other widgets
                         });
@@ -271,18 +269,60 @@ class HomeAdminWidgetState extends State<HomeAdminWidget> {
                               final String price = priceController.text;
                               final String description =
                                   descriptionController.text;
+                              if (title == '') {
+                                // Registration failed, show error message
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text('Title is required'),
+                                  ),
+                                );
+                                return;
+                              }
+
+                              if (price == '') {
+                                // Registration failed, show error message
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text('Price is required'),
+                                  ),
+                                );
+                                return;
+                              }
+
+                              final int? parsedPrice = int.tryParse(price);
+                              if (parsedPrice == null) {
+                                // Price is not a valid integer, show error message
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content:
+                                        Text('Price must be a valid number'),
+                                  ),
+                                );
+                                return;
+                              }
+
+                              if (description == '') {
+                                // Registration failed, show error message
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text('Description is required'),
+                                  ),
+                                );
+                                return;
+                              }
 
                               final Result<dynamic> result =
                                   await articleService.addArticle(
-                                      title,
-                                      double.parse(price),
-                                      description,
-                                      getSelectedType(),
-                                      'assets/images/logo.png');
+                                title,
+                                double.parse(price),
+                                description,
+                                getSelectedType(),
+                                'assets/images/logo.png',
+                              );
                               if (result.success) {
                                 if (!context.mounted) return;
                                 Navigator.pop(context);
-                                await onValidationButtonPressed();
+                                // await onValidationButtonPressed();
                                 if (!context.mounted) return;
                                 await Navigator.pushNamed(context, '/');
                               } else {
@@ -294,11 +334,6 @@ class HomeAdminWidgetState extends State<HomeAdminWidget> {
                                   ),
                                 );
                               }
-                              // Use these values as needed
-                              // For example, you can print them
-                              print(
-                                'Title: $title, Price: $price, Description: $description, type: ${getSelectedType()}',
-                              );
 
                               // Close the modal bottom sheet
                               // Navigator.pop(context);

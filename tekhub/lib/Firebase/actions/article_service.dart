@@ -25,7 +25,7 @@ class ArticleService {
       }).toList();
 
       return Result<dynamic>.success(
-          articles); // Return successful result with articles
+          articles,); // Return successful result with articles
     } catch (e) {
       return Result<dynamic>.failure(
         'Error getting articles',
@@ -82,7 +82,7 @@ class ArticleService {
       );
 
       return Result<dynamic>.success(
-          article); // Return successful result with the article
+          article,); // Return successful result with the article
     } catch (e) {
       return Result<dynamic>.failure(
         'Error getting article',
