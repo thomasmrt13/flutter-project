@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -10,6 +11,9 @@ import 'package:tekhub/provider/provider_listener.dart';
 import 'package:tekhub/widgets/check_animation.dart';
 import 'package:tekhub/widgets/search/search_bar.dart';
 import 'package:tekhub/widgets/search_result.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:uuid/uuid.dart';
 
 class HomeAdminWidget extends StatefulWidget {
   const HomeAdminWidget({super.key});
@@ -22,6 +26,14 @@ class HomeAdminWidgetState extends State<HomeAdminWidget> {
   @override
   Widget build(BuildContext context) {
     final ArticleService articleService = ArticleService();
+
+    String getFileExtension(String filename) {
+      final List<String> parts = filename.split('.');
+      if (parts.length > 1) {
+        return parts.last;
+      }
+      return ''; // No extension found
+    }
 
     // Function to show the modal
     Future<void> showModal() async {
@@ -140,8 +152,6 @@ class HomeAdminWidgetState extends State<HomeAdminWidget> {
                           }
                           // Update the selected type index
                           selectedTypeIndex = index;
-                          // TODO: Modify UI based on the selected type
-                          // For example, update Text or other widgets
                         });
                       },
                       borderRadius: const BorderRadius.all(Radius.circular(8)),
@@ -221,43 +231,43 @@ class HomeAdminWidgetState extends State<HomeAdminWidget> {
                         mainAxisAlignment: MainAxisAlignment
                             .center, // Aligns buttons at the center horizontally
                         children: <Widget>[
-                          ElevatedButton(
-                            onPressed: () async {
-                              await getImage(); // Call getImage() when CircleAvatar is tapped
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0xFF272727),
-                              fixedSize: Size(
-                                MediaQuery.of(context).size.height * 0.25,
-                                MediaQuery.of(context).size.height * 0.01,
-                              ),
-                              foregroundColor: Colors.white,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10),
-                                side: const BorderSide(
-                                  width: 2,
-                                  color: Color.fromARGB(255, 126, 217, 87),
-                                ),
-                              ),
-                              textStyle: const TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
-                            child: const Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
-                                Icon(
-                                  Icons.add_photo_alternate,
-                                  size: 24,
-                                ), // Replace with your icon
-                                SizedBox(
-                                  width: 8,
-                                ), // Adjust spacing between icon and text
-                                Text('Add pictures'),
-                              ],
-                            ),
-                          ),
+                          // ElevatedButton(
+                          //   onPressed: () async {
+                          //     await getImage(); // Call getImage() when CircleAvatar is tapped
+                          //   },
+                          //   style: ElevatedButton.styleFrom(
+                          //     backgroundColor: const Color(0xFF272727),
+                          //     fixedSize: Size(
+                          //       MediaQuery.of(context).size.height * 0.25,
+                          //       MediaQuery.of(context).size.height * 0.01,
+                          //     ),
+                          //     foregroundColor: Colors.white,
+                          //     shape: RoundedRectangleBorder(
+                          //       borderRadius: BorderRadius.circular(10),
+                          //       side: const BorderSide(
+                          //         width: 2,
+                          //         color: Color.fromARGB(255, 126, 217, 87),
+                          //       ),
+                          //     ),
+                          //     textStyle: const TextStyle(
+                          //       fontSize: 20,
+                          //       fontWeight: FontWeight.w700,
+                          //     ),
+                          //   ),
+                          //   child: const Row(
+                          //     mainAxisAlignment: MainAxisAlignment.center,
+                          //     children: <Widget>[
+                          //       Icon(
+                          //         Icons.add_photo_alternate,
+                          //         size: 24,
+                          //       ), // Replace with your icon
+                          //       SizedBox(
+                          //         width: 8,
+                          //       ), // Adjust spacing between icon and text
+                          //       Text('Add pictures'),
+                          //     ],
+                          //   ),
+                          // ),
 
                           const SizedBox(
                             width: 10,
@@ -334,10 +344,6 @@ class HomeAdminWidgetState extends State<HomeAdminWidget> {
                                   ),
                                 );
                               }
-
-                              // Close the modal bottom sheet
-                              // Navigator.pop(context);
-                              // await onValidationButtonPressed();
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: const Color(0xFF272727),

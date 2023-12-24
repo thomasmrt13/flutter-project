@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:tekhub/Firebase/models/articles.dart';
 import 'package:tekhub/provider/provider_listener.dart';
 import 'package:tekhub/widgets/search/search_bar.dart';
 import 'package:tekhub/widgets/search_result.dart';
