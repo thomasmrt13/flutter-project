@@ -196,13 +196,13 @@ class _CarouselWithIndicatorState extends State<CarouselWithIndicatorDemo> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Image>[
               const Image(
-                image: AssetImage('assets/images/ipad.png'),
+                image: AssetImage('assets/images/logo.png'),
               ),
               const Image(
-                image: AssetImage('assets/images/ipad.png'),
+                image: AssetImage('assets/images/logo.png'),
               ),
               const Image(
-                image: AssetImage('assets/images/ipad.png'),
+                image: AssetImage('assets/images/logo.png'),
               ),
             ].asMap().entries.map((MapEntry<int, Image> entry) {
               return GestureDetector(
