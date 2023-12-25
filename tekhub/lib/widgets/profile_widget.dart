@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
@@ -39,7 +40,11 @@ class ProfilePageState extends State<ProfilePage> {
           Expanded(
             flex: 3,
             child: Padding(
-              padding: const EdgeInsets.all(8),
+              padding: kIsWeb
+                  ? EdgeInsets.symmetric(
+                      horizontal: MediaQuery.of(context).size.width * 0.1,
+                    )
+                  : const EdgeInsets.all(8),
               child: SingleChildScrollView(
                 child: Column(
                   children: <Widget>[
@@ -100,7 +105,11 @@ class ProfilePageState extends State<ProfilePage> {
                               ),
                               onSaved: (String? value) => _adress = value!,
                             ),
-                            const SizedBox(height: 20),
+                            SizedBox(
+                              height: kIsWeb
+                                  ? MediaQuery.of(context).size.height * 0.1
+                                  : MediaQuery.of(context).size.height * 0.07,
+                            ),
                             SizedBox(
                               width: double.infinity,
                               child: ElevatedButton(
@@ -216,16 +225,24 @@ class ProfilePageState extends State<ProfilePage> {
                               },
                               onSaved: (String? value) => _phoneNumber = value!,
                             ),
-                            const SizedBox(height: 50),
+                            SizedBox(
+                              height: kIsWeb
+                                  ? MediaQuery.of(context).size.height * 0.1
+                                  : MediaQuery.of(context).size.height * 0.07,
+                            ),
                             SizedBox(
                               width: double.infinity,
                               child: ElevatedButton(
                                 style: ElevatedButton.styleFrom(
                                   foregroundColor: Colors.white,
                                   backgroundColor:
-                                      const Color.fromARGB(255, 126, 217, 87),
+                                      const Color.fromARGB(255, 39, 39, 39),
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(15),
+                                    side: const BorderSide(
+                                      color: Color.fromARGB(255, 126, 217, 87),
+                                      width: 2,
+                                    ),
                                   ),
                                   minimumSize: Size(
                                     MediaQuery.of(context).size.width / 1.12,
@@ -240,7 +257,7 @@ class ProfilePageState extends State<ProfilePage> {
                                   style: const TextStyle(
                                     fontSize: 15,
                                     fontWeight: FontWeight.w800,
-                                    color: Colors.white,
+                                    color: Color.fromARGB(255, 126, 217, 87),
                                   ),
                                 ),
                               ),

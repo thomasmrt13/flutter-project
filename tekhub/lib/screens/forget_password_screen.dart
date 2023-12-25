@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:tekhub/Firebase/actions/auth_service.dart';
 import 'package:tekhub/Firebase/actions/result.dart';
@@ -51,7 +52,9 @@ class ForgetPassword extends StatelessWidget {
                   borderRadius: BorderRadius.all(Radius.circular(20)),
                 ),
                 height: MediaQuery.of(context).size.height * 0.65,
-                width: MediaQuery.of(context).size.width,
+                width: kIsWeb
+                    ? MediaQuery.of(context).size.width * 0.8
+                    : MediaQuery.of(context).size.width,
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(50, 36, 50, 0),
                   child: SingleChildScrollView(

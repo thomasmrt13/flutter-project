@@ -35,14 +35,15 @@ class SplashState extends State<Splash> with SingleTickerProviderStateMixin {
       ),
     );
 
-    _animationController.forward();
+    _animationController
+      ..forward()
 
-    // Navigating to another page after animation completes
-    _animationController.addStatusListener((AnimationStatus status) {
-      if (status == AnimationStatus.completed) {
-        _navigateToNextScreen();
-      }
-    });
+      // Navigating to another page after animation completes
+      ..addStatusListener((AnimationStatus status) async {
+        if (status == AnimationStatus.completed) {
+          await _navigateToNextScreen();
+        }
+      });
   }
 
   @override
@@ -51,9 +52,9 @@ class SplashState extends State<Splash> with SingleTickerProviderStateMixin {
     super.dispose();
   }
 
-  void _navigateToNextScreen() {
-    Navigator.of(context).pushReplacement(
-      MaterialPageRoute(
+  Future<void> _navigateToNextScreen() async {
+    await Navigator.of(context).pushReplacement(
+      MaterialPageRoute<dynamic>(
         builder: (_) => Login(), // Replace Login with your desired screen
       ),
     );

@@ -64,7 +64,8 @@ class SingleItem extends StatelessWidget {
                       Container(
                         alignment: Alignment.centerLeft,
                         child: const Padding(
-                          padding: EdgeInsets.only(left: 39, top: 12, bottom: 5),
+                          padding:
+                              EdgeInsets.only(left: 39, top: 12, bottom: 5),
                           child: Text(
                             'Price',
                             style: TextStyle(
@@ -82,7 +83,12 @@ class SingleItem extends StatelessWidget {
                           padding: const EdgeInsets.only(left: 39, bottom: 10),
                           child: Text(
                             '${article.price}€',
-                            style: const TextStyle(color: Color.fromARGB(255, 126, 217, 87), fontSize: 22, fontWeight: FontWeight.w700, fontFamily: 'Raleway'),
+                            style: const TextStyle(
+                              color: Color.fromARGB(255, 126, 217, 87),
+                              fontSize: 22,
+                              fontWeight: FontWeight.w700,
+                              fontFamily: 'Raleway',
+                            ),
                           ),
                         ),
                       ),
@@ -116,11 +122,19 @@ class SingleItem extends StatelessWidget {
                         alignment: Alignment.topLeft,
                         padding: const EdgeInsets.only(left: 45),
                         child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(backgroundColor: Colors.white, padding: const EdgeInsets.all(0), elevation: 0),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.white,
+                            elevation: 0,
+                          ),
                           onPressed: () {},
                           child: const Text(
                             'Full description ->',
-                            style: TextStyle(color: Color.fromARGB(255, 126, 217, 87), fontSize: 15, fontWeight: FontWeight.w700, fontFamily: 'Raleway'),
+                            style: TextStyle(
+                              color: Color.fromARGB(255, 126, 217, 87),
+                              fontSize: 15,
+                              fontWeight: FontWeight.w700,
+                              fontFamily: 'Raleway',
+                            ),
                           ),
                         ),
                       ),
@@ -210,10 +224,12 @@ class _CarouselWithIndicatorState extends State<CarouselWithIndicatorDemo> {
                 child: Container(
                   width: 12,
                   height: 12,
-                  margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+                  margin:
+                      const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: const Color.fromARGB(255, 39, 39, 39).withOpacity(_current == entry.key ? 0.9 : 0.4),
+                    color: const Color.fromARGB(255, 39, 39, 39)
+                        .withOpacity(_current == entry.key ? 0.9 : 0.4),
                   ),
                 ),
               );
