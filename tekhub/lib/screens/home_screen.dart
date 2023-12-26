@@ -47,7 +47,28 @@ class HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
+    return SafeArea(
+      child: Builder(
+        builder: (BuildContext context) {
+          final bool isSmallScreen = MediaQuery.of(context).size.width < 600;
+          return Scaffold(
+            key: _key,
+            backgroundColor: Colors.white,
+            drawer: MediaQuery.of(context).size.width < 600
+                ? SideBar(_controller)
+                : SideBar(_controller),
+            body: isSmallScreen
+                ? buildSmallScreenBody(context)
+                : buildSmallScreenBody(context),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget buildSmallScreenBody(BuildContext context) {
     final MyUser user = Provider.of<ProviderListener>(context).user;
+
     return Row(
       children: <Widget>[
         Expanded(
@@ -64,6 +85,7 @@ class HomeState extends State<Home> {
                           )
                         : const HomeAdminWidget();
                   case 1:
+                    //_key.currentState?.closeDrawer();
                     return Center(
                       child: Cart(
                         scaffoldKey: _key,
@@ -71,8 +93,9 @@ class HomeState extends State<Home> {
                     );
                   case 2:
                     //_key.currentState?.closeDrawer();
-                    return OrdersScreen(scaffoldKey: _key);
+                    return OrdersScreen(scaffoldKey: _key,);
                   case 3:
+                    //_key.currentState?.closeDrawer();
                     return const SettingsPage();
                   default:
                     return const Center(
