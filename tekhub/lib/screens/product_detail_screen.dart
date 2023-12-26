@@ -96,9 +96,9 @@ class SingleItem extends StatelessWidget {
                         padding: const EdgeInsets.only(top: 10, left: 45),
                         child: Container(
                           alignment: Alignment.centerLeft,
-                          child: const Text(
-                            'Get Apple TV+ free for a year',
-                            style: TextStyle(
+                          child: Text(
+                            article.description,
+                            style: const TextStyle(
                               fontFamily: 'Raleway',
                               fontWeight: FontWeight.w700,
                               fontSize: 17,
@@ -106,38 +106,30 @@ class SingleItem extends StatelessWidget {
                           ),
                         ),
                       ),
-                      const Padding(
-                        padding: EdgeInsets.only(top: 5, left: 45, right: 10),
-                        child: Text(
-                          'Available when you purchase any new iPhone, iPad, iPod Touch, Mac or Apple TV, £4.99/',
-                          style: TextStyle(
-                            fontFamily: 'Raleway',
-                            fontWeight: FontWeight.w400,
-                            fontSize: 17,
-                            color: Colors.black38,
-                          ),
-                        ),
-                      ),
-                      Container(
-                        alignment: Alignment.topLeft,
-                        padding: const EdgeInsets.only(left: 45),
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.white,
-                            elevation: 0,
-                          ),
-                          onPressed: () {},
-                          child: const Text(
-                            'Full description ->',
-                            style: TextStyle(
-                              color: Color.fromARGB(255, 126, 217, 87),
-                              fontSize: 15,
-                              fontWeight: FontWeight.w700,
-                              fontFamily: 'Raleway',
-                            ),
-                          ),
-                        ),
-                      ),
+                      // Padding(
+                      //   padding: const EdgeInsets.only(top: 5, left: 45, right: 10),
+                      //   child: Text(
+                      //     article.description,
+                      //     style: const TextStyle(
+                      //       fontFamily: 'Raleway',
+                      //       fontWeight: FontWeight.w400,
+                      //       fontSize: 17,
+                      //       color: Colors.black38,
+                      //     ),
+                      //   ),
+                      // ),
+                      // Container(
+                      //   alignment: Alignment.topLeft,
+                      //   padding: const EdgeInsets.only(left: 45),
+                      //   child: ElevatedButton(
+                      //     style: ElevatedButton.styleFrom(backgroundColor: Colors.white, padding: const EdgeInsets.all(0), elevation: 0),
+                      //     onPressed: () {},
+                      //     child: const Text(
+                      //       'Full description ->',
+                      //       style: TextStyle(color: Color.fromARGB(255, 126, 217, 87), fontSize: 15, fontWeight: FontWeight.w700, fontFamily: 'Raleway'),
+                      //     ),
+                      //   ),
+                      // ),
                       Padding(
                         padding: const EdgeInsets.only(bottom: 20),
                         child: Button(
@@ -183,13 +175,13 @@ class _CarouselWithIndicatorState extends State<CarouselWithIndicatorDemo> {
             child: CarouselSlider(
               items: const <Widget>[
                 Image(
-                  image: AssetImage('assets/images/ipad.png'),
+                  image: AssetImage('assets/images/logo.png'),
                 ),
                 Image(
-                  image: AssetImage('assets/images/ipad.png'),
+                  image: AssetImage('assets/images/logo.png'),
                 ),
                 Image(
-                  image: AssetImage('assets/images/ipad.png'),
+                  image: AssetImage('assets/images/logo.png'),
                 ),
               ],
               carouselController: _controller,
@@ -210,13 +202,13 @@ class _CarouselWithIndicatorState extends State<CarouselWithIndicatorDemo> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Image>[
               const Image(
-                image: AssetImage('assets/images/ipad.png'),
+                image: AssetImage('assets/images/logo.png'),
               ),
               const Image(
-                image: AssetImage('assets/images/ipad.png'),
+                image: AssetImage('assets/images/logo.png'),
               ),
               const Image(
-                image: AssetImage('assets/images/ipad.png'),
+                image: AssetImage('assets/images/logo.png'),
               ),
             ].asMap().entries.map((MapEntry<int, Image> entry) {
               return GestureDetector(

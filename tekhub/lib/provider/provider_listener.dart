@@ -23,7 +23,7 @@ class ProviderListener extends ChangeNotifier {
     notifyListeners(); // Notifies the listeners that the data has changed
   }
 
-    void updateUser(MyUser newUser) {
+  void updateUser(MyUser newUser) {
     user = newUser;
     notifyListeners(); // Notifies the listeners that the data has changed
   }

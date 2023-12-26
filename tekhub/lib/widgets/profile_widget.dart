@@ -285,11 +285,11 @@ class _TopPortion extends StatefulWidget {
 
 class __TopPortionState extends State<_TopPortion> {
   File? _selectedImage; // Store the selected image file
-  String _profileImageUrl = '';
+  String _profileImageUrl = 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80';
   @override
   void initState() {
     super.initState();
-    _loadProfileImage();
+    // _loadProfileImage();
   }
 
   Future<void> _loadProfileImage() async {
@@ -313,62 +313,62 @@ class __TopPortionState extends State<_TopPortion> {
     }
   }
 
-  Future<void> _getImage() async {
-    final XFile? pickedFile =
-        await ImagePicker().pickImage(source: ImageSource.gallery);
+  // Future<void> _getImage() async {
+  //   final XFile? pickedFile =
+  //       await ImagePicker().pickImage(source: ImageSource.gallery);
 
-    if (pickedFile != null) {
-      final File imageFile = File(pickedFile.path);
+  //   if (pickedFile != null) {
+  //     final File imageFile = File(pickedFile.path);
 
-      // Upload the image to Firebase Storage
-      final Result<String> uploadResult = await ImageService()
-          .uploadImageToStorage(imageFile, 'profile_pictures');
+  //     // Upload the image to Firebase Storage
+  //     final Result<String> uploadResult = await ImageService()
+  //         .uploadImageToStorage(imageFile, 'profile_pictures');
 
-      if (uploadResult.success) {
-        if (!context.mounted) return;
-        // Update the user's profile picture URL in the database
-        final MyUser user =
-            Provider.of<ProviderListener>(context, listen: false).user;
-        final Result<dynamic> updateResult =
-            await ImageService().getUserProfileImageUrl(user.uid);
+  //     if (uploadResult.success) {
+  //       if (!context.mounted) return;
+  //       // Update the user's profile picture URL in the database
+  //       final MyUser user =
+  //           Provider.of<ProviderListener>(context, listen: false).user;
+  //       final Result<dynamic> updateResult =
+  //           await ImageService().getUserProfileImageUrl(user.uid);
 
-        if (updateResult.success) {
-          if (!context.mounted) return;
-          // Update the local state with the new profile picture URL
-          if (context.mounted) {
-            setState(() {
-              _profileImageUrl = uploadResult.message;
-            });
-          }
+  //       if (updateResult.success) {
+  //         if (!context.mounted) return;
+  //         // Update the local state with the new profile picture URL
+  //         if (context.mounted) {
+  //           setState(() {
+  //             _profileImageUrl = uploadResult.message;
+  //           });
+  //         }
 
-          // Show a success message or perform additional actions if needed
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Profile picture updated successfully!'),
-            ),
-          );
-        } else {
-          // Show an error message if updating the profile picture URL fails
-          if (context.mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(updateResult.message.toString()),
-              ),
-            );
-          }
-        }
-      } else {
-        // Show an error message if uploading the image fails
-        if (context.mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(uploadResult.message.toString()),
-            ),
-          );
-        }
-      }
-    }
-  }
+  //         // Show a success message or perform additional actions if needed
+  //         ScaffoldMessenger.of(context).showSnackBar(
+  //           const SnackBar(
+  //             content: Text('Profile picture updated successfully!'),
+  //           ),
+  //         );
+  //       } else {
+  //         // Show an error message if updating the profile picture URL fails
+  //         if (context.mounted) {
+  //           ScaffoldMessenger.of(context).showSnackBar(
+  //             SnackBar(
+  //               content: Text(updateResult.message.toString()),
+  //             ),
+  //           );
+  //         }
+  //       }
+  //     } else {
+  //       // Show an error message if uploading the image fails
+  //       if (context.mounted) {
+  //         ScaffoldMessenger.of(context).showSnackBar(
+  //           SnackBar(
+  //             content: Text(uploadResult.message.toString()),
+  //           ),
+  //         );
+  //       }
+  //     }
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -440,7 +440,7 @@ class __TopPortionState extends State<_TopPortion> {
                   right: 0,
                   child: GestureDetector(
                     onTap: () async {
-                      await _getImage(); // Call getImage() when CircleAvatar is tapped
+                      // await _getImage(); // Call getImage() when CircleAvatar is tapped
                     },
                     child: const CircleAvatar(
                       radius: 20,

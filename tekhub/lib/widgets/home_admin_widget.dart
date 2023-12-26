@@ -1,15 +1,21 @@
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
+import 'package:tekhub/Firebase/actions/result.dart';
 import 'package:tekhub/Firebase/models/articles.dart';
+import 'package:tekhub/firebase/actions/article_service.dart';
 import 'package:tekhub/provider/provider_listener.dart';
 import 'package:tekhub/widgets/add_item_alert_dialog.dart';
 import 'package:tekhub/widgets/check_animation.dart';
 import 'package:tekhub/widgets/search/search_bar.dart';
 import 'package:tekhub/widgets/search_result.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:uuid/uuid.dart';
 
 class HomeAdminWidget extends StatefulWidget {
   const HomeAdminWidget({super.key});
@@ -19,48 +25,17 @@ class HomeAdminWidget extends StatefulWidget {
 }
 
 class HomeAdminWidgetState extends State<HomeAdminWidget> {
-  Future<void> getArticles() async {
-    final List<Article> articles = <Article>[
-      Article(
-        id: '1',
-        name: 'Iphone 12',
-        price: 525,
-        description: 'Iphone 12',
-        type: ArticleType.phone,
-        imageUrl: 'assets/images/logo.png',
-      ),
-      Article(
-        id: '2',
-        name: 'Ipad Pro',
-        price: 790,
-        description: 'Ipad Pro 2021',
-        type: ArticleType.tablet,
-        imageUrl: 'assets/images/logo.png',
-      ),
-      Article(
-        id: '3',
-        name: 'Iphone 14 Pro',
-        price: 950,
-        description: 'Iphone 14 Pro Max',
-        type: ArticleType.phone,
-        imageUrl: 'assets/images/logo.png',
-      ),
-      Article(
-        id: '4',
-        name: 'Macbook Pro',
-        price: 359,
-        description: 'Macbook Pro 2022',
-        type: ArticleType.laptop,
-        imageUrl: 'assets/images/logo.png',
-      ),
-    ];
-    Provider.of<ProviderListener>(context, listen: false)
-        .updateArticles(articles);
-  }
-
   @override
   Widget build(BuildContext context) {
-    getArticles();
+    final ArticleService articleService = ArticleService();
+
+    String getFileExtension(String filename) {
+      final List<String> parts = filename.split('.');
+      if (parts.length > 1) {
+        return parts.last;
+      }
+      return ''; // No extension found
+    }
 
     // Function to show the modal
     Future<void> showModal() async {
@@ -171,8 +146,50 @@ class HomeAdminWidgetState extends State<HomeAdminWidget> {
                             ),
                           ),
                         ),
-                        SizedBox(
-                          height: MediaQuery.of(context).size.height * 0.02,
+                      ),
+                    ),
+                    SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.02,
+                    ),
+                    const Text('Device Type'),
+                    const SizedBox(height: 5),
+                    ToggleButtons(
+                      onPressed: (int index) {
+                        setState(() {
+                          for (int i = 0; i < selectedType.length; i++) {
+                            selectedType[i] = i == index;
+                          }
+                          // Update the selected type index
+                          selectedTypeIndex = index;
+                        });
+                      },
+                      borderRadius: const BorderRadius.all(Radius.circular(8)),
+                      selectedBorderColor:
+                          const Color.fromARGB(255, 126, 217, 87),
+                      borderWidth: 2,
+                      selectedColor: Colors.white,
+                      fillColor: const Color(0xFF272727),
+                      color: const Color(0xFF272727),
+                      constraints: const BoxConstraints(
+                        minHeight: 40,
+                        minWidth: 80,
+                      ),
+                      isSelected: selectedType,
+                      children: type,
+                    ),
+                    SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.02,
+                    ),
+                    Container(
+                      constraints: BoxConstraints(
+                        maxWidth: MediaQuery.of(context).size.height * 0.45,
+                      ),
+                      padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(25),
+                        border: Border.all(
+                          width: 2,
+                          color: const Color.fromARGB(255, 126, 217, 87),
                         ),
                         const Text('Device Type'),
                         const SizedBox(height: 5),
@@ -227,136 +244,143 @@ class HomeAdminWidgetState extends State<HomeAdminWidget> {
                             ),
                           ),
                         ),
-                        SizedBox(
-                          height: MediaQuery.of(context).size.height * 0.02,
-                        ),
-                        Container(
-                          constraints: BoxConstraints(
-                            maxWidth: kIsWeb
-                                ? MediaQuery.of(context).size.width * 0.4
-                                : MediaQuery.of(context).size.width * 0.9,
-                            maxHeight: MediaQuery.of(context).size.height * 0.3,
-                          ),
-                          padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(25),
-                            border: Border.all(
-                              width: 2,
-                              color: const Color.fromARGB(255, 126, 217, 87),
-                            ),
-                          ),
-                          child: SizedBox(
-                            height: MediaQuery.of(context).size.height *
-                                0.2, // Adjust the height according to your needs
-                            child: TextField(
-                              controller: descriptionController,
-                              keyboardType: TextInputType.multiline,
-                              maxLines: 6,
-                              decoration: const InputDecoration(
-                                border: InputBorder.none,
-                                hintText: 'Description',
-                                focusedBorder: OutlineInputBorder(),
+                      ),
+                    ),
+
+                    SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.02,
+                    ),
+                    Center(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment
+                            .center, // Aligns buttons at the center horizontally
+                        children: <Widget>[
+                          // ElevatedButton(
+                          //   onPressed: () async {
+                          //     await getImage(); // Call getImage() when CircleAvatar is tapped
+                          //   },
+                          //   style: ElevatedButton.styleFrom(
+                          //     backgroundColor: const Color(0xFF272727),
+                          //     fixedSize: Size(
+                          //       MediaQuery.of(context).size.height * 0.25,
+                          //       MediaQuery.of(context).size.height * 0.01,
+                          //     ),
+                          //     foregroundColor: Colors.white,
+                          //     shape: RoundedRectangleBorder(
+                          //       borderRadius: BorderRadius.circular(10),
+                          //       side: const BorderSide(
+                          //         width: 2,
+                          //         color: Color.fromARGB(255, 126, 217, 87),
+                          //       ),
+                          //     ),
+                          //     textStyle: const TextStyle(
+                          //       fontSize: 20,
+                          //       fontWeight: FontWeight.w700,
+                          //     ),
+                          //   ),
+                          //   child: const Row(
+                          //     mainAxisAlignment: MainAxisAlignment.center,
+                          //     children: <Widget>[
+                          //       Icon(
+                          //         Icons.add_photo_alternate,
+                          //         size: 24,
+                          //       ), // Replace with your icon
+                          //       SizedBox(
+                          //         width: 8,
+                          //       ), // Adjust spacing between icon and text
+                          //       Text('Add pictures'),
+                          //     ],
+                          //   ),
+                          // ),
+
+                          const SizedBox(
+                            width: 10,
+                          ), // Adding some space between buttons
+                          ElevatedButton(
+                            onPressed: () async {
+                              // Retrieve values from controllers
+                              final String title = titleController.text;
+                              final String price = priceController.text;
+                              final String description =
+                                  descriptionController.text;
+                              if (title == '') {
+                                // Registration failed, show error message
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text('Title is required'),
+                                  ),
+                                );
+                                return;
+                              }
+
+                              if (price == '') {
+                                // Registration failed, show error message
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text('Price is required'),
+                                  ),
+                                );
+                                return;
+                              }
+
+                              final int? parsedPrice = int.tryParse(price);
+                              if (parsedPrice == null) {
+                                // Price is not a valid integer, show error message
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content:
+                                        Text('Price must be a valid number'),
+                                  ),
+                                );
+                                return;
+                              }
+
+                              if (description == '') {
+                                // Registration failed, show error message
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text('Description is required'),
+                                  ),
+                                );
+                                return;
+                              }
+
+                              final Result<dynamic> result =
+                                  await articleService.addArticle(
+                                title,
+                                double.parse(price),
+                                description,
+                                getSelectedType(),
+                                'assets/images/logo.png',
+                              );
+                              if (result.success) {
+                                if (!context.mounted) return;
+                                Navigator.pop(context);
+                                // await onValidationButtonPressed();
+                                if (!context.mounted) return;
+                                await Navigator.pushNamed(context, '/');
+                              } else {
+                                if (!context.mounted) return;
+                                // Registration failed, show error message
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(result.message.toString()),
+                                  ),
+                                );
+                              }
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color(0xFF272727),
+                              fixedSize: Size(
+                                MediaQuery.of(context).size.height * 0.2,
+                                30,
                               ),
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          height: MediaQuery.of(context).size.height * 0.02,
-                        ),
-                        Center(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment
-                                .center, // Aligns buttons at the center horizontally
-                            children: <Widget>[
-                              ElevatedButton(
-                                onPressed: () async {
-                                  await getImage(); // Call getImage() when CircleAvatar is tapped
-                                },
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: const Color(0xFF272727),
-                                  fixedSize: Size(
-                                    MediaQuery.of(context).size.height * 0.25,
-                                    MediaQuery.of(context).size.height * 0.01,
-                                  ),
-                                  foregroundColor: Colors.white,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                    side: const BorderSide(
-                                      width: 2,
-                                      color: Color.fromARGB(255, 126, 217, 87),
-                                    ),
-                                  ),
-                                  textStyle: const TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.w700,
-                                  ),
-                                ),
-                                child: const Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: <Widget>[
-                                    Icon(
-                                      Icons.add_photo_alternate,
-                                      size: 24,
-                                    ), // Replace with your icon
-                                    SizedBox(
-                                      width: 8,
-                                    ), // Adjust spacing between icon and text
-                                    Text('Add pictures'),
-                                  ],
-                                ),
-                              ),
-
-                              const SizedBox(
-                                width: 10,
-                              ), // Adding some space between buttons
-                              ElevatedButton(
-                                onPressed: () {
-                                  // Retrieve values from controllers
-                                  final String title = titleController.text;
-                                  final String price = priceController.text;
-                                  final String description =
-                                      descriptionController.text;
-
-                                  // Use these values as needed
-                                  // For example, you can print them
-                                  if (title.isEmpty ||
-                                      price.isEmpty ||
-                                      description.isEmpty) {
-                                    // Show modal error message if any field is missing
-                                    Future<void>.delayed(
-                                        const Duration(milliseconds: 300),
-                                        () async {
-                                      await showDialog(
-                                        context: context,
-                                        builder: (BuildContext context) =>
-                                            const AddItemAlertDialog(),
-                                      );
-                                    });
-                                  } else {
-                                    // All fields are filled, you can proceed with your action
-
-                                    Navigator.pop(context);
-                                    onValidationButtonPressed(); // Close the modal bottom sheet
-                                  }
-                                },
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: const Color(0xFF272727),
-                                  fixedSize: Size(
-                                    MediaQuery.of(context).size.height * 0.2,
-                                    30,
-                                  ),
-                                  foregroundColor: Colors.white,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                    side: const BorderSide(
-                                      width: 2,
-                                      color: Color.fromARGB(255, 126, 217, 87),
-                                    ),
-                                  ),
-                                  textStyle: const TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.w700,
-                                  ),
+                              foregroundColor: Colors.white,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                                side: const BorderSide(
+                                  width: 2,
+                                  color: Color.fromARGB(255, 126, 217, 87),
                                 ),
                                 child: const Text('Confirm'),
                               ),
