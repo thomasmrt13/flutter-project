@@ -4,12 +4,14 @@ import 'package:provider/provider.dart';
 import 'package:tekhub/firebase_options.dart';
 import 'package:tekhub/provider/provider_listener.dart';
 import 'package:tekhub/routes/routes.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   ); // Initialize Firebase
+  FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
   runApp(
     ChangeNotifierProvider<ProviderListener>(
       create: (BuildContext context) => ProviderListener(),
