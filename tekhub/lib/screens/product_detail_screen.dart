@@ -31,12 +31,12 @@ class SingleItem extends StatelessWidget {
                 ],
               ),
             ),
-            const SizedBox(
+            SizedBox(
               width: 300,
               height: 280,
               child: ClipRRect(
-                borderRadius: BorderRadius.all(Radius.circular(20)),
-                child: CarouselWithIndicatorDemo(),
+                borderRadius: const BorderRadius.all(Radius.circular(20)),
+                child: CarouselWithIndicatorDemo(articleImage: article.imageUrl,),
               ),
             ),
             Container(
@@ -154,7 +154,9 @@ class SingleItem extends StatelessWidget {
 }
 
 class CarouselWithIndicatorDemo extends StatefulWidget {
-  const CarouselWithIndicatorDemo({super.key});
+  const CarouselWithIndicatorDemo({required this.articleImage, super.key});
+
+  final String articleImage;
 
   @override
   State<StatefulWidget> createState() {
@@ -173,15 +175,15 @@ class _CarouselWithIndicatorState extends State<CarouselWithIndicatorDemo> {
         children: <Widget>[
           Expanded(
             child: CarouselSlider(
-              items: const <Widget>[
+              items: <Widget>[
                 Image(
-                  image: AssetImage('assets/images/logo.png'),
+                  image: AssetImage(widget.articleImage),
                 ),
                 Image(
-                  image: AssetImage('assets/images/logo.png'),
+                  image: AssetImage(widget.articleImage),
                 ),
                 Image(
-                  image: AssetImage('assets/images/logo.png'),
+                  image: AssetImage(widget.articleImage),
                 ),
               ],
               carouselController: _controller,
@@ -201,14 +203,14 @@ class _CarouselWithIndicatorState extends State<CarouselWithIndicatorDemo> {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Image>[
-              const Image(
-                image: AssetImage('assets/images/logo.png'),
+              Image(
+                image: AssetImage(widget.articleImage),
               ),
-              const Image(
-                image: AssetImage('assets/images/logo.png'),
+              Image(
+                image: AssetImage(widget.articleImage),
               ),
-              const Image(
-                image: AssetImage('assets/images/logo.png'),
+              Image(
+                image: AssetImage(widget.articleImage),
               ),
             ].asMap().entries.map((MapEntry<int, Image> entry) {
               return GestureDetector(

@@ -1,7 +1,5 @@
-import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:tekhub/Firebase/actions/result.dart';
 import 'package:tekhub/firebase/actions/article_service.dart';
@@ -48,20 +46,6 @@ class HomeAdminWidgetState extends State<HomeAdminWidget> {
           default:
             return '';
         }
-      }
-
-      File? selectedImage; // Store the selected image file
-
-      Future<void> getImage() async {
-        final XFile? pickedFile =
-            await ImagePicker().pickImage(source: ImageSource.gallery);
-
-        setState(() {
-          if (pickedFile != null) {
-            selectedImage = File(pickedFile.path);
-          } else {
-          }
-        });
       }
 
       // Afficher l'animation de vérification
@@ -217,47 +201,6 @@ class HomeAdminWidgetState extends State<HomeAdminWidget> {
                         mainAxisAlignment: MainAxisAlignment
                             .center, // Aligns buttons at the center horizontally
                         children: <Widget>[
-                          // ElevatedButton(
-                          //   onPressed: () async {
-                          //     await getImage(); // Call getImage() when CircleAvatar is tapped
-                          //   },
-                          //   style: ElevatedButton.styleFrom(
-                          //     backgroundColor: const Color(0xFF272727),
-                          //     fixedSize: Size(
-                          //       MediaQuery.of(context).size.height * 0.25,
-                          //       MediaQuery.of(context).size.height * 0.01,
-                          //     ),
-                          //     foregroundColor: Colors.white,
-                          //     shape: RoundedRectangleBorder(
-                          //       borderRadius: BorderRadius.circular(10),
-                          //       side: const BorderSide(
-                          //         width: 2,
-                          //         color: Color.fromARGB(255, 126, 217, 87),
-                          //       ),
-                          //     ),
-                          //     textStyle: const TextStyle(
-                          //       fontSize: 20,
-                          //       fontWeight: FontWeight.w700,
-                          //     ),
-                          //   ),
-                          //   child: const Row(
-                          //     mainAxisAlignment: MainAxisAlignment.center,
-                          //     children: <Widget>[
-                          //       Icon(
-                          //         Icons.add_photo_alternate,
-                          //         size: 24,
-                          //       ), // Replace with your icon
-                          //       SizedBox(
-                          //         width: 8,
-                          //       ), // Adjust spacing between icon and text
-                          //       Text('Add pictures'),
-                          //     ],
-                          //   ),
-                          // ),
-
-                          const SizedBox(
-                            width: 10,
-                          ), // Adding some space between buttons
                           ElevatedButton(
                             onPressed: () async {
                               // Retrieve values from controllers
@@ -306,14 +249,14 @@ class HomeAdminWidgetState extends State<HomeAdminWidget> {
                                 );
                                 return;
                               }
-
+                              final String type = getSelectedType();
                               final Result<dynamic> result =
                                   await articleService.addArticle(
                                 title,
                                 double.parse(price),
                                 description,
-                                getSelectedType(),
-                                'assets/images/logo.png',
+                                type,
+                                type == 'phone' ? 'assets/images/iphone.jpg' : type == 'laptop' ? 'assets/images/macbook.jpeg' : 'assets/images/ipad.png',
                               );
                               if (result.success) {
                                 if (!context.mounted) return;

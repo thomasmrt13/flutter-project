@@ -1,8 +1,5 @@
-import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:tekhub/Firebase/actions/image_service.dart';
 import 'package:tekhub/Firebase/actions/result.dart';
 import 'package:tekhub/Firebase/models/articles.dart';
 

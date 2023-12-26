@@ -9,10 +9,10 @@ class ProfileImageWidget extends StatefulWidget {
   final MyUser user;
 
   @override
-  _ProfileImageWidgetState createState() => _ProfileImageWidgetState();
+  ProfileImageWidgetState createState() => ProfileImageWidgetState();
 }
 
-class _ProfileImageWidgetState extends State<ProfileImageWidget> {
+class ProfileImageWidgetState extends State<ProfileImageWidget> {
   late Future<Result<dynamic>> _imageFuture;
 
   @override

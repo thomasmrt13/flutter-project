@@ -2,9 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
-import 'package:tekhub/Firebase/actions/image_service.dart';
 import 'package:tekhub/Firebase/actions/result.dart';
 import 'package:tekhub/Firebase/actions/user_service.dart';
 import 'package:tekhub/Firebase/models/users.dart';
@@ -285,33 +283,33 @@ class _TopPortion extends StatefulWidget {
 
 class __TopPortionState extends State<_TopPortion> {
   File? _selectedImage; // Store the selected image file
-  String _profileImageUrl = 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80';
+  // String _profileImageUrl = 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80';
   @override
   void initState() {
     super.initState();
     // _loadProfileImage();
   }
 
-  Future<void> _loadProfileImage() async {
-    final MyUser user =
-        Provider.of<ProviderListener>(context, listen: false).user;
+  // Future<void> _loadProfileImage() async {
+  //   final MyUser user =
+  //       Provider.of<ProviderListener>(context, listen: false).user;
 
-    // Fetch user's profile picture URL from Firebase
-    final Result<dynamic> result =
-        await ImageService().getUserProfileImageUrl(user.uid);
+  //   // Fetch user's profile picture URL from Firebase
+  //   final Result<dynamic> result =
+  //       await ImageService().getUserProfileImageUrl(user.uid);
 
-    if (result.success) {
-      setState(() {
-        _profileImageUrl = result.message;
-      });
-    } else {
-      // If fetching fails, use a default image URL
-      setState(() {
-        _profileImageUrl =
-            'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80';
-      });
-    }
-  }
+  //   if (result.success) {
+  //     setState(() {
+  //       _profileImageUrl = result.message;
+  //     });
+  //   } else {
+  //     // If fetching fails, use a default image URL
+  //     setState(() {
+  //       _profileImageUrl =
+  //           'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80';
+  //     });
+  //   }
+  // }
 
   // Future<void> _getImage() async {
   //   final XFile? pickedFile =
@@ -427,10 +425,10 @@ class __TopPortionState extends State<_TopPortion> {
                               _selectedImage!,
                             ), // Display selected image
                           )
-                        : DecorationImage(
+                        : const DecorationImage(
                             fit: BoxFit.cover,
                             image: NetworkImage(
-                              _profileImageUrl,
+                              'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80',
                             ),
                           ),
                   ),

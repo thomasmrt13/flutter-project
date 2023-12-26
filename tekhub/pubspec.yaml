@@ -23,9 +23,9 @@ dependencies:
   image_picker: ^1.0.4
   location: ^5.0.3
   patterns_canvas: ^0.4.0
+  permission_handler: ^11.1.0
   provider: ^5.0.0
   sidebarx: ^0.16.3
-  permission_handler: ^11.1.0
   uuid: ^4.2.2
 
 dev_dependencies:
@@ -55,6 +55,8 @@ flutter:
     - assets/images/circulomoradorelleno.png
     - assets/images/EllipseMorado.png
     - assets/images/ipad.png
+    - assets/images/iphone.jpg
+    - assets/images/macbook.jpeg
 
   fonts:
     - family: Raleway
