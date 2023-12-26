@@ -1,19 +1,14 @@
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:tekhub/Firebase/actions/result.dart';
-import 'package:tekhub/Firebase/models/articles.dart';
 import 'package:tekhub/firebase/actions/article_service.dart';
 import 'package:tekhub/provider/provider_listener.dart';
 import 'package:tekhub/widgets/check_animation.dart';
 import 'package:tekhub/widgets/search/search_bar.dart';
 import 'package:tekhub/widgets/search_result.dart';
-import 'package:permission_handler/permission_handler.dart';
-import 'package:file_picker/file_picker.dart';
-import 'package:uuid/uuid.dart';
 
 class HomeAdminWidget extends StatefulWidget {
   const HomeAdminWidget({super.key});
@@ -26,14 +21,6 @@ class HomeAdminWidgetState extends State<HomeAdminWidget> {
   @override
   Widget build(BuildContext context) {
     final ArticleService articleService = ArticleService();
-
-    String getFileExtension(String filename) {
-      final List<String> parts = filename.split('.');
-      if (parts.length > 1) {
-        return parts.last;
-      }
-      return ''; // No extension found
-    }
 
     // Function to show the modal
     Future<void> showModal() async {
@@ -73,7 +60,6 @@ class HomeAdminWidgetState extends State<HomeAdminWidget> {
           if (pickedFile != null) {
             selectedImage = File(pickedFile.path);
           } else {
-            print('No image selected.');
           }
         });
       }
