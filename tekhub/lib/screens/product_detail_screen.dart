@@ -114,12 +114,12 @@ class SingleItemState extends State<SingleItem> {
                   ],
                 ),
               ),
-              const SizedBox(
+              SizedBox(
                 width: 300,
                 height: 280,
                 child: ClipRRect(
-                  borderRadius: BorderRadius.all(Radius.circular(20)),
-                  child: CarouselWithIndicatorDemo(),
+                  borderRadius: const BorderRadius.all(Radius.circular(20)),
+                  child: CarouselWithIndicatorDemo(articleImage: widget.article.imageUrl),
                 ),
               ),
               const SizedBox(
@@ -172,7 +172,7 @@ class SingleItemState extends State<SingleItem> {
                             ),
                           ),
                         ),
-                        Padding(
+                        /* Padding(
                           padding: const EdgeInsets.only(top: 10, left: 45),
                           child: Container(
                             alignment: Alignment.centerLeft,
@@ -185,16 +185,19 @@ class SingleItemState extends State<SingleItem> {
                               ),
                             ),
                           ),
-                        ),
-                        const Padding(
-                          padding: EdgeInsets.only(top: 5, left: 45, right: 10),
-                          child: Text(
-                            'Available when you purchase any new iPhone, iPad, iPod Touch, Mac or Apple TV, £4.99/',
-                            style: TextStyle(
-                              fontFamily: 'Raleway',
-                              fontWeight: FontWeight.w400,
-                              fontSize: 17,
-                              color: Colors.black38,
+                        ), */
+                        Padding(
+                          padding: const EdgeInsets.only(top: 5, left: 39),
+                          child: Container(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              widget.article.description,
+                              style: const TextStyle(
+                                fontFamily: 'Raleway',
+                                fontWeight: FontWeight.w400,
+                                fontSize: 17,
+                                color: Colors.black38,
+                              ),
                             ),
                           ),
                         ),
@@ -226,7 +229,9 @@ class SingleItemState extends State<SingleItem> {
 }
 
 class CarouselWithIndicatorDemo extends StatefulWidget {
-  const CarouselWithIndicatorDemo({super.key});
+  const CarouselWithIndicatorDemo({required this.articleImage, super.key});
+
+  final String articleImage;
 
   @override
   State<StatefulWidget> createState() {
@@ -245,15 +250,15 @@ class _CarouselWithIndicatorState extends State<CarouselWithIndicatorDemo> {
         children: <Widget>[
           Expanded(
             child: CarouselSlider(
-              items: const <Widget>[
+              items: <Widget>[
                 Image(
-                  image: AssetImage('assets/images/ipad.png'),
+                  image: AssetImage(widget.articleImage),
                 ),
                 Image(
-                  image: AssetImage('assets/images/ipad.png'),
+                  image: AssetImage(widget.articleImage),
                 ),
                 Image(
-                  image: AssetImage('assets/images/ipad.png'),
+                  image: AssetImage(widget.articleImage),
                 ),
               ],
               carouselController: _controller,
@@ -273,14 +278,14 @@ class _CarouselWithIndicatorState extends State<CarouselWithIndicatorDemo> {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Image>[
-              const Image(
-                image: AssetImage('assets/images/ipad.png'),
+              Image(
+                image: AssetImage(widget.articleImage),
               ),
-              const Image(
-                image: AssetImage('assets/images/ipad.png'),
+              Image(
+                image: AssetImage(widget.articleImage),
               ),
-              const Image(
-                image: AssetImage('assets/images/ipad.png'),
+              Image(
+                image: AssetImage(widget.articleImage),
               ),
             ].asMap().entries.map((MapEntry<int, Image> entry) {
               return GestureDetector(
