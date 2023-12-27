@@ -114,39 +114,30 @@ class SingleItemState extends State<SingleItem> {
                   ],
                 ),
               ),
-            ),
-            SizedBox(
-              width: 300,
-              height: 280,
-              child: ClipRRect(
-                borderRadius: const BorderRadius.all(Radius.circular(20)),
-                child: CarouselWithIndicatorDemo(articleImage: article.imageUrl,),
+              const SizedBox(
+                width: 300,
+                height: 280,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.all(Radius.circular(20)),
+                  child: CarouselWithIndicatorDemo(),
+                ),
               ),
               const SizedBox(
                 height: 20,
               ),
-              height: MediaQuery.of(context).size.height * 0.51,
-              width: MediaQuery.of(context).size.width,
-              child: Center(
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: <Widget>[
-                      Padding(
-                        padding: const EdgeInsets.only(top: 20),
-                        child: Text(
-                          article.name,
-                          style: const TextStyle(
-                            fontSize: 28,
-                            fontFamily: 'Raleway',
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ),
-                      Container(
-                        alignment: Alignment.centerLeft,
-                        child: const Padding(
-                          padding:
-                              EdgeInsets.only(left: 39, top: 12, bottom: 5),
+              Container(
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.all(Radius.circular(20)),
+                ),
+                height: MediaQuery.of(context).size.height * 0.51,
+                width: MediaQuery.of(context).size.width,
+                child: Center(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: <Widget>[
+                        Padding(
+                          padding: const EdgeInsets.only(top: 20),
                           child: Text(
                             widget.article.name,
                             style: const TextStyle(
@@ -156,29 +147,50 @@ class SingleItemState extends State<SingleItem> {
                             ),
                           ),
                         ),
-                      ),
-                      Container(
-                        alignment: Alignment.topLeft,
-                        child: Padding(
-                          padding: const EdgeInsets.only(left: 39, bottom: 10),
-                          child: Text(
-                            '${article.price}€',
-                            style: const TextStyle(
-                              color: Color.fromARGB(255, 126, 217, 87),
-                              fontSize: 22,
-                              fontWeight: FontWeight.w700,
-                              fontFamily: 'Raleway',
+                        Container(
+                          alignment: Alignment.centerLeft,
+                          child: const Padding(
+                            padding: EdgeInsets.only(left: 39, top: 12, bottom: 5),
+                            child: Text(
+                              'Price',
+                              style: TextStyle(
+                                fontWeight: FontWeight.w700,
+                                fontSize: 17,
+                                fontFamily: 'Raleway',
+                              ),
+                              textAlign: TextAlign.left,
                             ),
                           ),
                         ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 10, left: 45),
-                        child: Container(
-                          alignment: Alignment.centerLeft,
+                        Container(
+                          alignment: Alignment.topLeft,
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 39, bottom: 10),
+                            child: Text(
+                              '${widget.article.price}€',
+                              style: const TextStyle(color: Color.fromARGB(255, 126, 217, 87), fontSize: 22, fontWeight: FontWeight.w700, fontFamily: 'Raleway'),
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 10, left: 45),
+                          child: Container(
+                            alignment: Alignment.centerLeft,
+                            child: const Text(
+                              'Get Apple TV+ free for a year',
+                              style: TextStyle(
+                                fontFamily: 'Raleway',
+                                fontWeight: FontWeight.w700,
+                                fontSize: 17,
+                              ),
+                            ),
+                          ),
+                        ),
+                        const Padding(
+                          padding: EdgeInsets.only(top: 5, left: 45, right: 10),
                           child: Text(
-                            article.description,
-                            style: const TextStyle(
+                            'Available when you purchase any new iPhone, iPad, iPod Touch, Mac or Apple TV, £4.99/',
+                            style: TextStyle(
                               fontFamily: 'Raleway',
                               fontWeight: FontWeight.w400,
                               fontSize: 17,
@@ -186,43 +198,22 @@ class SingleItemState extends State<SingleItem> {
                             ),
                           ),
                         ),
-                      ),
-                      // Padding(
-                      //   padding: const EdgeInsets.only(top: 5, left: 45, right: 10),
-                      //   child: Text(
-                      //     article.description,
-                      //     style: const TextStyle(
-                      //       fontFamily: 'Raleway',
-                      //       fontWeight: FontWeight.w400,
-                      //       fontSize: 17,
-                      //       color: Colors.black38,
-                      //     ),
-                      //   ),
-                      // ),
-                      // Container(
-                      //   alignment: Alignment.topLeft,
-                      //   padding: const EdgeInsets.only(left: 45),
-                      //   child: ElevatedButton(
-                      //     style: ElevatedButton.styleFrom(backgroundColor: Colors.white, padding: const EdgeInsets.all(0), elevation: 0),
-                      //     onPressed: () {},
-                      //     child: const Text(
-                      //       'Full description ->',
-                      //       style: TextStyle(color: Color.fromARGB(255, 126, 217, 87), fontSize: 15, fontWeight: FontWeight.w700, fontFamily: 'Raleway'),
-                      //     ),
-                      //   ),
-                      // ),
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 20),
-                        child: Button(
-                          text: 'Add to cart',
-                          color: const Color.fromARGB(255, 39, 39, 39),
-                          width: MediaQuery.of(context).size.width * 0.7,
-                          onClick: () {},
-                          height: 60,
-                          fontSize: 20,
+                        const SizedBox(
+                          height: 30,
                         ),
-                      ),
-                    ],
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 20),
+                          child: Button(
+                            text: 'Add to cart',
+                            color: const Color.fromARGB(255, 39, 39, 39),
+                            width: MediaQuery.of(context).size.width * 0.7,
+                            onClick: () {},
+                            height: 60,
+                            fontSize: 20,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -235,9 +226,7 @@ class SingleItemState extends State<SingleItem> {
 }
 
 class CarouselWithIndicatorDemo extends StatefulWidget {
-  const CarouselWithIndicatorDemo({required this.articleImage, super.key});
-
-  final String articleImage;
+  const CarouselWithIndicatorDemo({super.key});
 
   @override
   State<StatefulWidget> createState() {
@@ -256,15 +245,15 @@ class _CarouselWithIndicatorState extends State<CarouselWithIndicatorDemo> {
         children: <Widget>[
           Expanded(
             child: CarouselSlider(
-              items: <Widget>[
+              items: const <Widget>[
                 Image(
-                  image: AssetImage(widget.articleImage),
+                  image: AssetImage('assets/images/ipad.png'),
                 ),
                 Image(
-                  image: AssetImage(widget.articleImage),
+                  image: AssetImage('assets/images/ipad.png'),
                 ),
                 Image(
-                  image: AssetImage(widget.articleImage),
+                  image: AssetImage('assets/images/ipad.png'),
                 ),
               ],
               carouselController: _controller,
@@ -284,14 +273,14 @@ class _CarouselWithIndicatorState extends State<CarouselWithIndicatorDemo> {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Image>[
-              Image(
-                image: AssetImage(widget.articleImage),
+              const Image(
+                image: AssetImage('assets/images/ipad.png'),
               ),
-              Image(
-                image: AssetImage(widget.articleImage),
+              const Image(
+                image: AssetImage('assets/images/ipad.png'),
               ),
-              Image(
-                image: AssetImage(widget.articleImage),
+              const Image(
+                image: AssetImage('assets/images/ipad.png'),
               ),
             ].asMap().entries.map((MapEntry<int, Image> entry) {
               return GestureDetector(
@@ -299,12 +288,10 @@ class _CarouselWithIndicatorState extends State<CarouselWithIndicatorDemo> {
                 child: Container(
                   width: 12,
                   height: 12,
-                  margin:
-                      const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+                  margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: const Color.fromARGB(255, 39, 39, 39)
-                        .withOpacity(_current == entry.key ? 0.9 : 0.4),
+                    color: const Color.fromARGB(255, 39, 39, 39).withOpacity(_current == entry.key ? 0.9 : 0.4),
                   ),
                 ),
               );

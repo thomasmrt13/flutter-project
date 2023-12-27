@@ -33,8 +33,7 @@ class HomeState extends State<Home> {
 
   Future<void> _fetchArticles() async {
     final ArticleService articleService = ArticleService();
-    final Result<dynamic> resultArticles =
-        await articleService.getAllArticles();
+    final Result<dynamic> resultArticles = await articleService.getAllArticles();
     if (resultArticles.success) {
       if (!context.mounted) return;
       Provider.of<ProviderListener>(
@@ -88,7 +87,9 @@ class HomeState extends State<Home> {
                     );
                   case 2:
                     //_key.currentState?.closeDrawer();
-                    return OrdersScreen(scaffoldKey: _key,);
+                    return OrdersScreen(
+                      scaffoldKey: _key,
+                    );
                   case 3:
                     //_key.currentState?.closeDrawer();
                     return const SettingsPage();
