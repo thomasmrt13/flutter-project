@@ -6,10 +6,16 @@ import 'package:tekhub/Firebase/actions/user_service.dart';
 import 'package:tekhub/Firebase/models/users.dart';
 import 'package:tekhub/provider/provider_listener.dart';
 
-class SettingsPage extends StatelessWidget {
-  const SettingsPage({super.key});
+class SettingsPage extends StatefulWidget {
+  const SettingsPage({required this.scaffoldKey, super.key});
   final bool isAdmin = false;
+  final GlobalKey<ScaffoldState> scaffoldKey;
 
+  @override
+  SettingsPageState createState() => SettingsPageState();
+}
+
+class SettingsPageState extends State<SettingsPage> {
   Future<void> showLogoutDialog(BuildContext context) async {
     return showDialog<void>(
       context: context,
@@ -35,8 +41,7 @@ class SettingsPage extends StatelessWidget {
               },
               child: const Text(
                 'Cancel',
-                style:
-                    TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
               ),
             ),
             TextButton(
@@ -87,8 +92,7 @@ class SettingsPage extends StatelessWidget {
               },
               child: const Text(
                 'Cancel',
-                style:
-                    TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
               ),
             ),
             TextButton(
@@ -158,6 +162,16 @@ class SettingsPage extends StatelessWidget {
     final UserService userService = UserService();
     final MyUser user = Provider.of<ProviderListener>(context).user;
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.menu),
+          onPressed: () {
+            widget.scaffoldKey.currentState?.openDrawer();
+          },
+        ),
+      ),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: user.role == 'user'
@@ -222,8 +236,7 @@ class SettingsPage extends StatelessWidget {
                     _CustomListTile(
                       title: 'Delete account',
                       icon: Icons.delete,
-                      onTap: () async =>
-                          showDeleteDialog(context, userService, user),
+                      onTap: () async => showDeleteDialog(context, userService, user),
                     ),
                   ],
                 ),
@@ -286,8 +299,7 @@ class SettingsPage extends StatelessWidget {
                     _CustomListTile(
                       title: 'Delete account',
                       icon: Icons.delete,
-                      onTap: () async =>
-                          showDeleteDialog(context, userService, user),
+                      onTap: () async => showDeleteDialog(context, userService, user),
                     ),
                   ],
                 ),
@@ -320,8 +332,7 @@ class _SectionCard extends StatelessWidget {
               style: const TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
-                color: Colors
-                    .white, // Choisis une couleur qui correspond à ton thème
+                color: Colors.white, // Choisis une couleur qui correspond à ton thème
               ),
             ),
             const SizedBox(height: 12),

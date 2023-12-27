@@ -77,7 +77,9 @@ class HomeState extends State<Home> {
                         ? HomeWidget(
                             scaffoldKey: _key,
                           )
-                        : const HomeAdminWidget();
+                        : HomeAdminWidget(
+                            scaffoldKey: _key,
+                          );
                   case 1:
                     //_key.currentState?.closeDrawer();
                     return Center(
@@ -92,7 +94,9 @@ class HomeState extends State<Home> {
                     );
                   case 3:
                     //_key.currentState?.closeDrawer();
-                    return const SettingsPage();
+                    return SettingsPage(
+                      scaffoldKey: _key,
+                    );
                   default:
                     return const Center(
                       child: Text(
