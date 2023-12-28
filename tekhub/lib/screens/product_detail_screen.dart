@@ -147,7 +147,7 @@ class SingleItemState extends State<SingleItem> {
                                                 .showSnackBar(
                                               SnackBar(
                                                 content: Text(
-                                                    result.message.toString()),
+                                                    result.message.toString(),),
                                               ),
                                             );
                                           }
