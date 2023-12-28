@@ -1,4 +1,3 @@
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:tekhub/Firebase/actions/result.dart';
 import 'package:tekhub/Firebase/models/articles.dart';
@@ -163,11 +162,12 @@ class ArticleService {
   }
 
   Future<Result<dynamic>> addArticle(
-      String? name,
-      double price,
-      String? description,
-      String? type,
-      String imageUrl,) async {
+    String? name,
+    double price,
+    String? description,
+    String? type,
+    String imageUrl,
+  ) async {
     // get all parameters in add article with string...
     try {
       if (name == null) {
@@ -182,38 +182,74 @@ class ArticleService {
         );
       }
 
-      // ignore: unnecessary_null_comparison
       if (type == null) {
         return Result<dynamic>.failure(
           'Invalid article data. Type is required.',
         );
       }
 
-      // Convert the ArticleType enum to its corresponding string value
-      // final String typeString = _mapArticleTypeToString(type);
-
-      // Upload image to Firebase Storage and get the image URL
-        await FirebaseFirestore.instance
-            .collection('articles')
-            .add(<String, dynamic>{
-          'name': name,
-          'price': price,
-          'description': description,
-          'type': type,
-          'imageUrl': imageUrl,
-        });
-        return Result<dynamic>.success('Article added successfully');
-
-      // Add the article information to Firestore with the image URL
-      // await FirebaseFirestore.instance.collection('articles').add(<String, dynamic>{
-      //   'name': article.name,
-      //   'price': article.price,
-      //   'description': article.description,
-      //   'type': typeString,
-      //   'imageUrl': result.message,
-      // });
+      await FirebaseFirestore.instance
+          .collection('articles')
+          .add(<String, dynamic>{
+        'name': name,
+        'price': price,
+        'description': description,
+        'type': type,
+        'imageUrl': imageUrl,
+      });
+      return Result<dynamic>.success('Article added successfully');
     } catch (e) {
       return Result<dynamic>.failure('Error adding article: $e');
+    }
+  }
+
+  Future<Result<dynamic>> updateArticle({
+    required String articleId,
+    required String name,
+    required double price,
+    required String imageUrl,
+    String? description,
+  }) async {
+    try {
+      // Validate input parameters
+      if (name.isEmpty) {
+        return Result<dynamic>.failure(
+            'Invalid article data. Name is required.');
+      }
+
+      if (price <= 0) {
+        return Result<dynamic>.failure(
+            'Invalid article data. Price must be greater than zero.');
+      }
+
+      // Update article in Firestore
+      await FirebaseFirestore.instance
+          .collection('articles')
+          .doc(articleId)
+          .update(<Object, Object?>{
+        'name': name,
+        'price': price,
+        'description': description,
+        'imageUrl': imageUrl,
+      });
+
+      return Result<dynamic>.success('Article updated successfully');
+    } catch (e) {
+      return Result<dynamic>.failure('Error updating article: $e');
+    }
+  }
+
+  Future<Result<dynamic>> deleteArticle(String articleId) async {
+    try {
+      // Delete article from Firestore
+      await FirebaseFirestore.instance
+          .collection('articles')
+          .doc(articleId)
+          .delete();
+
+      return Result<dynamic>.success('Article deleted successfully');
+    } catch (e) {
+      return Result<dynamic>.failure('Error deleting article: $e');
     }
   }
 }

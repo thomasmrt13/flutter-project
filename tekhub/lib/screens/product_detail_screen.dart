@@ -2,6 +2,8 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:tekhub/Firebase/actions/article_service.dart';
+import 'package:tekhub/Firebase/actions/result.dart';
 import 'package:tekhub/Firebase/models/articles.dart';
 import 'package:tekhub/Firebase/models/users.dart';
 import 'package:tekhub/provider/provider_listener.dart';
@@ -25,13 +27,16 @@ class SingleItemState extends State<SingleItem> {
   void initState() {
     super.initState();
     nameController = TextEditingController(text: widget.article.name);
-    priceController = TextEditingController(text: widget.article.price.toString());
-    descriptionController = TextEditingController(text: widget.article.description);
+    priceController =
+        TextEditingController(text: widget.article.price.toString());
+    descriptionController =
+        TextEditingController(text: widget.article.description);
   }
 
   @override
   Widget build(BuildContext context) {
     final MyUser user = Provider.of<ProviderListener>(context).user;
+    final ArticleService articleService = ArticleService();
 
     return SafeArea(
       child: Scaffold(
@@ -57,7 +62,13 @@ class SingleItemState extends State<SingleItem> {
                         children: <Widget>[
                           IconButton(
                             onPressed: () async {
-                              await showEditDialog(context, nameController, priceController, descriptionController, widget.article);
+                              await showEditDialog(
+                                context,
+                                nameController,
+                                priceController,
+                                descriptionController,
+                                widget.article,
+                              );
                             },
                             icon: const Icon(
                               CupertinoIcons.pencil_ellipsis_rectangle,
@@ -74,7 +85,10 @@ class SingleItemState extends State<SingleItem> {
                                     surfaceTintColor: Colors.white,
                                     title: const Text(
                                       'Alert',
-                                      style: TextStyle(fontFamily: 'Raleway', fontWeight: FontWeight.bold),
+                                      style: TextStyle(
+                                        fontFamily: 'Raleway',
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                     ),
                                     content: const Text(
                                       'Are you sure you want to delete this item ?',
@@ -87,16 +101,46 @@ class SingleItemState extends State<SingleItem> {
                                         },
                                         child: const Text(
                                           'Cancel',
-                                          style: TextStyle(fontFamily: 'Raleway', fontWeight: FontWeight.bold, color: Colors.red),
+                                          style: TextStyle(
+                                            fontFamily: 'Raleway',
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.red,
+                                          ),
                                         ),
                                       ),
                                       TextButton(
                                         onPressed: () async {
-                                          await Navigator.pushNamed(context, '/');
+                                          final Result<dynamic> result =
+                                              await articleService
+                                                  .deleteArticle(
+                                            widget.article.id,
+                                          );
+                                          if (result.success) {
+                                            if (!context.mounted) return;
+                                            Navigator.pop(context);
+                                            // await onValidationButtonPressed();
+                                            if (!context.mounted) return;
+                                            await Navigator.pushNamed(
+                                                context, '/',);
+                                          } else {
+                                            if (!context.mounted) return;
+                                            // Registration failed, show error message
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(
+                                              SnackBar(
+                                                content: Text(
+                                                    result.message.toString()),
+                                              ),
+                                            );
+                                          }
                                         },
                                         child: const Text(
                                           'Delete',
-                                          style: TextStyle(fontFamily: 'Raleway', fontWeight: FontWeight.bold, color: Colors.green),
+                                          style: TextStyle(
+                                            fontFamily: 'Raleway',
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.green,
+                                          ),
                                         ),
                                       ),
                                     ],
@@ -119,7 +163,9 @@ class SingleItemState extends State<SingleItem> {
                 height: 280,
                 child: ClipRRect(
                   borderRadius: const BorderRadius.all(Radius.circular(20)),
-                  child: CarouselWithIndicatorDemo(articleImage: widget.article.imageUrl),
+                  child: CarouselWithIndicatorDemo(
+                    articleImage: widget.article.imageUrl,
+                  ),
                 ),
               ),
               const SizedBox(
@@ -150,7 +196,8 @@ class SingleItemState extends State<SingleItem> {
                         Container(
                           alignment: Alignment.centerLeft,
                           child: const Padding(
-                            padding: EdgeInsets.only(left: 39, top: 12, bottom: 5),
+                            padding:
+                                EdgeInsets.only(left: 39, top: 12, bottom: 5),
                             child: Text(
                               'Price',
                               style: TextStyle(
@@ -165,10 +212,16 @@ class SingleItemState extends State<SingleItem> {
                         Container(
                           alignment: Alignment.topLeft,
                           child: Padding(
-                            padding: const EdgeInsets.only(left: 39, bottom: 10),
+                            padding:
+                                const EdgeInsets.only(left: 39, bottom: 10),
                             child: Text(
                               '${widget.article.price}€',
-                              style: const TextStyle(color: Color.fromARGB(255, 126, 217, 87), fontSize: 22, fontWeight: FontWeight.w700, fontFamily: 'Raleway'),
+                              style: const TextStyle(
+                                color: Color.fromARGB(255, 126, 217, 87),
+                                fontSize: 22,
+                                fontWeight: FontWeight.w700,
+                                fontFamily: 'Raleway',
+                              ),
                             ),
                           ),
                         ),
@@ -293,10 +346,12 @@ class _CarouselWithIndicatorState extends State<CarouselWithIndicatorDemo> {
                 child: Container(
                   width: 12,
                   height: 12,
-                  margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+                  margin:
+                      const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: const Color.fromARGB(255, 39, 39, 39).withOpacity(_current == entry.key ? 0.9 : 0.4),
+                    color: const Color.fromARGB(255, 39, 39, 39)
+                        .withOpacity(_current == entry.key ? 0.9 : 0.4),
                   ),
                 ),
               );
