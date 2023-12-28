@@ -76,7 +76,6 @@ class Login extends StatelessWidget {
                       ElevatedButton(
                         onPressed: () async {
                           if (_formKey.currentState!.validate()) {
-                            // throw Exception('Intentional error for testing');
                             final Result<dynamic> result =
                                 await authService.signInWithEmailAndPassword(
                               _emailInput.getInputText(),

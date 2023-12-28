@@ -1,10 +1,10 @@
 import 'package:firebase_core/firebase_core.dart'; // Import Firebase Core
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tekhub/firebase_options.dart';
 import 'package:tekhub/provider/provider_listener.dart';
 import 'package:tekhub/routes/routes.dart';
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
