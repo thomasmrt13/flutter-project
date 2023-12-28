@@ -2,6 +2,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:location/location.dart' as loc;
+import 'package:provider/provider.dart';
+import 'package:tekhub/Firebase/actions/result.dart';
+import 'package:tekhub/Firebase/actions/user_service.dart';
+import 'package:tekhub/Firebase/models/articles.dart';
+import 'package:tekhub/Firebase/models/user_articles.dart';
+import 'package:tekhub/Firebase/models/user_history_articles.dart';
+import 'package:tekhub/Firebase/models/users.dart';
+import 'package:tekhub/provider/provider_listener.dart';
 import 'package:tekhub/widgets/button.dart';
 
 class CheckoutWidget extends StatefulWidget {
@@ -21,6 +29,21 @@ class CheckoutWidgetState extends State<CheckoutWidget> {
 
   @override
   Widget build(BuildContext context) {
+    ArticleType mapStringToArticleType(String typeString) {
+      switch (typeString) {
+        case 'phone':
+          return ArticleType.phone;
+        case 'laptop':
+          return ArticleType.laptop;
+        case 'tablet':
+          return ArticleType.tablet;
+        default:
+          return ArticleType.phone; // Default to phone if unknown type
+      }
+    }
+
+    final MyUser user = Provider.of<ProviderListener>(context).user;
+    final UserService userService = UserService();
     return Container(
       height: MediaQuery.of(context).size.height * 0.8,
       decoration: const BoxDecoration(
@@ -36,11 +59,20 @@ class CheckoutWidgetState extends State<CheckoutWidget> {
                 children: <Widget>[
                   const Text(
                     'Payment',
-                    style: TextStyle(color: Colors.black, fontFamily: 'Raleway', fontSize: 30, fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontFamily: 'Raleway',
+                      fontSize: 30,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   Text(
                     '${widget.nb} items',
-                    style: const TextStyle(color: Colors.black, fontFamily: 'Raleway', fontSize: 20),
+                    style: const TextStyle(
+                      color: Colors.black,
+                      fontFamily: 'Raleway',
+                      fontSize: 20,
+                    ),
                   ),
                 ],
               ),
@@ -64,7 +96,10 @@ class CheckoutWidgetState extends State<CheckoutWidget> {
                 final loc.LocationData? locationData = await _getLocation();
 
                 if (locationData != null) {
-                  final String address = await _getAddress(locationData.latitude!, locationData.longitude!);
+                  final String address = await _getAddress(
+                    locationData.latitude!,
+                    locationData.longitude!,
+                  );
                   setState(() {
                     this.locationData = address;
                     isLoading = false;
@@ -88,7 +123,10 @@ class CheckoutWidgetState extends State<CheckoutWidget> {
                       ? const CircularProgressIndicator(
                           color: Colors.black,
                         )
-                      : const Icon(CupertinoIcons.location_fill, color: Colors.black),
+                      : const Icon(
+                          CupertinoIcons.location_fill,
+                          color: Colors.black,
+                        ),
                 ),
               ),
             ),
@@ -102,12 +140,19 @@ class CheckoutWidgetState extends State<CheckoutWidget> {
                 children: <Widget>[
                   const Text(
                     'Delivery',
-                    style: TextStyle(fontSize: 18, color: Colors.black, fontWeight: FontWeight.bold, fontFamily: 'Raleway'),
+                    style: TextStyle(
+                      fontSize: 18,
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: 'Raleway',
+                    ),
                   ),
                   SizedBox(
                     width: MediaQuery.of(context).size.width * 0.6,
                     child: Text(
-                      locationData.isEmpty ? 'Click on the button to add your location' : locationData,
+                      locationData.isEmpty
+                          ? 'Click on the button to add your location'
+                          : locationData,
                       style: const TextStyle(color: Colors.black),
                     ),
                   ),
@@ -135,7 +180,12 @@ class CheckoutWidgetState extends State<CheckoutWidget> {
                 children: <Widget>[
                   Text(
                     'Card',
-                    style: TextStyle(fontSize: 18, color: Colors.black, fontWeight: FontWeight.bold, fontFamily: 'Raleway'),
+                    style: TextStyle(
+                      fontSize: 18,
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: 'Raleway',
+                    ),
                   ),
                   Text(
                     '**** 0000',
@@ -165,7 +215,12 @@ class CheckoutWidgetState extends State<CheckoutWidget> {
                 children: <Widget>[
                   const Text(
                     'Total',
-                    style: TextStyle(fontSize: 18, color: Colors.black, fontWeight: FontWeight.bold, fontFamily: 'Raleway'),
+                    style: TextStyle(
+                      fontSize: 18,
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: 'Raleway',
+                    ),
                   ),
                   Text(
                     '${widget.total} €',
@@ -203,29 +258,90 @@ class CheckoutWidgetState extends State<CheckoutWidget> {
             LargeButton(
               text: 'Pay',
               onClick: () async {
-                if (locationData.isEmpty) {
-                  // Affiche un message d'erreur ou prend une autre mesure
-                  await showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return AlertDialog(
-                        title: const Text('Error'),
-                        content: const Text('Please define your location first.'),
-                        actions: <Widget>[
-                          TextButton(
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-                            child: const Text('OK'),
-                          ),
-                        ],
-                      );
-                    },
+                final Result<dynamic> result =
+                    await userService.addToPurchaseHistory(
+                  user.uid,
+                  user.cart,
+                );
+                if (result.success) {
+                  if (!context.mounted) return;
+                  final List<Map<String, dynamic>> cartData =
+                      result.message as List<Map<String, dynamic>>;
+
+                  // Convert cartData to a List<UserArticle>
+                  final List<UserHistoryArticles> updatedUserHistory =
+                      cartData.map((Map<String, dynamic> map) {
+                    return UserHistoryArticles(
+                      article: Article(
+                        id: map['id'],
+                        name: map['name'],
+                        price: map['price'],
+                        description: map['description'],
+                        type: mapStringToArticleType(map['type']),
+                        imageUrl: map['imageUrl'],
+                      ),
+                      quantity: map['quantity'],
+                      purchaseDate: map['purchaseDate'],
+                    );
+                  }).toList();
+                  final MyUser newUserInfo = MyUser(
+                    uid: user.uid,
+                    email: user.email,
+                    username: user.username,
+                    phoneNumber: user.phoneNumber,
+                    address: user.address,
+                    cart: <UserArticle>[],
+                    purchaseHistory: updatedUserHistory,
+                    role: user.role,
+                    cardNumber: user.cardNumber,
+                    creditCardName: user.creditCardName,
+                    expirationDate: user.expirationDate,
+                    cvv: user.cvv,
+                  );
+                  Provider.of<ProviderListener>(
+                    context,
+                    listen: false,
+                  ).updateUser(newUserInfo);
+                  // await onValidationButtonPressed();
+                  if (!context.mounted) return;
+                  Navigator.pop(context);
+                  await Navigator.pushNamed(
+                    context,
+                    '/',
                   );
                 } else {
-                  // L'utilisateur peut passer à l'écran de paiement
-                  Navigator.pop(context);
+                  if (!context.mounted) return;
+                  // Registration failed, show error message
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(result.message.toString()),
+                    ),
+                  );
                 }
+                // if (locationData.isEmpty) {
+                //   // Affiche un message d'erreur ou prend une autre mesure
+                //   await showDialog(
+                //     context: context,
+                //     builder: (BuildContext context) {
+                //       return AlertDialog(
+                //         title: const Text('Error'),
+                //         content:
+                //             const Text('Please define your location first.'),
+                //         actions: <Widget>[
+                //           TextButton(
+                //             onPressed: () {
+                //               Navigator.of(context).pop();
+                //             },
+                //             child: const Text('OK'),
+                //           ),
+                //         ],
+                //       );
+                //     },
+                //   );
+                // } else {
+                //   // L'utilisateur peut passer à l'écran de paiement
+                //   Navigator.pop(context);
+                // }
               },
             ),
           ],
@@ -243,7 +359,8 @@ class CheckoutWidgetState extends State<CheckoutWidget> {
   }
 
   Future<String> _getAddress(double latitude, double longitude) async {
-    final List<Placemark> placemarks = await placemarkFromCoordinates(latitude, longitude);
+    final List<Placemark> placemarks =
+        await placemarkFromCoordinates(latitude, longitude);
     if (placemarks.isNotEmpty) {
       final Placemark placemark = placemarks[0];
       return '${placemark.street}, ${placemark.locality}, ${placemark.postalCode}, ${placemark.country}';

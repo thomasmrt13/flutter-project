@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:tekhub/Firebase/models/articles.dart';
+import 'package:tekhub/Firebase/models/user_history_articles.dart';
 import 'package:tekhub/widgets/orders/custom_icon_button.dart';
 import 'package:tekhub/widgets/orders/price_text.dart';
 
 class SpendingCategory extends StatelessWidget {
   const SpendingCategory(this.data, {super.key});
-  final Article data;
+  final UserHistoryArticles data;
 
   @override
   Widget build(BuildContext context) {
@@ -31,12 +31,14 @@ class SpendingCategory extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[
-                Image.asset(data.imageUrl, width: 64),
-                PriceText(price: data.price.toInt()),
-                const Row(
+                Text('Date: ${data.purchaseDate.day.toString().padLeft(2,'0')}-${data.purchaseDate.month.toString().padLeft(2,'0')}-${data.purchaseDate.year.toString()}'),
+                Text('Quantity: ${data.quantity}'),
+                Image.asset(data.article.imageUrl, width: 64),
+                PriceText(price: data.article.price.toInt()),
+                Row(
                   children: <Widget>[
-                    CustomIconButton(icon: Icons.delete),
-                    SizedBox(width: 8),
+                    CustomIconButton(icon: Icons.delete, id: data.article.id),
+                    const SizedBox(width: 8),
                   ],
                 ),
               ],
@@ -53,7 +55,7 @@ class SpendingCategory extends StatelessWidget {
               borderRadius: BorderRadius.circular(36),
             ),
             child: Text(
-              data.name,
+              data.article.name,
               style: const TextStyle(
                 color: Colors.white,
                 fontWeight: FontWeight.w800,
