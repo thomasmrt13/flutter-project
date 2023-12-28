@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tekhub/Firebase/actions/result.dart';
@@ -9,7 +8,9 @@ import 'package:tekhub/widgets/search/search_bar.dart';
 import 'package:tekhub/widgets/search_result.dart';
 
 class HomeAdminWidget extends StatefulWidget {
-  const HomeAdminWidget({super.key});
+  const HomeAdminWidget({required this.scaffoldKey, super.key});
+
+  final GlobalKey<ScaffoldState> scaffoldKey;
 
   @override
   HomeAdminWidgetState createState() => HomeAdminWidgetState();
@@ -26,8 +27,7 @@ class HomeAdminWidgetState extends State<HomeAdminWidget> {
       int selectedTypeIndex = 0;
       final TextEditingController titleController = TextEditingController();
       final TextEditingController priceController = TextEditingController();
-      final TextEditingController descriptionController =
-          TextEditingController();
+      final TextEditingController descriptionController = TextEditingController();
 
       const List<Widget> type = <Widget>[
         Text('Iphone'),
@@ -125,8 +125,7 @@ class HomeAdminWidgetState extends State<HomeAdminWidget> {
                         });
                       },
                       borderRadius: const BorderRadius.all(Radius.circular(8)),
-                      selectedBorderColor:
-                          const Color.fromARGB(255, 126, 217, 87),
+                      selectedBorderColor: const Color.fromARGB(255, 126, 217, 87),
                       borderWidth: 2,
                       selectedColor: Colors.white,
                       fillColor: const Color(0xFF272727),
@@ -178,8 +177,7 @@ class HomeAdminWidgetState extends State<HomeAdminWidget> {
                         ),
                       ),
                       child: SizedBox(
-                        height: MediaQuery.of(context).size.height *
-                            0.2, // Adjust the height according to your needs
+                        height: MediaQuery.of(context).size.height * 0.2, // Adjust the height according to your needs
                         child: TextField(
                           controller: descriptionController,
                           keyboardType: TextInputType.multiline,
@@ -198,16 +196,14 @@ class HomeAdminWidgetState extends State<HomeAdminWidget> {
                     ),
                     Center(
                       child: Row(
-                        mainAxisAlignment: MainAxisAlignment
-                            .center, // Aligns buttons at the center horizontally
+                        mainAxisAlignment: MainAxisAlignment.center, // Aligns buttons at the center horizontally
                         children: <Widget>[
                           ElevatedButton(
                             onPressed: () async {
                               // Retrieve values from controllers
                               final String title = titleController.text;
                               final String price = priceController.text;
-                              final String description =
-                                  descriptionController.text;
+                              final String description = descriptionController.text;
                               if (title == '') {
                                 // Registration failed, show error message
                                 ScaffoldMessenger.of(context).showSnackBar(
@@ -233,8 +229,7 @@ class HomeAdminWidgetState extends State<HomeAdminWidget> {
                                 // Price is not a valid integer, show error message
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
-                                    content:
-                                        Text('Price must be a valid number'),
+                                    content: Text('Price must be a valid number'),
                                   ),
                                 );
                                 return;
@@ -250,13 +245,16 @@ class HomeAdminWidgetState extends State<HomeAdminWidget> {
                                 return;
                               }
                               final String type = getSelectedType();
-                              final Result<dynamic> result =
-                                  await articleService.addArticle(
+                              final Result<dynamic> result = await articleService.addArticle(
                                 title,
                                 double.parse(price),
                                 description,
                                 type,
-                                type == 'phone' ? 'assets/images/iphone.jpg' : type == 'laptop' ? 'assets/images/macbook.jpeg' : 'assets/images/ipad.png',
+                                type == 'phone'
+                                    ? 'assets/images/iphone.jpg'
+                                    : type == 'laptop'
+                                        ? 'assets/images/macbook.jpeg'
+                                        : 'assets/images/ipad.png',
                               );
                               if (result.success) {
                                 if (!context.mounted) return;
@@ -309,8 +307,7 @@ class HomeAdminWidgetState extends State<HomeAdminWidget> {
       );
     }
 
-    Provider.of<ProviderListener>(context, listen: false)
-        .updateActiveType('all');
+    Provider.of<ProviderListener>(context, listen: false).updateActiveType('all');
     return Consumer<ProviderListener>(
       builder: (
         BuildContext context,
@@ -320,13 +317,19 @@ class HomeAdminWidgetState extends State<HomeAdminWidget> {
         return Scaffold(
           body: Column(
             children: <Widget>[
-              const Padding(
-                padding: EdgeInsets.only(top: 20),
+              Padding(
+                padding: const EdgeInsets.only(top: 20),
                 child: Center(
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: <Widget>[
-                      SearchBarComponent(),
+                      IconButton(
+                        icon: const Icon(Icons.menu),
+                        onPressed: () {
+                          widget.scaffoldKey.currentState?.openDrawer();
+                        },
+                      ),
+                      const SearchBarComponent(),
                     ],
                   ),
                 ),
