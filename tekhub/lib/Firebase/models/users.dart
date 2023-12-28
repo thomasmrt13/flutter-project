@@ -17,6 +17,15 @@ class MyUser {
     this.expirationDate,
     this.cvv,
   });
+  dynamic findUserArticleInCart(String articleId) {
+    try {
+      return cart.firstWhere(
+        (UserArticle userArticle) => userArticle.article.id == articleId,
+      );
+    } catch (e) {
+      return -1;
+    }
+  }
 
   final String uid;
   final String email;
