@@ -194,6 +194,7 @@ class ProfilePageState extends State<ProfilePage> {
                       )
                     else
                       Form(
+                        key: _formKey,
                         child: Column(
                           children: <Widget>[
                             TextFormField(
@@ -247,8 +248,57 @@ class ProfilePageState extends State<ProfilePage> {
                                     55,
                                   ),
                                 ),
-                                onPressed: () {
-                                  Navigator.pop(context);
+                                onPressed: () async {
+                                  if (_formKey.currentState != null &&
+                                      _formKey.currentState!.validate()) {
+                                    _formKey.currentState!.save();
+                                    final Result<dynamic> result =
+                                        await userService.updateUserInformation(
+                                      user.uid,
+                                      _username,
+                                      _phoneNumber,
+                                      user.address,
+                                    );
+                                    if (result.success) {
+                                      if (!context.mounted) return;
+                                      final MyUser newUserInfo = MyUser(
+                                        uid: user.uid,
+                                        email: user.email,
+                                        username: _username,
+                                        phoneNumber: _phoneNumber,
+                                        address: user.address,
+                                        cart: user.cart,
+                                        purchaseHistory: user.purchaseHistory,
+                                        role: user.role,
+                                        cardNumber: user.cardNumber,
+                                        creditCardName: user.creditCardName,
+                                        expirationDate: user.expirationDate,
+                                        cvv: user.cvv,
+                                      );
+                                      // Registration successful, navigate to another screen or perform actions accordingly
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        const SnackBar(
+                                          content: Text('Settings changed!'),
+                                        ),
+                                      );
+                                      Provider.of<ProviderListener>(
+                                        context,
+                                        listen: false,
+                                      ).updateUser(newUserInfo);
+                                      Navigator.pop(context);
+                                    } else {
+                                      if (!context.mounted) return;
+                                      // Registration failed, show error message
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        SnackBar(
+                                          content:
+                                              Text(result.message.toString()),
+                                        ),
+                                      );
+                                    }
+                                  }
                                 },
                                 child: Text(
                                   'Save'.toUpperCase(),
