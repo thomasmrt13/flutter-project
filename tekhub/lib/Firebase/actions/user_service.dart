@@ -373,9 +373,10 @@ class UserService {
             .doc(userId)
             .update(<Object, Object?>{
           'purchaseHistory': purchaseHistoryData,
+          'cart': <UserArticle>[],
         });
 
-        return Result<dynamic>.success('Articles added to purchase history.');
+        return Result<dynamic>.success(purchaseHistoryData);
       } else {
         return Result<dynamic>.failure(
           'User not found.',
@@ -491,7 +492,7 @@ class UserService {
 
         // Find the index of the product with the specified articleId
         final int indexToDelete = purchaseHistoryData.indexWhere(
-          (Map<String, dynamic> entry) => entry['article']['id'] == articleId,
+          (Map<String, dynamic> entry) => entry['id'] == articleId,
         );
 
         if (indexToDelete != -1) {
@@ -507,7 +508,7 @@ class UserService {
           });
 
           return Result<dynamic>.success(
-            'Product removed from purchase history successfully.',
+            purchaseHistoryData,
           );
         } else {
           return Result<dynamic>.failure(
