@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sidebarx/sidebarx.dart';
 import 'package:tekhub/Firebase/models/articles.dart';
+import 'package:tekhub/Firebase/models/user_articles.dart';
+import 'package:tekhub/Firebase/models/users.dart';
 import 'package:tekhub/provider/provider_listener.dart';
 import 'package:tekhub/widgets/button.dart';
 import 'package:tekhub/widgets/cart_item.dart';
@@ -33,12 +35,11 @@ class _CartState extends State<Cart> {
 
   @override
   Widget build(BuildContext context) {
-    final List<Article> articles =
-        Provider.of<ProviderListener>(context).articles;
-    final double total = articles.fold(
+    final MyUser user = Provider.of<ProviderListener>(context).user;
+    final double total = user.cart.fold(
         0,
-        (double previousValue, Article article) =>
-            previousValue + article.price,);
+        (double previousValue, UserArticle userArticle) =>
+            previousValue + userArticle.article.price * userArticle.quantity,);
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 39, 39, 39),
       body: SingleChildScrollView(
@@ -75,11 +76,9 @@ class _CartState extends State<Cart> {
               height: MediaQuery.of(context).size.height * 0.55,
               child: Expanded(
                 child: ListView(
-                  children: articles.map((Article article) {
+                  children: user.cart.map((UserArticle userArticle) {
                     return CartItem(
-                      assetPath: article.imageUrl,
-                      title: article.name,
-                      price: article.price,
+                      userArticle: userArticle,
                     );
                   }).toList(),
                 ),
@@ -107,7 +106,7 @@ class _CartState extends State<Cart> {
             LargeButton(
               text: 'Checkout',
               onClick: () async {
-                await _showCheckoutModal(context, articles.length, total);
+                await _showCheckoutModal(context, user.cart.length, total);
               },
             ),
             const SizedBox(height: 20),

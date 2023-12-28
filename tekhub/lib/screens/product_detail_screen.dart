@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tekhub/Firebase/actions/article_service.dart';
 import 'package:tekhub/Firebase/actions/result.dart';
+import 'package:tekhub/Firebase/actions/user_service.dart';
 import 'package:tekhub/Firebase/models/articles.dart';
+import 'package:tekhub/Firebase/models/user_articles.dart';
 import 'package:tekhub/Firebase/models/users.dart';
 import 'package:tekhub/provider/provider_listener.dart';
 import 'package:tekhub/widgets/button.dart';
@@ -37,6 +39,20 @@ class SingleItemState extends State<SingleItem> {
   Widget build(BuildContext context) {
     final MyUser user = Provider.of<ProviderListener>(context).user;
     final ArticleService articleService = ArticleService();
+    final UserService userService = UserService();
+
+    ArticleType mapStringToArticleType(String typeString) {
+      switch (typeString) {
+        case 'phone':
+          return ArticleType.phone;
+        case 'laptop':
+          return ArticleType.laptop;
+        case 'tablet':
+          return ArticleType.tablet;
+        default:
+          return ArticleType.phone; // Default to phone if unknown type
+      }
+    }
 
     return SafeArea(
       child: Scaffold(
@@ -121,7 +137,9 @@ class SingleItemState extends State<SingleItem> {
                                             // await onValidationButtonPressed();
                                             if (!context.mounted) return;
                                             await Navigator.pushNamed(
-                                                context, '/',);
+                                              context,
+                                              '/',
+                                            );
                                           } else {
                                             if (!context.mounted) return;
                                             // Registration failed, show error message
@@ -263,7 +281,74 @@ class SingleItemState extends State<SingleItem> {
                             text: 'Add to cart',
                             color: const Color.fromARGB(255, 39, 39, 39),
                             width: MediaQuery.of(context).size.width * 0.7,
-                            onClick: () {},
+                            onClick: () async {
+                              final dynamic userArticle =
+                                  user.findUserArticleInCart(widget.article.id);
+                              final Result<dynamic> result =
+                                  await userService.addToCart(
+                                user.uid,
+                                userArticle == -1
+                                    ? UserArticle(
+                                        article: widget.article,
+                                        quantity: 1,
+                                      )
+                                    : userArticle,
+                              );
+                              if (result.success) {
+                                if (!context.mounted) return;
+                                final List<Map<String, dynamic>> cartData = result
+                                    .message as List<Map<String, dynamic>>;
+
+                                // Convert cartData to a List<UserArticle>
+                                final List<UserArticle> updatedCart =
+                                    cartData.map((Map<String, dynamic> map) {
+                                  return UserArticle(
+                                    article: Article(
+                                      id: map['id'],
+                                      name: map['name'],
+                                      price: map['price'],
+                                      description: map['description'],
+                                      type: mapStringToArticleType(map['type']),
+                                      imageUrl: map['imageUrl'],
+                                    ),
+                                    quantity: map['quantity'],
+                                  );
+                                }).toList();
+                                final MyUser newUserInfo = MyUser(
+                                  uid: user.uid,
+                                  email: user.email,
+                                  username: user.username,
+                                  phoneNumber: user.phoneNumber,
+                                  address: user.address,
+                                  cart: updatedCart,
+                                  purchaseHistory: user.purchaseHistory,
+                                  role: user.role,
+                                  cardNumber: user.cardNumber,
+                                  creditCardName: user.creditCardName,
+                                  expirationDate: user.expirationDate,
+                                  cvv: user.cvv,
+                                );
+                                Provider.of<ProviderListener>(
+                                  context,
+                                  listen: false,
+                                ).updateUser(newUserInfo);
+                                Navigator.pop(context);
+                                // await onValidationButtonPressed();
+                                if (!context.mounted) return;
+                                await Navigator.pushNamed(
+                                  context,
+                                  '/',
+                                );
+                              } else {
+                                if (!context.mounted) return;
+                                // Registration failed, show error message
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(result.message.toString()),
+                                  ),
+                                );
+                              }
+                            },
                             height: 60,
                             fontSize: 20,
                           ),

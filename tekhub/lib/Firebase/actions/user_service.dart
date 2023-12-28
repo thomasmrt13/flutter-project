@@ -131,7 +131,7 @@ class UserService {
           // For now, let's just update the quantity by incrementing it
           cartData[existingItemIndex]['quantity'] =
               (cartData[existingItemIndex]['quantity'] ?? 1) +
-                  userArticle.quantity;
+                  1;
         } else {
           // Add the article to the cart with quantity
           cartData.add(<String, dynamic>{
@@ -153,7 +153,7 @@ class UserService {
           'cart': cartData,
         });
         return Result<dynamic>.success(
-          'Article added to cart.',
+          cartData,
         );
       } else {
         return Result<dynamic>.failure(
@@ -166,6 +166,72 @@ class UserService {
       );
     }
   }
+
+  Future<Result<dynamic>> removeToCart(
+  String userId, 
+  UserArticle userArticle,
+) async {
+  try {
+    // Retrieve the user's current cart
+    final DocumentSnapshot<Map<String, dynamic>> userSnapshot =
+        await _firestore.collection('users').doc(userId).get();
+
+    if (userSnapshot.exists) {
+      // Convert the user's cart data to a List<Map<String, dynamic>>
+      final List<Map<String, dynamic>> cartData =
+          List<Map<String, dynamic>>.from(userSnapshot.data()!['cart']);
+
+      // Check if the article is already in the cart
+      final int existingItemIndex = cartData.indexWhere(
+        (Map<String, dynamic> item) => item['id'] == userArticle.article.id,
+      );
+
+      if (existingItemIndex != -1) {
+        // Article already in the cart
+        final int newQuantity =
+            (cartData[existingItemIndex]['quantity'] ?? 0) -
+                1;
+
+        if (newQuantity > 0) {
+          // Update quantity
+          cartData[existingItemIndex]['quantity'] = newQuantity;
+        } else {
+          // Remove article if quantity is 0
+          cartData.removeAt(existingItemIndex);
+        }
+      } else {
+        if (userArticle.quantity > 0) {
+          // Add the article to the cart with quantity
+          cartData.add(<String, dynamic>{
+            'id': userArticle.article.id,
+            'name': userArticle.article.name,
+            'price': userArticle.article.price,
+            'description': userArticle.article.description,
+            'type': _mapArticleTypeToString(userArticle.article.type),
+            'imageUrl': userArticle.article.imageUrl,
+            'quantity': userArticle.quantity,
+          });
+        }
+      }
+
+      // Update the user's cart in Firestore
+      await _firestore
+          .collection('users')
+          .doc(userId)
+          .update(<Object, Object?>{
+        'cart': cartData,
+      });
+
+      return Result<dynamic>.success(cartData);
+    } else {
+      return Result<dynamic>.failure('User not found.');
+    }
+  } catch (e) {
+    return Result<dynamic>.failure(
+      'An unexpected error occurred during cart update.',
+    );
+  }
+}
 
   // Utility function to map ArticleType enum to String
   String _mapArticleTypeToString(ArticleType type) {
