@@ -214,12 +214,12 @@ class ArticleService {
       // Validate input parameters
       if (name.isEmpty) {
         return Result<dynamic>.failure(
-            'Invalid article data. Name is required.');
+            'Invalid article data. Name is required.',);
       }
 
       if (price <= 0) {
         return Result<dynamic>.failure(
-            'Invalid article data. Price must be greater than zero.');
+            'Invalid article data. Price must be greater than zero.',);
       }
 
       // Update article in Firestore
