@@ -26,6 +26,7 @@ class CheckoutWidgetState extends State<CheckoutWidget> {
   String locationData = '';
   bool isLoading = false;
   loc.Location location = loc.Location();
+  bool cardSaved = false;
 
   @override
   Widget build(BuildContext context) {
@@ -150,9 +151,7 @@ class CheckoutWidgetState extends State<CheckoutWidget> {
                   SizedBox(
                     width: MediaQuery.of(context).size.width * 0.6,
                     child: Text(
-                      locationData.isEmpty
-                          ? 'Click on the button to add your location'
-                          : locationData,
+                      locationData.isEmpty ? 'Click on the button to add your location' : locationData,
                       style: const TextStyle(color: Colors.black),
                     ),
                   ),
@@ -173,12 +172,12 @@ class CheckoutWidgetState extends State<CheckoutWidget> {
             const SizedBox(
               height: 20,
             ),
-            const Padding(
-              padding: EdgeInsets.only(left: 20, right: 30),
+            Padding(
+              padding: const EdgeInsets.only(left: 20, right: 30),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  Text(
+                  const Text(
                     'Card',
                     style: TextStyle(
                       fontSize: 18,
@@ -187,10 +186,139 @@ class CheckoutWidgetState extends State<CheckoutWidget> {
                       fontFamily: 'Raleway',
                     ),
                   ),
-                  Text(
-                    '**** 0000',
-                    style: TextStyle(color: Colors.black),
-                  ),
+                  if (cardSaved)
+                    Text(
+                      '****${user.cardNumber?.substring(user.cardNumber!.length - 4)}',
+                      style: const TextStyle(
+                        fontFamily: 'Raleway',
+                        fontWeight: FontWeight.bold,
+                      ),
+                    )
+                  else
+                    IconButton(
+                      onPressed: () async {
+                        await showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+                            return AlertDialog(
+                              backgroundColor: Colors.white,
+                              surfaceTintColor: Colors.white,
+                              title: const Text(
+                                'Add a Card',
+                                style: TextStyle(
+                                  fontFamily: 'Raleway',
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              content: Form(
+                                key: formKey,
+                                child: SingleChildScrollView(
+                                  child: Column(
+                                    children: <Widget>[
+                                      TextFormField(
+                                        initialValue: user.cardNumber,
+                                        decoration: InputDecoration(
+                                          hintText: 'Card number',
+                                          labelStyle: const TextStyle(
+                                            fontFamily: 'Raleway',
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                          border: OutlineInputBorder(
+                                            borderRadius: BorderRadius.circular(15),
+                                          ),
+                                        ),
+                                        validator: (String? value) {
+                                          if (value == null || value.isEmpty) {
+                                            return 'Please enter the card number.';
+                                          }
+                                          return null;
+                                        },
+                                      ),
+                                      const SizedBox(height: 15),
+                                      TextFormField(
+                                        initialValue: user.creditCardName,
+                                        decoration: InputDecoration(
+                                          hintText: 'Name',
+                                          labelStyle: const TextStyle(
+                                            fontFamily: 'Raleway',
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                          border: OutlineInputBorder(
+                                            borderRadius: BorderRadius.circular(15),
+                                          ),
+                                        ),
+                                        validator: (String? value) {
+                                          if (value == null || value.isEmpty) {
+                                            return 'Please enter the name.';
+                                          }
+                                          return null;
+                                        },
+                                      ),
+                                      const SizedBox(height: 15),
+                                      TextFormField(
+                                        initialValue: user.cvv,
+                                        maxLength: 3,
+                                        decoration: InputDecoration(
+                                          hintText: 'CVV',
+                                          labelStyle: const TextStyle(
+                                            fontFamily: 'Raleway',
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                          border: OutlineInputBorder(
+                                            borderRadius: BorderRadius.circular(15),
+                                          ),
+                                        ),
+                                        validator: (String? value) {
+                                          if (value == null || value.isEmpty) {
+                                            return 'Please enter the CVV.';
+                                          }
+                                          return null;
+                                        },
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              actions: <Widget>[
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: const Text(
+                                    'Cancel',
+                                    style: TextStyle(
+                                      fontFamily: 'Raleway',
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.red,
+                                    ),
+                                  ),
+                                ),
+                                TextButton(
+                                  onPressed: () {
+                                    if (formKey.currentState?.validate() ?? false) {
+                                      setState(() {
+                                        cardSaved = true;
+                                      });
+                                      Navigator.of(context).pop();
+                                    }
+                                  },
+                                  child: const Text(
+                                    'Save',
+                                    style: TextStyle(
+                                      fontFamily: 'Raleway',
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.green,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      },
+                      icon: const Icon(CupertinoIcons.add),
+                    ),
                 ],
               ),
             ),
@@ -258,19 +386,16 @@ class CheckoutWidgetState extends State<CheckoutWidget> {
             LargeButton(
               text: 'Pay',
               onClick: () async {
-                final Result<dynamic> result =
-                    await userService.addToPurchaseHistory(
+                final Result<dynamic> result = await userService.addToPurchaseHistory(
                   user.uid,
                   user.cart,
                 );
                 if (result.success) {
                   if (!context.mounted) return;
-                  final List<Map<String, dynamic>> cartData =
-                      result.message as List<Map<String, dynamic>>;
+                  final List<Map<String, dynamic>> cartData = result.message as List<Map<String, dynamic>>;
 
                   // Convert cartData to a List<UserArticle>
-                  final List<UserHistoryArticles> updatedUserHistory =
-                      cartData.map((Map<String, dynamic> map) {
+                  final List<UserHistoryArticles> updatedUserHistory = cartData.map((Map<String, dynamic> map) {
                     return UserHistoryArticles(
                       article: Article(
                         id: map['id'],
@@ -359,8 +484,7 @@ class CheckoutWidgetState extends State<CheckoutWidget> {
   }
 
   Future<String> _getAddress(double latitude, double longitude) async {
-    final List<Placemark> placemarks =
-        await placemarkFromCoordinates(latitude, longitude);
+    final List<Placemark> placemarks = await placemarkFromCoordinates(latitude, longitude);
     if (placemarks.isNotEmpty) {
       final Placemark placemark = placemarks[0];
       return '${placemark.street}, ${placemark.locality}, ${placemark.postalCode}, ${placemark.country}';
