@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:tekhub/Firebase/actions/result.dart';
 import 'package:tekhub/firebase/actions/article_service.dart';
 import 'package:tekhub/provider/provider_listener.dart';
-import 'package:tekhub/widgets/check_animation.dart';
+//import 'package:tekhub/widgets/check_animation.dart';
 import 'package:tekhub/widgets/search/search_bar.dart';
 import 'package:tekhub/widgets/search_result.dart';
 
@@ -48,15 +48,12 @@ class HomeAdminWidgetState extends State<HomeAdminWidget> {
         }
       }
 
-      // Afficher l'animation de vérification
-      Future<void> onValidationButtonPressed() async {
+      /* Future<void> onValidationButtonPressed() async {
         await showDialog(
           context: context,
           builder: (BuildContext context) {
             return const Dialog(
               backgroundColor: Color.fromARGB(0, 255, 255, 255),
-              // Utilisation d'un Container pour définir la taille du Dialog
-              // Hauteur souhaitée du Dialog
               child: AnimatedCheckMark(),
             );
           },
@@ -64,7 +61,7 @@ class HomeAdminWidgetState extends State<HomeAdminWidget> {
         Future<void>.delayed(const Duration(milliseconds: 1250), () {
           Navigator.of(context).pop(); // Ferme le Dialog
         });
-      }
+      } */
 
       await showModalBottomSheet(
         context: context,
