@@ -203,6 +203,8 @@ workflows:
 
     environment:
       flutter: stable
+      groups:
+        - firebase
 
     scripts:
       - name: Get Flutter packages
