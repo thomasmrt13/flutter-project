@@ -334,8 +334,6 @@ class _TopPortion extends StatefulWidget {
 }
 
 class __TopPortionState extends State<_TopPortion> {
-  String _selectedImage =
-      'assets/images/pic0.png'; // Store the selected image file
 
   Future<void> openImagePickerDialog(BuildContext context, MyUser user, UserService userService) async {
     await showDialog(
@@ -418,12 +416,6 @@ class __TopPortionState extends State<_TopPortion> {
       },
     ).then((dynamic selectedImage) {
       // Mettre à jour l'image de profil avec l'image sélectionnée
-      if (selectedImage != null) {
-        setState(() {
-          _selectedImage = selectedImage;
-          // Code pour mettre à jour l'image de profil
-        });
-      }
     });
   }
 
