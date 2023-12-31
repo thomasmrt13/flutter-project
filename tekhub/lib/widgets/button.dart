@@ -37,38 +37,25 @@ class Button extends StatelessWidget {
 class MediumButton extends Button {
   const MediumButton({
     super.key,
-    this.text = 'click',
-    this.onClick,
+    super.text = 'click',
+    super.onClick,
   }) : super(
           color: const Color(0xFF58C0EA),
           fontSize: 17,
           height: 50,
           width: 224,
-          onClick: onClick,
-          text: text,
         );
-  @override
-  final VoidCallback? onClick;
-  @override
-  final String text;
 }
 
 class LargeButton extends Button {
   const LargeButton({
     super.key,
-    this.text = 'click',
-    this.onClick,
+    super.text = 'click',
+    super.onClick,
   }) : super(
           color: const Color.fromARGB(255, 126, 217, 87),
           fontSize: 20,
           height: 70,
           width: 314,
-          onClick: onClick,
-          text: text,
         );
-  @override
-  final VoidCallback? onClick;
-
-  @override
-  final String text;
 }
