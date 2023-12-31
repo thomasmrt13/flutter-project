@@ -147,7 +147,8 @@ class SingleItemState extends State<SingleItem> {
                                                 .showSnackBar(
                                               SnackBar(
                                                 content: Text(
-                                                    result.message.toString(),),
+                                                  result.message.toString(),
+                                                ),
                                               ),
                                             );
                                           }
@@ -296,8 +297,9 @@ class SingleItemState extends State<SingleItem> {
                               );
                               if (result.success) {
                                 if (!context.mounted) return;
-                                final List<Map<String, dynamic>> cartData = result
-                                    .message as List<Map<String, dynamic>>;
+                                final List<Map<String, dynamic>> cartData =
+                                    result.message
+                                        as List<Map<String, dynamic>>;
 
                                 // Convert cartData to a List<UserArticle>
                                 final List<UserArticle> updatedCart =
@@ -325,6 +327,7 @@ class SingleItemState extends State<SingleItem> {
                                   role: user.role,
                                   cardNumber: user.cardNumber,
                                   creditCardName: user.creditCardName,
+                                  profilePictureUrl: user.profilePictureUrl,
                                   expirationDate: user.expirationDate,
                                   cvv: user.cvv,
                                 );

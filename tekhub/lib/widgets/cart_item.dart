@@ -55,7 +55,9 @@ class CartItem extends StatelessWidget {
                 Text(
                   userArticle.article.name,
                   style: const TextStyle(
-                      fontWeight: FontWeight.w600, fontSize: 16,),
+                    fontWeight: FontWeight.w600,
+                    fontSize: 16,
+                  ),
                 ),
                 const SizedBox(height: 10),
                 Text(
@@ -121,6 +123,7 @@ class CartItem extends StatelessWidget {
                             role: user.role,
                             cardNumber: user.cardNumber,
                             creditCardName: user.creditCardName,
+                            profilePictureUrl: user.profilePictureUrl,
                             expirationDate: user.expirationDate,
                             cvv: user.cvv,
                           );
@@ -194,6 +197,7 @@ class CartItem extends StatelessWidget {
                             role: user.role,
                             cardNumber: user.cardNumber,
                             creditCardName: user.creditCardName,
+                            profilePictureUrl: user.profilePictureUrl,
                             expirationDate: user.expirationDate,
                             cvv: user.cvv,
                           );

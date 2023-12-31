@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import 'package:tekhub/Firebase/actions/result.dart';
 import 'package:tekhub/firebase/actions/article_service.dart';
 import 'package:tekhub/provider/provider_listener.dart';
-import 'package:tekhub/widgets/check_animation.dart';
 import 'package:tekhub/widgets/search/search_bar.dart';
 import 'package:tekhub/widgets/search_result.dart';
 
@@ -27,7 +26,8 @@ class HomeAdminWidgetState extends State<HomeAdminWidget> {
       int selectedTypeIndex = 0;
       final TextEditingController titleController = TextEditingController();
       final TextEditingController priceController = TextEditingController();
-      final TextEditingController descriptionController = TextEditingController();
+      final TextEditingController descriptionController =
+          TextEditingController();
 
       const List<Widget> type = <Widget>[
         Text('Iphone'),
@@ -46,24 +46,6 @@ class HomeAdminWidgetState extends State<HomeAdminWidget> {
           default:
             return '';
         }
-      }
-
-      // Afficher l'animation de vérification
-      Future<void> onValidationButtonPressed() async {
-        await showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return const Dialog(
-              backgroundColor: Color.fromARGB(0, 255, 255, 255),
-              // Utilisation d'un Container pour définir la taille du Dialog
-              // Hauteur souhaitée du Dialog
-              child: AnimatedCheckMark(),
-            );
-          },
-        );
-        Future<void>.delayed(const Duration(milliseconds: 1250), () {
-          Navigator.of(context).pop(); // Ferme le Dialog
-        });
       }
 
       await showModalBottomSheet(
@@ -125,7 +107,8 @@ class HomeAdminWidgetState extends State<HomeAdminWidget> {
                         });
                       },
                       borderRadius: const BorderRadius.all(Radius.circular(8)),
-                      selectedBorderColor: const Color.fromARGB(255, 126, 217, 87),
+                      selectedBorderColor:
+                          const Color.fromARGB(255, 126, 217, 87),
                       borderWidth: 2,
                       selectedColor: Colors.white,
                       fillColor: const Color(0xFF272727),
@@ -177,7 +160,8 @@ class HomeAdminWidgetState extends State<HomeAdminWidget> {
                         ),
                       ),
                       child: SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.2, // Adjust the height according to your needs
+                        height: MediaQuery.of(context).size.height *
+                            0.2, // Adjust the height according to your needs
                         child: TextField(
                           controller: descriptionController,
                           keyboardType: TextInputType.multiline,
@@ -196,14 +180,16 @@ class HomeAdminWidgetState extends State<HomeAdminWidget> {
                     ),
                     Center(
                       child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center, // Aligns buttons at the center horizontally
+                        mainAxisAlignment: MainAxisAlignment
+                            .center, // Aligns buttons at the center horizontally
                         children: <Widget>[
                           ElevatedButton(
                             onPressed: () async {
                               // Retrieve values from controllers
                               final String title = titleController.text;
                               final String price = priceController.text;
-                              final String description = descriptionController.text;
+                              final String description =
+                                  descriptionController.text;
                               if (title == '') {
                                 // Registration failed, show error message
                                 ScaffoldMessenger.of(context).showSnackBar(
@@ -229,7 +215,8 @@ class HomeAdminWidgetState extends State<HomeAdminWidget> {
                                 // Price is not a valid integer, show error message
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
-                                    content: Text('Price must be a valid number'),
+                                    content:
+                                        Text('Price must be a valid number'),
                                   ),
                                 );
                                 return;
@@ -245,7 +232,8 @@ class HomeAdminWidgetState extends State<HomeAdminWidget> {
                                 return;
                               }
                               final String type = getSelectedType();
-                              final Result<dynamic> result = await articleService.addArticle(
+                              final Result<dynamic> result =
+                                  await articleService.addArticle(
                                 title,
                                 double.parse(price),
                                 description,
@@ -307,7 +295,6 @@ class HomeAdminWidgetState extends State<HomeAdminWidget> {
       );
     }
 
-    Provider.of<ProviderListener>(context, listen: false).updateActiveType('all');
     return Consumer<ProviderListener>(
       builder: (
         BuildContext context,

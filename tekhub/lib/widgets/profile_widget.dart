@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -282,91 +280,83 @@ class _TopPortion extends StatefulWidget {
 }
 
 class __TopPortionState extends State<_TopPortion> {
-  File? _selectedImage; // Store the selected image file
-  // String _profileImageUrl = 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80';
-  @override
-  void initState() {
-    super.initState();
-    // _loadProfileImage();
+  String _selectedImage =
+      'assets/images/pic0.png'; // Store the selected image file
+
+  Future<void> openImagePickerDialog(BuildContext context) async {
+    await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Select a picture'),
+          content: SizedBox(
+            width: double.maxFinite,
+            height: 300,
+            child: GridView.builder(
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                crossAxisSpacing: 4,
+                mainAxisSpacing: 4,
+              ),
+              itemCount: 4, // Nombre total d'images dans la grille
+              itemBuilder: (BuildContext context, int index) {
+                // Remplacez ce Container par votre widget d'image avec GestureDetector
+                return GestureDetector(
+                  onTap: () {
+                    // Définir l'image sélectionnée et fermer la boîte de dialogue
+                    Navigator.pop(context, _getImageForIndex(index));
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image: AssetImage(
+                          'assets/images/pic$index.png',
+                        ), // Remplacez par le chemin de vos images
+                        fit: BoxFit.cover,
+                      ),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+        );
+      },
+    ).then((dynamic selectedImage) {
+      // Mettre à jour l'image de profil avec l'image sélectionnée
+      if (selectedImage != null) {
+        setState(() {
+          _selectedImage = selectedImage;
+          // Code pour mettre à jour l'image de profil
+        });
+      }
+    });
   }
 
-  // Future<void> _loadProfileImage() async {
-  //   final MyUser user =
-  //       Provider.of<ProviderListener>(context, listen: false).user;
+// Méthode de simulation de récupération d'image pour un index donné
+  String _getImageForIndex(int index) {
+    // Vous pouvez retourner l'image correspondant à l'index sélectionné
+    // Ceci est une simulation, vous devrez adapter cette méthode pour récupérer vos images réelles
+    switch (index) {
+      case 0:
+        return 'assets/images/pic0.png';
+      // Remplacez par le chemin de votre image
+      case 1:
+        return 'assets/images/pic1.png';
+      // Remplacez par le chemin de votre image
+      // Ajoutez des cas pour d'autres index d'images
+      case 2:
+        return 'assets/images/pic2.png';
+      // Remplacez par le chemin de votre image
+      case 3:
+        return 'assets/images/pic3.png';
 
-  //   // Fetch user's profile picture URL from Firebase
-  //   final Result<dynamic> result =
-  //       await ImageService().getUserProfileImageUrl(user.uid);
-
-  //   if (result.success) {
-  //     setState(() {
-  //       _profileImageUrl = result.message;
-  //     });
-  //   } else {
-  //     // If fetching fails, use a default image URL
-  //     setState(() {
-  //       _profileImageUrl =
-  //           'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80';
-  //     });
-  //   }
-  // }
-
-  // Future<void> _getImage() async {
-  //   final XFile? pickedFile =
-  //       await ImagePicker().pickImage(source: ImageSource.gallery);
-
-  //   if (pickedFile != null) {
-  //     final File imageFile = File(pickedFile.path);
-
-  //     // Upload the image to Firebase Storage
-  //     final Result<String> uploadResult = await ImageService()
-  //         .uploadImageToStorage(imageFile, 'profile_pictures');
-
-  //     if (uploadResult.success) {
-  //       if (!context.mounted) return;
-  //       // Update the user's profile picture URL in the database
-  //       final MyUser user =
-  //           Provider.of<ProviderListener>(context, listen: false).user;
-  //       final Result<dynamic> updateResult =
-  //           await ImageService().getUserProfileImageUrl(user.uid);
-
-  //       if (updateResult.success) {
-  //         if (!context.mounted) return;
-  //         // Update the local state with the new profile picture URL
-  //         if (context.mounted) {
-  //           setState(() {
-  //             _profileImageUrl = uploadResult.message;
-  //           });
-  //         }
-
-  //         // Show a success message or perform additional actions if needed
-  //         ScaffoldMessenger.of(context).showSnackBar(
-  //           const SnackBar(
-  //             content: Text('Profile picture updated successfully!'),
-  //           ),
-  //         );
-  //       } else {
-  //         // Show an error message if updating the profile picture URL fails
-  //         if (context.mounted) {
-  //           ScaffoldMessenger.of(context).showSnackBar(
-  //             SnackBar(
-  //               content: Text(updateResult.message.toString()),
-  //             ),
-  //           );
-  //         }
-  //       }
-  //     } else {
-  //       // Show an error message if uploading the image fails
-  //       if (context.mounted) {
-  //         ScaffoldMessenger.of(context).showSnackBar(
-  //           SnackBar(
-  //             content: Text(uploadResult.message.toString()),
-  //           ),
-  //         );
-  //       }
-  //     }
-  //   }
-  // }
+      default:
+        return 'assets/images/pic0.png';
+      // Image par défaut ou vide
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -418,19 +408,10 @@ class __TopPortionState extends State<_TopPortion> {
                   decoration: BoxDecoration(
                     color: Colors.black,
                     shape: BoxShape.circle,
-                    image: _selectedImage != null
-                        ? DecorationImage(
-                            fit: BoxFit.cover,
-                            image: FileImage(
-                              _selectedImage!,
-                            ), // Display selected image
-                          )
-                        : const DecorationImage(
-                            fit: BoxFit.cover,
-                            image: NetworkImage(
-                              'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80',
-                            ),
-                          ),
+                    image: DecorationImage(
+                      fit: BoxFit.cover,
+                      image: AssetImage(_selectedImage),
+                    ),
                   ),
                 ),
                 Positioned(
@@ -439,6 +420,7 @@ class __TopPortionState extends State<_TopPortion> {
                   child: GestureDetector(
                     onTap: () async {
                       // await _getImage(); // Call getImage() when CircleAvatar is tapped
+                      await openImagePickerDialog(context);
                     },
                     child: const CircleAvatar(
                       radius: 20,

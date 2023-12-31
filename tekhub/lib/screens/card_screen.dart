@@ -283,8 +283,9 @@ class _CardPageState extends State<CardPage> {
                       onTap: () {
                         setState(() {
                           Future<void>.delayed(
-                              const Duration(milliseconds: 300),
-                              flipCardController.toggleCard,);
+                            const Duration(milliseconds: 300),
+                            flipCardController.toggleCard,
+                          );
                         });
                       },
                       onChanged: (String value) {
@@ -342,6 +343,7 @@ class _CardPageState extends State<CardPage> {
                       purchaseHistory: user.purchaseHistory,
                       role: user.role,
                       cardNumber: _cardNumber,
+                      profilePictureUrl: user.profilePictureUrl,
                       creditCardName: _creditCardName,
                       expirationDate: _expirationDate,
                       cvv: _cvv,

@@ -51,6 +51,25 @@ class UserService {
     }
   }
 
+  Future<Result<dynamic>> updateUserPicture(
+    String userId,
+    String imageUrl,
+  ) async {
+    try {
+      // Check if the username is already in use by another user
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userId)
+          .update(<Object, Object?>{
+        'imageUrl': imageUrl,
+      });
+
+      return Result<dynamic>.success('User information updated successfully.');
+    } catch (e) {
+      return Result<dynamic>.failure('An unexpected error occurred. $e');
+    }
+  }
+
   Future<Result<dynamic>> updateCardInformation(
     String userId,
     String? cardNumber,
@@ -110,7 +129,9 @@ class UserService {
   }
 
   Future<Result<dynamic>> addToCart(
-      String userId, UserArticle userArticle,) async {
+    String userId,
+    UserArticle userArticle,
+  ) async {
     try {
       // Retrieve the user's current cart
       final DocumentSnapshot<Map<String, dynamic>> userSnapshot =
@@ -130,8 +151,7 @@ class UserService {
           // Article already in the cart, update quantity or perform other logic
           // For now, let's just update the quantity by incrementing it
           cartData[existingItemIndex]['quantity'] =
-              (cartData[existingItemIndex]['quantity'] ?? 1) +
-                  1;
+              (cartData[existingItemIndex]['quantity'] ?? 1) + 1;
         } else {
           // Add the article to the cart with quantity
           cartData.add(<String, dynamic>{
@@ -168,70 +188,69 @@ class UserService {
   }
 
   Future<Result<dynamic>> removeToCart(
-  String userId, 
-  UserArticle userArticle,
-) async {
-  try {
-    // Retrieve the user's current cart
-    final DocumentSnapshot<Map<String, dynamic>> userSnapshot =
-        await _firestore.collection('users').doc(userId).get();
+    String userId,
+    UserArticle userArticle,
+  ) async {
+    try {
+      // Retrieve the user's current cart
+      final DocumentSnapshot<Map<String, dynamic>> userSnapshot =
+          await _firestore.collection('users').doc(userId).get();
 
-    if (userSnapshot.exists) {
-      // Convert the user's cart data to a List<Map<String, dynamic>>
-      final List<Map<String, dynamic>> cartData =
-          List<Map<String, dynamic>>.from(userSnapshot.data()!['cart']);
+      if (userSnapshot.exists) {
+        // Convert the user's cart data to a List<Map<String, dynamic>>
+        final List<Map<String, dynamic>> cartData =
+            List<Map<String, dynamic>>.from(userSnapshot.data()!['cart']);
 
-      // Check if the article is already in the cart
-      final int existingItemIndex = cartData.indexWhere(
-        (Map<String, dynamic> item) => item['id'] == userArticle.article.id,
-      );
+        // Check if the article is already in the cart
+        final int existingItemIndex = cartData.indexWhere(
+          (Map<String, dynamic> item) => item['id'] == userArticle.article.id,
+        );
 
-      if (existingItemIndex != -1) {
-        // Article already in the cart
-        final int newQuantity =
-            (cartData[existingItemIndex]['quantity'] ?? 0) -
-                1;
+        if (existingItemIndex != -1) {
+          // Article already in the cart
+          final int newQuantity =
+              (cartData[existingItemIndex]['quantity'] ?? 0) - 1;
 
-        if (newQuantity > 0) {
-          // Update quantity
-          cartData[existingItemIndex]['quantity'] = newQuantity;
+          if (newQuantity > 0) {
+            // Update quantity
+            cartData[existingItemIndex]['quantity'] = newQuantity;
+          } else {
+            // Remove article if quantity is 0
+            cartData.removeAt(existingItemIndex);
+          }
         } else {
-          // Remove article if quantity is 0
-          cartData.removeAt(existingItemIndex);
+          if (userArticle.quantity > 0) {
+            // Add the article to the cart with quantity
+            cartData.add(<String, dynamic>{
+              'id': userArticle.article.id,
+              'name': userArticle.article.name,
+              'price': userArticle.article.price,
+              'description': userArticle.article.description,
+              'type': _mapArticleTypeToString(userArticle.article.type),
+              'imageUrl': userArticle.article.imageUrl,
+              'quantity': userArticle.quantity,
+            });
+          }
         }
+
+        // Update the user's cart in Firestore
+        await _firestore
+            .collection('users')
+            .doc(userId)
+            .update(<Object, Object?>{
+          'cart': cartData,
+        });
+
+        return Result<dynamic>.success(cartData);
       } else {
-        if (userArticle.quantity > 0) {
-          // Add the article to the cart with quantity
-          cartData.add(<String, dynamic>{
-            'id': userArticle.article.id,
-            'name': userArticle.article.name,
-            'price': userArticle.article.price,
-            'description': userArticle.article.description,
-            'type': _mapArticleTypeToString(userArticle.article.type),
-            'imageUrl': userArticle.article.imageUrl,
-            'quantity': userArticle.quantity,
-          });
-        }
+        return Result<dynamic>.failure('User not found.');
       }
-
-      // Update the user's cart in Firestore
-      await _firestore
-          .collection('users')
-          .doc(userId)
-          .update(<Object, Object?>{
-        'cart': cartData,
-      });
-
-      return Result<dynamic>.success(cartData);
-    } else {
-      return Result<dynamic>.failure('User not found.');
+    } catch (e) {
+      return Result<dynamic>.failure(
+        'An unexpected error occurred during cart update.',
+      );
     }
-  } catch (e) {
-    return Result<dynamic>.failure(
-      'An unexpected error occurred during cart update.',
-    );
   }
-}
 
   // Utility function to map ArticleType enum to String
   String _mapArticleTypeToString(ArticleType type) {
@@ -296,7 +315,9 @@ class UserService {
   }
 
   Future<Result<dynamic>> deleteProductFromCart(
-      String userId, String productId,) async {
+    String userId,
+    String productId,
+  ) async {
     try {
       // Retrieve the user's current cart
       final DocumentSnapshot<Map<String, dynamic>> userSnapshot =
@@ -325,7 +346,8 @@ class UserService {
           });
 
           return Result<dynamic>.success(
-              'Product removed from cart successfully.',);
+            'Product removed from cart successfully.',
+          );
         } else {
           return Result<dynamic>.failure('Product not found in cart.');
         }
@@ -511,7 +533,8 @@ class UserService {
           );
         } else {
           return Result<dynamic>.failure(
-              'Product not found in purchase history.',);
+            'Product not found in purchase history.',
+          );
         }
       } else {
         return Result<dynamic>.failure('User not found.');

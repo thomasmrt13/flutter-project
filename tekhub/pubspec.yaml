@@ -57,6 +57,10 @@ flutter:
     - assets/images/ipad.png
     - assets/images/iphone.jpg
     - assets/images/macbook.jpeg
+    - assets/images/pic0.png
+    - assets/images/pic1.png
+    - assets/images/pic2.png
+    - assets/images/pic3.png
 
   fonts:
     - family: Raleway
