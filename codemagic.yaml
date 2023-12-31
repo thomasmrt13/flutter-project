@@ -256,6 +256,6 @@ workflows:
         project_id: "flutter-d70dc" # Replace with your actual Firebase project ID
         token: $FIREBASE_TOKEN
         script: |
-          npm install -g firebase-tools 
-          firebase use $FIREBASE_PROJECT_ID 
-          firebase deploy --only hosting
+          sudo npm install -g firebase-tools 
+          sudo firebase use $FIREBASE_PROJECT_ID 
+          sudo firebase deploy --only hosting
