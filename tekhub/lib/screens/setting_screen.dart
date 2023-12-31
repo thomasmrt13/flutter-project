@@ -194,12 +194,12 @@ class SettingsPageState extends State<SettingsPage> {
                           fit: StackFit.expand,
                           children: <Widget>[
                             Container(
-                              decoration: const BoxDecoration(
+                              decoration: BoxDecoration(
                                 color: Colors.black,
                                 shape: BoxShape.circle,
                                 image: DecorationImage(
                                   fit: BoxFit.cover,
-                                  image: AssetImage('assets/images/avatar.png'),
+                                  image: AssetImage(user.profilePictureUrl),
                                 ),
                               ),
                             ),

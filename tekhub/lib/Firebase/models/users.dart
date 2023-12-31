@@ -11,7 +11,7 @@ class MyUser {
     required this.cart,
     required this.purchaseHistory,
     required this.role,
-    this.profilePictureUrl,
+    required this.profilePictureUrl,
     this.cardNumber,
     this.creditCardName,
     this.expirationDate,
@@ -35,7 +35,7 @@ class MyUser {
   final List<UserArticle> cart;
   final List<UserHistoryArticles> purchaseHistory;
   final String role;
-  final String? profilePictureUrl;
+  final String profilePictureUrl;
   final String? cardNumber;
   final String? creditCardName;
   final String? expirationDate;

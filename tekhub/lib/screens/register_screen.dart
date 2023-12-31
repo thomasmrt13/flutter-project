@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tekhub/Firebase/actions/auth_service.dart';
@@ -37,9 +38,10 @@ class Register extends StatelessWidget {
   Widget build(BuildContext context) {
     final AuthService authService = AuthService();
     return Scaffold(
-        resizeToAvoidBottomInset: false,
-        backgroundColor: const Color.fromARGB(255, 39, 39, 39),
-        body: SingleChildScrollView(
+      resizeToAvoidBottomInset: false,
+      backgroundColor: const Color.fromARGB(255, 39, 39, 39),
+      body: SingleChildScrollView(
+        child: Center(
           child: Column(
             children: <Widget>[
               SizedBox(height: MediaQuery.of(context).size.height * 0.05),
@@ -53,7 +55,7 @@ class Register extends StatelessWidget {
                     borderRadius: BorderRadius.all(Radius.circular(20)),
                   ),
                   height: MediaQuery.of(context).size.height * 0.70,
-                  width: MediaQuery.of(context).size.width,
+                  width: kIsWeb ? MediaQuery.of(context).size.width * 0.8 : MediaQuery.of(context).size.width,
                   child: Padding(
                     padding: const EdgeInsets.fromLTRB(50, 36, 50, 0),
                     child: SingleChildScrollView(
@@ -79,8 +81,7 @@ class Register extends StatelessWidget {
                           ElevatedButton(
                             onPressed: () async {
                               if (_formKey.currentState!.validate()) {
-                                final String? passwordError =
-                                    _passwordInput.validateMatch(
+                                final String? passwordError = _passwordInput.validateMatch(
                                   _passwordInput.getInputText(),
                                   _confirmPasswordInput.getInputText(),
                                 );
@@ -95,8 +96,7 @@ class Register extends StatelessWidget {
                                 }
 
                                 // If form is valid, attempt registration
-                                final Result<dynamic> result = await authService
-                                    .registerWithEmailAndPassword(
+                                final Result<dynamic> result = await authService.registerWithEmailAndPassword(
                                   _emailInput.getInputText(),
                                   _passwordInput.getInputText(),
                                   _confirmPasswordInput.getInputText(),
@@ -128,8 +128,7 @@ class Register extends StatelessWidget {
                               }
                             },
                             style: ElevatedButton.styleFrom(
-                              backgroundColor:
-                                  const Color.fromARGB(255, 126, 217, 87),
+                              backgroundColor: const Color.fromARGB(255, 126, 217, 87),
                               fixedSize: const Size(314, 70),
                               foregroundColor: Colors.white,
                               shape: RoundedRectangleBorder(
@@ -165,6 +164,8 @@ class Register extends StatelessWidget {
               ),
             ],
           ),
-        ),);
+        ),
+      ),
+    );
   }
 }

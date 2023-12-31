@@ -90,6 +90,7 @@ class CustomIconButton extends StatelessWidget {
                 cart: user.cart,
                 purchaseHistory: updatedUserHistory,
                 role: user.role,
+                profilePictureUrl: user.profilePictureUrl,
                 cardNumber: user.cardNumber,
                 creditCardName: user.creditCardName,
                 expirationDate: user.expirationDate,
