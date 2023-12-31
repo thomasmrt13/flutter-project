@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:tekhub/Firebase/actions/auth_service.dart';
 import 'package:tekhub/Firebase/actions/result.dart';
 import 'package:tekhub/Firebase/actions/user_service.dart';
 import 'package:tekhub/Firebase/models/users.dart';
@@ -16,6 +17,7 @@ class SettingsPage extends StatefulWidget {
 }
 
 class SettingsPageState extends State<SettingsPage> {
+  final AuthService authService = AuthService();
   Future<void> showLogoutDialog(BuildContext context) async {
     return showDialog<void>(
       context: context,
@@ -41,13 +43,16 @@ class SettingsPageState extends State<SettingsPage> {
               },
               child: const Text(
                 'Cancel',
-                style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                style:
+                    TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
               ),
             ),
             TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(); // Ferme le dialogue
-                Navigator.pushNamed(context, 'login');
+              onPressed: () async {
+                await authService.signOut();
+                if (!context.mounted) return;
+                Navigator.of(context).pop();
+                await Navigator.pushNamed(context, 'login');
               },
               child: const Text(
                 'Confirm',
@@ -92,7 +97,8 @@ class SettingsPageState extends State<SettingsPage> {
               },
               child: const Text(
                 'Cancel',
-                style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                style:
+                    TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
               ),
             ),
             TextButton(
@@ -236,7 +242,8 @@ class SettingsPageState extends State<SettingsPage> {
                     _CustomListTile(
                       title: 'Delete account',
                       icon: Icons.delete,
-                      onTap: () async => showDeleteDialog(context, userService, user),
+                      onTap: () async =>
+                          showDeleteDialog(context, userService, user),
                     ),
                   ],
                 ),
@@ -299,7 +306,8 @@ class SettingsPageState extends State<SettingsPage> {
                     _CustomListTile(
                       title: 'Delete account',
                       icon: Icons.delete,
-                      onTap: () async => showDeleteDialog(context, userService, user),
+                      onTap: () async =>
+                          showDeleteDialog(context, userService, user),
                     ),
                   ],
                 ),
@@ -332,7 +340,8 @@ class _SectionCard extends StatelessWidget {
               style: const TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
-                color: Colors.white, // Choisis une couleur qui correspond à ton thème
+                color: Colors
+                    .white, // Choisis une couleur qui correspond à ton thème
               ),
             ),
             const SizedBox(height: 12),

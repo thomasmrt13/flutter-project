@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:tekhub/Firebase/models/articles.dart';
+import 'package:provider/provider.dart';
+import 'package:tekhub/Firebase/models/user_history_articles.dart';
+import 'package:tekhub/Firebase/models/users.dart';
+import 'package:tekhub/provider/provider_listener.dart';
 import 'package:tekhub/widgets/orders/price_text.dart';
 import 'package:tekhub/widgets/orders/spending_category.dart';
 
@@ -15,45 +18,11 @@ class OrdersScreen extends StatefulWidget {
 class OrdersScreenState extends State<OrdersScreen> {
   @override
   Widget build(BuildContext context) {
-    List<Article> getArticles() {
-      final List<Article> articles = <Article>[
-        Article(
-          id: '1',
-          name: 'Iphone 12',
-          price: 525,
-          description: 'Iphone 12',
-          type: ArticleType.phone,
-          imageUrl: 'assets/images/ipad.png',
-        ),
-        Article(
-          id: '2',
-          name: 'Ipad Pro',
-          price: 790,
-          description: 'Ipad Pro 2021',
-          type: ArticleType.tablet,
-          imageUrl: 'assets/images/ipad.png',
-        ),
-        Article(
-          id: '3',
-          name: 'Iphone 14 Pro',
-          price: 950,
-          description: 'Iphone 14 Pro Max',
-          type: ArticleType.phone,
-          imageUrl: 'assets/images/ipad.png',
-        ),
-        Article(
-          id: '4',
-          name: 'Macbook Pro',
-          price: 359,
-          description: 'Macbook Pro 2022',
-          type: ArticleType.laptop,
-          imageUrl: 'assets/images/ipad.png',
-        ),
-      ];
-      return articles;
-    }
-
-    final List<Article> articles = getArticles();
+    final MyUser user = Provider.of<ProviderListener>(context).user;
+    final double total = user.purchaseHistory.fold(
+        0,
+        (double previousValue, UserHistoryArticles userHistoryArticle) =>
+            previousValue + userHistoryArticle.article.price * userHistoryArticle.quantity,);
     return ColoredBox(
       color: const Color.fromARGB(255, 39, 39, 39),
       child: Column(
@@ -98,17 +67,17 @@ class OrdersScreenState extends State<OrdersScreen> {
                     color: const Color.fromARGB(255, 126, 217, 87),
                     borderRadius: BorderRadius.circular(32),
                   ),
-                  child: const Row(
+                  child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
-                      Text(
+                      const Text(
                         'TOTAL',
                         style: TextStyle(color: Colors.white),
                       ),
-                      SizedBox(width: 32),
+                      const SizedBox(width: 32),
                       PriceText(
-                        price: 100,
-                        color: Color.fromARGB(255, 255, 255, 255),
+                        price: total.toInt(),
+                        color: const Color.fromARGB(255, 255, 255, 255),
                       ),
                     ],
                   ),
@@ -123,7 +92,7 @@ class OrdersScreenState extends State<OrdersScreen> {
           Expanded(
             child: ListView(
               children: <Widget>[
-                for (final Article model in articles)
+                for (final UserHistoryArticles model in user.purchaseHistory)
                   Padding(
                     padding: const EdgeInsets.symmetric(
                       horizontal: 36,
