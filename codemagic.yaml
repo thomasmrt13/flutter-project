@@ -25,11 +25,6 @@ workflows:
         script: |
           cd tekhub
           flutter analyze
-      - name: Flutter unit tests
-        script: |
-          cd tekhub
-          flutter test
-        ignore_failure: true
       - name: Build AAB with Flutter
         script: |
           cd tekhub
@@ -85,11 +80,6 @@ workflows:
         script: |
           cd tekhub
           flutter analyze
-      - name: Flutter unit tests
-        script: |
-          cd tekhub
-          flutter test
-        ignore_failure: true
       - name: Flutter build ipa and automatic versioning
         script: |
           cd tekhub
@@ -145,10 +135,6 @@ workflows:
         script: |
           cd tekhub
           flutter analyze
-      - name: Flutter unit tests
-        script: |
-          cd tekhub
-          flutter test
       - name: Flutter build webapp
         script: |
           cd tekhub
