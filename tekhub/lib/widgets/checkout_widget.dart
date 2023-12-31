@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:location/location.dart' as loc;
@@ -27,6 +28,7 @@ class CheckoutWidgetState extends State<CheckoutWidget> {
   bool isLoading = false;
   loc.Location location = loc.Location();
   bool cardSaved = false;
+  String enteredAddress = '';
 
   @override
   Widget build(BuildContext context) {
@@ -45,6 +47,7 @@ class CheckoutWidgetState extends State<CheckoutWidget> {
 
     final MyUser user = Provider.of<ProviderListener>(context).user;
     final UserService userService = UserService();
+    final TextEditingController addressController = TextEditingController();
     return Container(
       height: MediaQuery.of(context).size.height * 0.8,
       decoration: const BoxDecoration(
@@ -88,54 +91,53 @@ class CheckoutWidgetState extends State<CheckoutWidget> {
               ),
             ),
             SizedBox(height: MediaQuery.of(context).size.height * 0.02),
-            InkWell(
-              onTap: () async {
-                setState(() {
-                  isLoading = true;
-                });
-
-                final loc.LocationData? locationData = await _getLocation();
-
-                if (locationData != null) {
-                  final String address = await _getAddress(
-                    locationData.latitude!,
-                    locationData.longitude!,
-                  );
+            if (!kIsWeb)
+              InkWell(
+                onTap: () async {
                   setState(() {
-                    this.locationData = address;
-                    isLoading = false;
+                    isLoading = true;
                   });
-                } else {
-                  setState(() {
-                    isLoading = false;
-                  });
-                }
-              },
-              child: Container(
-                width: MediaQuery.of(context).size.width * 0.4,
-                height: MediaQuery.of(context).size.width * 0.15,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(20),
-                  border: Border.all(),
-                ),
-                child: Center(
-                  child: isLoading
-                      ? const CircularProgressIndicator(
-                          color: Colors.black,
-                        )
-                      : const Icon(
-                          CupertinoIcons.location_fill,
-                          color: Colors.black,
-                        ),
+                  final loc.LocationData? locationData = await _getLocation();
+                  if (locationData != null) {
+                    final String address = await _getAddress(
+                      locationData.latitude!,
+                      locationData.longitude!,
+                    );
+                    setState(() {
+                      this.locationData = address;
+                      isLoading = false;
+                    });
+                  } else {
+                    setState(() {
+                      isLoading = false;
+                    });
+                  }
+                },
+                child: Container(
+                  width: MediaQuery.of(context).size.width * 0.4,
+                  height: MediaQuery.of(context).size.width * 0.15,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(),
+                  ),
+                  child: Center(
+                    child: isLoading
+                        ? const CircularProgressIndicator(
+                            color: Colors.black,
+                          )
+                        : const Icon(
+                            CupertinoIcons.location_fill,
+                            color: Colors.black,
+                          ),
+                  ),
                 ),
               ),
-            ),
             const SizedBox(
               height: 25,
             ),
             Padding(
-              padding: const EdgeInsets.only(left: 20),
+              padding: const EdgeInsets.only(left: 20, right: 20),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
@@ -148,13 +150,119 @@ class CheckoutWidgetState extends State<CheckoutWidget> {
                       fontFamily: 'Raleway',
                     ),
                   ),
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width * 0.6,
-                    child: Text(
-                      locationData.isEmpty ? 'Click on the button to add your location' : locationData,
-                      style: const TextStyle(color: Colors.black),
+                  if (kIsWeb)
+                    enteredAddress.isEmpty
+                        ? InkWell(
+                            onTap: () async {
+                              await showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+                                  return AlertDialog(
+                                    backgroundColor: Colors.white,
+                                    surfaceTintColor: Colors.white,
+                                    title: const Text(
+                                      'Add your adress',
+                                      style: TextStyle(
+                                        fontFamily: 'Raleway',
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    content: Form(
+                                      key: formKey,
+                                      child: SingleChildScrollView(
+                                        child: Column(
+                                          children: <Widget>[
+                                            TextFormField(
+                                              maxLines: 4,
+                                              controller: addressController,
+                                              decoration: InputDecoration(
+                                                hintText: 'Enter your shipping adress',
+                                                labelStyle: const TextStyle(
+                                                  fontFamily: 'Raleway',
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                                border: OutlineInputBorder(
+                                                  borderRadius: BorderRadius.circular(15),
+                                                ),
+                                              ),
+                                              validator: (String? value) {
+                                                if (value == null || value.isEmpty) {
+                                                  return 'Please enter your shipping adress.';
+                                                }
+                                                return null;
+                                              },
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                    actions: <Widget>[
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                        child: const Text(
+                                          'Cancel',
+                                          style: TextStyle(
+                                            fontFamily: 'Raleway',
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.red,
+                                          ),
+                                        ),
+                                      ),
+                                      TextButton(
+                                        onPressed: () {
+                                          if (formKey.currentState?.validate() ?? false) {
+                                            setState(() {
+                                              enteredAddress = addressController.text;
+                                            });
+                                            Navigator.of(context).pop();
+                                          }
+                                        },
+                                        child: const Text(
+                                          'Save',
+                                          style: TextStyle(
+                                            fontFamily: 'Raleway',
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.green,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  );
+                                },
+                              );
+                            },
+                            child: Container(
+                              width: 100,
+                              height: 50,
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(20),
+                                border: Border.all(),
+                              ),
+                              child: Center(
+                                child: isLoading
+                                    ? const CircularProgressIndicator(
+                                        color: Colors.black,
+                                      )
+                                    : const Icon(
+                                        CupertinoIcons.location_fill,
+                                        color: Colors.black,
+                                      ),
+                              ),
+                            ),
+                          )
+                        : Text(enteredAddress)
+                  else
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.6,
+                      child: Text(
+                        locationData.isEmpty ? 'Click on the button to add your location' : locationData,
+                        style: const TextStyle(color: Colors.black),
+                      ),
                     ),
-                  ),
                 ],
               ),
             ),
@@ -373,7 +481,7 @@ class CheckoutWidgetState extends State<CheckoutWidget> {
             ),
             Center(
               child: SizedBox(
-                width: MediaQuery.of(context).size.width * 0.8,
+                width: kIsWeb ? null : MediaQuery.of(context).size.width * 0.8,
                 child: const Text(
                   'By clicking on the button below, you agree to our terms and conditions.',
                   style: TextStyle(fontFamily: 'Raleway'),
