@@ -6,11 +6,8 @@ workflows:
     environment:
       android_signing:
         - keystore_reference
-      groups:
-        - google_play # <-- (Includes GCLOUD_SERVICE_ACCOUNT_CREDENTIALS)
       vars:
-        PACKAGE_NAME: "io.codemagic.flutteryaml" # <-- Put your package name here
-        GOOGLE_PLAY_TRACK: "alpha"
+        PACKAGE_NAME: "com.example.tekhub" # Replace with your actual Android package name
       flutter: stable
     scripts:
       - name: Set up local.properties
@@ -28,10 +25,7 @@ workflows:
       - name: Build AAB with Flutter
         script: |
           cd tekhub
-          BUILD_NUMBER=$(($(google-play get-latest-build-number --package-name "$PACKAGE_NAME" --tracks="$GOOGLE_PLAY_TRACK") + 1))      
-          flutter build appbundle --release \
-            --build-name=1.0.$BUILD_NUMBER \
-            --build-number=$BUILD_NUMBER
+          flutter build appbundle --release
     artifacts:
       - build/**/outputs/**/*.aab
       - build/**/outputs/**/mapping.txt
@@ -39,15 +33,11 @@ workflows:
     publishing:
       email:
         recipients:
-          - user_1@example.com
-          - user_2@example.com
+          - antoine.hoareau@epitech.eu
         notify:
           success: true
           failure: false
-      google_play:
-        credentials: $GCLOUD_SERVICE_ACCOUNT_CREDENTIALS
-        track: $GOOGLE_PLAY_TRACK
-        submit_as_draft: true
+
   ios-workflow:
     name: iOS Workflow
     instance_type: mac_mini_m1
@@ -57,11 +47,11 @@ workflows:
     environment:
       ios_signing:
         distribution_type: app_store
-        bundle_identifier: io.codemagic.flutteryaml
+        bundle_identifier: com.example.tekhub # Replace with your actual iOS App ID
       vars:
-        APP_ID: 1111111111 # <-- Put your APP ID here
+        APP_ID: "com.example.tekhub" # Replace with your actual iOS App ID
       flutter: stable
-      xcode: latest # <-- set to specific version e.g. 14.3, 15.0 to avoid unexpected updates.
+      xcode: latest
       cocoapods: default
     scripts:
       - name: Set up code signing settings on Xcode project
@@ -92,33 +82,23 @@ workflows:
       - /tmp/xcodebuild_logs/*.log
       - flutter_drive.log
     publishing:
-      # See the following link for details about email publishing - https://docs.codemagic.io/publishing-yaml/distribution/#email
       email:
         recipients:
-          - user_1@example.com
-          - user_2@example.com
+          - antoine.hoareau@epitech.eu
         notify:
-          success: true # To receive a notification when a build succeeds
-          failure: false # To not receive a notification when a build fails
+          success: true
+          failure: false
       slack:
-        # See the following link about how to connect your Slack account - https://docs.codemagic.io/publishing-yaml/distribution/#slack
         channel: "#builds"
-        notify_on_build_start: true # To receive a notification when a build starts
+        notify_on_build_start: true
         notify:
-          success: true # To receive a notification when a build succeeds
-          failure: false # To not receive a notification when a build fails
+          success: true
+          failure: false
       app_store_connect:
         auth: integration
-
-        # Configuration related to TestFlight (optional)
-        # Note: This action is performed during post-processing.
         submit_to_testflight: true
-        beta_groups: # Specify the names of beta tester groups that will get access to the build once it has passed beta review.
+        beta_groups:
           - group name 1
-          - group name 2
-
-        # Configuration related to App Store (optional)
-        # Note: This action is performed during post-processing.
         submit_to_app_store: false
 
   web-workflow:
@@ -147,4 +127,4 @@ workflows:
     publishing:
       email:
         recipients:
-          - user_1@example.com
+          - antoine.hoareau@epitech.eu
