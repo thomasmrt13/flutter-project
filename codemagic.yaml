@@ -3,6 +3,8 @@ workflows:
     name: Android Workflow
     instance_type: mac_mini_m1
     max_build_duration: 120
+        integrations:
+      app_store_connect: codemagic
     scripts:
       - name: Set up local.properties
         script: |
@@ -38,15 +40,6 @@ workflows:
     max_build_duration: 120
     integrations:
       app_store_connect: codemagic
-    environment:
-      ios_signing:
-        distribution_type: app_store
-        bundle_identifier: com.example.tekhub # Replace with your actual iOS App ID
-      vars:
-        APP_ID: "com.example.tekhub" # Replace with your actual iOS App ID
-      flutter: stable
-      xcode: latest
-      cocoapods: default
     scripts:
       - name: Set up code signing settings on Xcode project
         script: |
