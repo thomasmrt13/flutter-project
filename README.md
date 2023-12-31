@@ -7,9 +7,7 @@ Welcome to our E-Commerce Flutter App! This app is designed to provide a seamles
 - [Prerequisites](#prerequisites)
 - [Getting Started](#getting-started)
 - [Usage](#usage)
-- [Deployment](#deployment)
-- [Contributing](#contributing)
-- [License](#license)
+- [Dependencies](#dependencies)
 
 ## Features
 
@@ -74,7 +72,6 @@ dependencies:
   carousel_slider: ^4.2.1  # An image carousel slider widget.
   cloud_firestore: ^4.13.2  # A Flutter plugin to use Cloud Firestore, a NoSQL database.
   cupertino_icons: ^1.0.0  # Default icons for Flutter applications.
-  file_picker: ^6.1.1  # A file picker plugin for Flutter.
   firebase_auth: ^4.14.1  # Firebase Authentication for Flutter.
   firebase_core: ^2.23.0  # Flutter plugin for Firebase Core, enabling connecting to multiple Firebase apps.
   firebase_crashlytics: ^3.4.8  # Flutter plugin for Firebase Crashlytics, a lightweight, realtime crash reporter.
@@ -83,12 +80,10 @@ dependencies:
   flutter: sdk: flutter
   flutter_staggered_grid_view: ^0.7.0  # A Flutter staggered grid view widget.
   geocoding: ^2.1.1  # A Flutter plugin to geocode and reverse geocode coordinates.
-  image_picker: ^1.0.4  # A Flutter plugin for picking images from the image library or camera.
   location: ^5.0.3  # A Flutter plugin for handling location updates.
   patterns_canvas: ^0.4.0  # A Flutter widget for drawing patterns.
   permission_handler: ^11.1.0  # A permissions plugin for Flutter.
   provider: ^5.0.0  # A state management library for Flutter applications.
   sidebarx: ^0.16.3  # A responsive sidebar package for Flutter web.
-  uuid: ^4.2.2  # A Dart package for creating and working with UUIDs.
 
 ```
