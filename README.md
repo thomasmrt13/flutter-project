@@ -87,3 +87,36 @@ dependencies:
   sidebarx: ^0.16.3  # A responsive sidebar package for Flutter web.
 
 ```
+
+## Architecture
+
+The project follows a structured architecture, organized into the following key components:
+
+- **Firebase:**
+  - Manages Firebase-related services, including authentication, cloud storage, and Firestore for database operations. The configuration and options are defined in `firebase_options.dart`.
+
+- **Provider:**
+  - Implements state management using the Provider package. Each provider is responsible for managing the state related to a specific feature or data entity.
+
+- **Routes:**
+  - Defines the navigation routes for the app.
+
+- **Screens:**
+  - Contains the main user interface screens of the app. Screens are organized based on different features such as home, product details, cart, and checkout.
+
+- **Widgets:**
+  - Houses reusable UI components or widgets that are used across multiple screens. This promotes code reusability and maintainability.
+
+- **firebase_options.dart:**
+  - Centralized configuration file for Firebase, containing options and settings required for Firebase services.
+
+- **main.dart:**
+  - The entry point of the Flutter application where the app is initialized. It includes the main function, Flutter app configuration, and the root widget (commonly a MaterialApp or CupertinoApp).
+
+The chosen architecture promotes a clear separation of concerns, making the codebase modular and easier to maintain. It also follows best practices for Flutter app development, ensuring scalability and flexibility as the project evolves.
+
+## Authors
+
+- **Antoine Horeau**
+- **Paul Mondon**
+- **Thomas Martin**
