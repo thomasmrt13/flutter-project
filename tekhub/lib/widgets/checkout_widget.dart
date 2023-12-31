@@ -418,6 +418,7 @@ class CheckoutWidgetState extends State<CheckoutWidget> {
                     cart: <UserArticle>[],
                     purchaseHistory: updatedUserHistory,
                     role: user.role,
+                    profilePictureUrl: user.profilePictureUrl,
                     cardNumber: user.cardNumber,
                     creditCardName: user.creditCardName,
                     expirationDate: user.expirationDate,

@@ -90,7 +90,7 @@ class AuthService {
         'cart': <dynamic>[],
         'purchaseHistory': <dynamic>[],
         'role': 'user',
-        'profilePictureUrl': '',
+        'profilePictureUrl': 'assets/images/pic0.png',
         'cardNumber': '',
         'creditCardName': '',
         'expirationDate': '',

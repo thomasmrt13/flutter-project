@@ -61,7 +61,7 @@ class UserService {
           .collection('users')
           .doc(userId)
           .update(<Object, Object?>{
-        'imageUrl': imageUrl,
+        'profilePictureUrl': imageUrl,
       });
 
       return Result<dynamic>.success('User information updated successfully.');

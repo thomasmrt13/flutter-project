@@ -147,6 +147,8 @@ class ProfilePageState extends State<ProfilePage> {
                                         cart: user.cart,
                                         purchaseHistory: user.purchaseHistory,
                                         role: user.role,
+                                        profilePictureUrl:
+                                            user.profilePictureUrl,
                                         cardNumber: user.cardNumber,
                                         creditCardName: user.creditCardName,
                                         expirationDate: user.expirationDate,
@@ -268,6 +270,8 @@ class ProfilePageState extends State<ProfilePage> {
                                         cart: user.cart,
                                         purchaseHistory: user.purchaseHistory,
                                         role: user.role,
+                                        profilePictureUrl:
+                                            user.profilePictureUrl,
                                         cardNumber: user.cardNumber,
                                         creditCardName: user.creditCardName,
                                         expirationDate: user.expirationDate,
@@ -333,7 +337,7 @@ class __TopPortionState extends State<_TopPortion> {
   String _selectedImage =
       'assets/images/pic0.png'; // Store the selected image file
 
-  Future<void> openImagePickerDialog(BuildContext context) async {
+  Future<void> openImagePickerDialog(BuildContext context, MyUser user, UserService userService) async {
     await showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -352,7 +356,46 @@ class __TopPortionState extends State<_TopPortion> {
               itemBuilder: (BuildContext context, int index) {
                 // Remplacez ce Container par votre widget d'image avec GestureDetector
                 return GestureDetector(
-                  onTap: () {
+                  onTap: () async {
+                    final Result<dynamic> result = await userService
+                        .updateUserPicture(user.uid, _getImageForIndex(index));
+                    if (result.success) {
+                      if (!context.mounted) return;
+                      final MyUser newUserInfo = MyUser(
+                        uid: user.uid,
+                        email: user.email,
+                        username: user.username,
+                        phoneNumber: user.phoneNumber,
+                        address: user.address,
+                        profilePictureUrl: _getImageForIndex(index),
+                        cart: user.cart,
+                        purchaseHistory: user.purchaseHistory,
+                        role: user.role,
+                        cardNumber: user.cardNumber,
+                        creditCardName: user.creditCardName,
+                        expirationDate: user.expirationDate,
+                        cvv: user.cvv,
+                      );
+                      // Registration successful, navigate to another screen or perform actions accordingly
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Settings changed!'),
+                        ),
+                      );
+                      Provider.of<ProviderListener>(
+                        context,
+                        listen: false,
+                      ).updateUser(newUserInfo);
+                      Navigator.pop(context);
+                    } else {
+                      if (!context.mounted) return;
+                      // Registration failed, show error message
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(result.message.toString()),
+                        ),
+                      );
+                    }
                     // Définir l'image sélectionnée et fermer la boîte de dialogue
                     Navigator.pop(context, _getImageForIndex(index));
                   },
@@ -410,6 +453,8 @@ class __TopPortionState extends State<_TopPortion> {
 
   @override
   Widget build(BuildContext context) {
+        final UserService userService = UserService();
+    final MyUser user = Provider.of<ProviderListener>(context).user;
     return Stack(
       fit: StackFit.expand,
       children: <Widget>[
@@ -460,7 +505,7 @@ class __TopPortionState extends State<_TopPortion> {
                     shape: BoxShape.circle,
                     image: DecorationImage(
                       fit: BoxFit.cover,
-                      image: AssetImage(_selectedImage),
+                      image: AssetImage(user.profilePictureUrl),
                     ),
                   ),
                 ),
@@ -470,7 +515,7 @@ class __TopPortionState extends State<_TopPortion> {
                   child: GestureDetector(
                     onTap: () async {
                       // await _getImage(); // Call getImage() when CircleAvatar is tapped
-                      await openImagePickerDialog(context);
+                      await openImagePickerDialog(context, user, userService);
                     },
                     child: const CircleAvatar(
                       radius: 20,
