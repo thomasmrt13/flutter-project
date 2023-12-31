@@ -1,115 +1,260 @@
 workflows:
-  android-workflow:
-    name: Android Workflow
+  android-ios-web-workflow:
+    name: Android, iOS, and Web Workflow
+
     instance_type: mac_mini_m1
+
     max_build_duration: 120
+
+    environment:
+      android_signing:
+        - keystore_reference
+
+      groups:
+        - google_play
+
+      vars:
+        PACKAGE_NAME: "com.example.tekhub"
+
+        GOOGLE_PLAY_TRACK: "alpha"
+
+        APP_ID: "com.example.tekhub" # Replace with your actual iOS App ID
+
+        FIREBASE_PROJECT_ID: "flutter-d70dc" # Replace with your Firebase project ID
+
+      flutter: stable
+
     scripts:
       - name: Set up local.properties
+
         script: |
-          cd tekhub
+
+          cd tekhub 
+
           echo "flutter.sdk=$HOME/programs/flutter" > "$CM_BUILD_DIR/android/local.properties"
+
       - name: Get Flutter packages
+
         script: |
-          cd tekhub
+
+          cd tekhub 
+
           flutter packages pub get
+
       - name: Flutter analyze
+
         script: |
-          cd tekhub
+
+          cd tekhub 
+
           flutter analyze
+
       - name: Build AAB with Flutter
+
         script: |
-          cd tekhub
-          flutter build appbundle --release
+
+          cd tekhub 
+
+          BUILD_NUMBER=$(($(google-play get-latest-build-number --package-name "$PACKAGE_NAME" --tracks="$GOOGLE_PLAY_TRACK") + 1))       
+
+          flutter build appbundle --release \ 
+
+            --build-name=1.0.$BUILD_NUMBER \ 
+
+            --build-number=$BUILD_NUMBER
+
     artifacts:
       - build/**/outputs/**/*.aab
+
       - build/**/outputs/**/mapping.txt
+
       - flutter_drive.log
+
     publishing:
       email:
         recipients:
           - antoine.hoareau@epitech.eu
+
         notify:
           success: true
+
           failure: false
+
+      google_play:
+        credentials: $GCLOUD_SERVICE_ACCOUNT_CREDENTIALS
+
+        track: $GOOGLE_PLAY_TRACK
+
+        submit_as_draft: true
 
   ios-workflow:
     name: iOS Workflow
+
     instance_type: mac_mini_m1
+
     max_build_duration: 120
+
     integrations:
       app_store_connect: codemagic
+
+    environment:
+      ios_signing:
+        distribution_type: app_store
+
+        bundle_identifier: com.example.tekhub
+
+      vars:
+        APP_ID: "com.example.tekhub" # Replace with your actual iOS App ID
+
+      flutter: stable
+
+      xcode: latest
+
+      cocoapods: default
+
     scripts:
       - name: Set up code signing settings on Xcode project
+
         script: |
-          cd tekhub
+
+          cd tekhub 
+
           xcode-project use-profiles
+
       - name: Get Flutter packages
+
         script: |
-          cd tekhub
+
+          cd tekhub 
+
           flutter packages pub get
+
       - name: Install pods
+
         script: |
-          cd tekhub
+
+          cd tekhub 
+
           find . -name "Podfile" -execdir pod install \;
+
       - name: Flutter analyze
+
         script: |
-          cd tekhub
+
+          cd tekhub 
+
           flutter analyze
+
       - name: Flutter build ipa and automatic versioning
+
         script: |
-          cd tekhub
-          flutter build ipa --release \
-            --build-name=1.0.0 \
-            --build-number=$(($(app-store-connect get-latest-app-store-build-number "$APP_ID") + 1)) \
+
+          cd tekhub 
+
+          flutter build ipa --release \ 
+
+            --build-name=1.0.0 \ 
+
+            --build-number=$(($(app-store-connect get-latest-app-store-build-number "$APP_ID") + 1)) \ 
+
             --export-options-plist=/Users/builder/export_options.plist
+
     artifacts:
       - build/ios/ipa/*.ipa
+
       - /tmp/xcodebuild_logs/*.log
+
       - flutter_drive.log
+
     publishing:
       email:
         recipients:
           - antoine.hoareau@epitech.eu
+
         notify:
           success: true
+
           failure: false
+
       slack:
         channel: "#builds"
+
         notify_on_build_start: true
+
         notify:
           success: true
+
           failure: false
+
       app_store_connect:
         auth: integration
+
         submit_to_testflight: true
+
         beta_groups:
           - group name 1
+
         submit_to_app_store: false
 
   web-workflow:
-    name: Web app workflow
+    name: Web App Workflow
+
     max_build_duration: 10
+
     environment:
       flutter: stable
+
     scripts:
       - name: Get Flutter packages
+
         script: |
-          cd tekhub
+
+          cd tekhub 
+
           flutter packages pub get
+
       - name: Flutter analyze
+
         script: |
-          cd tekhub
+
+          cd tekhub 
+
           flutter analyze
+
       - name: Flutter build webapp
+
         script: |
-          cd tekhub
-          flutter build web --release
-          cd build/web
+
+          cd tekhub 
+
+          flutter build web --release 
+
+          cd build/web 
+
           7z a -r ../web.zip ./*
+
     artifacts:
       - build/web.zip
+
       - flutter_drive.log
+
     publishing:
       email:
         recipients:
           - antoine.hoareau@epitech.eu
+
+      notify:
+        success: true
+
+        failure: false
+
+      # Deploy to Firebase Hosting
+
+      firebase:
+        script: |
+
+          npm install -g firebase-tools 
+
+          firebase use $FIREBASE_PROJECT_ID 
+
+          firebase deploy --only hosting
