@@ -8,10 +8,6 @@ workflows:
         PACKAGE_NAME: "com.example.tekhub"
       flutter: stable
     scripts:
-      - name: Set up local.properties
-        script: |
-          cd tekhub
-          echo "flutter.sdk=$HOME/programs/flutter" > "$CM_BUILD_DIR/android/local.properties"
       - name: Get Flutter packages
         script: |
           cd tekhub
