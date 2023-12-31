@@ -253,10 +253,9 @@ workflows:
       # Deploy to Firebase Hosting
 
       firebase:
+        project_id: "flutter-d70dc" # Replace with your actual Firebase project ID
+        token: "1//03glhST8_MEmrCgYIARAAGAMSNwF-L9IrZt9OS-BsjrtZKuyefx1VFN29Tw5GePrhN6T0d_gdouxulzmJI2Hd4IZgLKHhvHmmh7Y"
         script: |
-
           npm install -g firebase-tools 
-
           firebase use $FIREBASE_PROJECT_ID 
-
           firebase deploy --only hosting
