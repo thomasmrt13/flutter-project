@@ -31,7 +31,6 @@ workflows:
     environment:
       ios_signing:
         distribution_type: development
-        bundle_identifier: com.example.tekhub
       vars:
         APP_ID: "com.example.tekhub"
       flutter: stable
